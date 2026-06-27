@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import './LandingPage.css';
 
 const features = [
@@ -35,6 +36,8 @@ const features = [
 ];
 
 function LandingPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="landing">
       <header className="nav">
@@ -50,8 +53,8 @@ function LandingPage() {
         <h1>Your TV watching experience, together</h1>
 
         <div className="actions">
-          <button className="btn login">Log In</button>
-          <button className="btn signup">Sign Up</button>
+          <button className="btn login" onClick={() => navigate('/login')}>Log In</button>
+          <button className="btn signup" onClick={() => navigate('/signup')}>Sign Up</button>
         </div>
 
         <section className="features">
