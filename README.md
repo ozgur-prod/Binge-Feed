@@ -1,16 +1,40 @@
-# React + Vite
+# Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+BingeFeed frontend — a React (Vite) single-page app for the BingeFeed TV-series social platform.
 
-Currently, two official plugins are available:
+## Tech stack
+- **React 19** + **Vite** — UI library and dev/build tooling (with HMR)
+- Plain **CSS** for styling
+- **ESLint** for linting
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Project structure
+```
+Frontend/
+├── src/
+│   ├── main.jsx          # app entry, mounts <App>
+│   ├── App.jsx           # renders the current page
+│   ├── pages/
+│   │   ├── LandingPage.jsx
+│   │   └── LandingPage.css
+│   ├── index.css         # global theme (dark, Poppins)
+│   └── assets/
+├── index.html
+└── package.json
+```
 
-## React Compiler
+## Setup
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Start the dev server (auto-reloads on save):
+   ```bash
+   npm run dev
+   ```
+   Runs on http://localhost:5173.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Build
+```bash
+npm run build      # production build into dist/
+npm run preview    # preview the production build locally
+```
