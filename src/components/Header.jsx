@@ -28,7 +28,7 @@ function Header({ active }) {
             <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
         </button>
-        // handleLogout will be changed to profile path after profile is implemented!
+        {/* handleLogout will be changed to profile path after profile is implemented! */}
         <button className={`nav-icon ${active === 'profile' ? 'active' : ''}`} title="Profile" onClick={handleLogout}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />

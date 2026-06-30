@@ -162,7 +162,7 @@ function FeedPage() {
 
   return (
     <div className="feed-page">
-      // Header is moved to be reusable
+      {/* Header is moved to be reusable */}
       <Header active="home" />
 
       <main className="feed-main">
