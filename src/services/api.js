@@ -11,13 +11,9 @@ async function request(path, options = {}) {
 }
 
 export const authAPI = {
-  login: (body) => request('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
   signup: (body) => request('/auth/signup', { method: 'POST', body: JSON.stringify(body) }),
-};
-
-export const showsAPI = {
-  getPopular: (page = 1) => request(`/shows/popular?page=${page}`),
-  getTrending: (page = 1) => request(`/shows/trending?page=${page}`),
-  search: (q, page = 1) => request(`/shows/search?q=${encodeURIComponent(q)}&page=${page}`),
-  getDetails: (id) => request(`/shows/${id}`),
+  login: (body) => request('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
+  sendResetCode: (body) => request('/auth/forgot-password', { method: 'POST', body: JSON.stringify(body) }),
+  verifyResetCode: (body) => request('/auth/verify-reset-code', { method: 'POST', body: JSON.stringify(body) }),
+  resetPassword: (body) => request('/auth/reset-password', { method: 'POST', body: JSON.stringify(body) }),
 };
