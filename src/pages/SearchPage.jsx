@@ -19,19 +19,21 @@ function ShowCard({ show }) {
       </div>
       <div className="show-info">
         <h2>{show.name}</h2>
-        {show.first_air_date && (
-          <span className="show-year">{show.first_air_date.slice(0, 4)}</span>
-        )}
-        {show.vote_average > 0 && (
-          <span className="show-rating">★ {show.vote_average.toFixed(1)}</span>
-        )}
-        <p className="show-overview">{show.overview || 'No description available.'}</p>
+        <div className="show-meta">
+          {show.first_air_date && (
+            <span className="show-year">{show.first_air_date.slice(0, 4)}</span>
+          )}
+          {show.vote_average > 0 && (
+            <span className="show-rating">★ {show.vote_average.toFixed(1)}</span>
+          )}
+        </div>
       </div>
     </article>
   );
 }
 
 function SearchPage() {
+  const [activeTab, setActiveTab] = useState('search');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -62,32 +64,47 @@ function SearchPage() {
       <Header active="search" />
 
       <main className="search-main">
-        <h1>Search Shows</h1>
+        <div className="tab-bar">
+          <button className={`tab ${activeTab === 'search' ? 'active' : ''}`} onClick={() => setActiveTab('search')}>Search</button>
+          <button className={`tab ${activeTab === 'advanced' ? 'active' : ''}`} onClick={() => setActiveTab('advanced')}>Advanced Search</button>
+        </div>
 
-        <form className="search-form" onSubmit={handleSearch}>
-          <input
-            className="search-input"
-            type="text"
-            placeholder="Search for a TV show..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <button className="search-btn" type="submit" disabled={loading}>
-            {loading ? 'Searching…' : 'Search'}
-          </button>
-        </form>
+        {activeTab === 'search' && (
+          <>
+            <h1>Find <span className="title-accent">series</span></h1>
 
-        {error && <p className="search-error">{error}</p>}
+            <form className="search-form" onSubmit={handleSearch}>
+              <input
+                className="search-input"
+                type="text"
+                placeholder="Search for a TV show..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <button className="search-btn" type="submit" disabled={loading}>
+                {loading ? 'Searching…' : 'Search'}
+              </button>
+            </form>
 
-        {!loading && searched && results.length === 0 && !error && (
-          <p className="search-empty">No results found for "{query}".</p>
+            {!searched && <p className="search-hint">Popular <span className="hint-accent">right now</span></p>}
+
+            {error && <p className="search-error">{error}</p>}
+
+            {!loading && searched && results.length === 0 && !error && (
+              <p className="search-empty">No results found for "{query}".</p>
+            )}
+
+            <div className="results-grid">
+              {results.map((show) => (
+                <ShowCard key={show.id} show={show} />
+              ))}
+            </div>
+          </>
         )}
 
-        <div className="results-grid">
-          {results.map((show) => (
-            <ShowCard key={show.id} show={show} />
-          ))}
-        </div>
+        {activeTab === 'advanced' && (
+          <div className="advanced-search-placeholder" />
+        )}
       </main>
     </div>
   );
