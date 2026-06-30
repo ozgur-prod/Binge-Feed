@@ -26,7 +26,7 @@ function LoginPage() {
       const storage = form.remember ? localStorage : sessionStorage;
       storage.setItem('token', data.token);
       storage.setItem('user', JSON.stringify(data.user));
-      navigate('/');
+      navigate('/feed');
     } catch (err) {
       setError(err.message);
     } finally {

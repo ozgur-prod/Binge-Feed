@@ -17,3 +17,8 @@ export const authAPI = {
   verifyResetCode: (body) => request('/auth/verify-reset-code', { method: 'POST', body: JSON.stringify(body) }),
   resetPassword: (body) => request('/auth/reset-password', { method: 'POST', body: JSON.stringify(body) }),
 };
+
+export const showsAPI = {
+  getPopular: () => request('/shows/popular'),
+  getTrending: () => request('/shows/trending'),
+};
