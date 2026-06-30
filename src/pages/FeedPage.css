@@ -4,61 +4,6 @@
   color: #fff;
 }
 
-/* Nav */
-.feed-nav {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.5rem;
-  padding: 1rem 2rem;
-  border-bottom: 1px solid #1e1e1e;
-  position: sticky;
-  top: 0;
-  background: #0d0d0d;
-  z-index: 10;
-}
-
-.feed-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #fff;
-}
-
-.feed-logo span { color: #d63bdf; }
-
-.feed-logo .play {
-  width: 1.6rem;
-  height: 1.6rem;
-  color: #d63bdf;
-  border: 2px solid #d63bdf;
-  border-radius: 6px;
-  padding: 3px;
-}
-
-.feed-nav-icons {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.nav-icon {
-  background: none;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 8px;
-  transition: color 0.15s, background 0.15s;
-  display: flex;
-  align-items: center;
-}
-
-.nav-icon svg { width: 1.4rem; height: 1.4rem; }
-.nav-icon:hover { color: #fff; background: #1e1e1e; }
-.nav-icon.active { color: #fff; }
-
 /* Main */
 .feed-main {
   max-width: 960px;

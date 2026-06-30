@@ -21,4 +21,5 @@ export const authAPI = {
 export const showsAPI = {
   getPopular: () => request('/shows/popular'),
   getTrending: () => request('/shows/trending'),
+  search: (query) => request(`/shows/search?q=${encodeURIComponent(query)}`),
 };
