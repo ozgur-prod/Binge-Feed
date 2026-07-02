@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { showsAPI } from '../services/api';
+import Header from '../components/Header';
 import './FeedPage.css';
 
 const POSTER_BASE = 'https://image.tmdb.org/t/p/w154';
@@ -151,7 +151,6 @@ function DiscussionCard({ show, post }) {
 }
 
 function FeedPage() {
-  const navigate = useNavigate();
   const [popularShows, setPopularShows] = useState([]);
   const [trendingShows, setTrendingShows] = useState([]);
   const [activeTab, setActiveTab] = useState('feed');
@@ -161,46 +160,10 @@ function FeedPage() {
     showsAPI.getTrending().then((d) => setTrendingShows(d.results.slice(0, 4))).catch(console.error);
   }, []);
 
-  function handleLogout() {
-    sessionStorage.clear();
-    navigate('/');
-  }
-
   return (
     <div className="feed-page">
-      <header className="feed-nav">
-        <div className="feed-logo">
-          Binge<span>Feed</span>
-          <svg className="play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-        </div>
-
-        <nav className="feed-nav-icons">
-          <button className="nav-icon active" title="Home">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-              <polyline points="9 22 9 12 15 12 15 22" />
-            </svg>
-          </button>
-          <button className="nav-icon" title="Search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-          </button>
-          <button className="nav-icon" title="Profile" onClick={handleLogout}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </button>
-          <button className="nav-icon" title="Help">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-          </button>
-        </nav>
-      </header>
+      {/* Header is moved to be reusable */}
+      <Header active="home" />
 
       <main className="feed-main">
         <div className="tab-bar">
