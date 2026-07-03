@@ -185,8 +185,181 @@
   color: #d63bdf;
 }
 
+.show-platform {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #cbb8d4;
+  background: #2e1a3a;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+}
+
 @media (max-width: 600px) {
   .search-form {
     flex-direction: column;
+  }
+}
+
+/* Advanced search */
+.advanced-search-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.filters-sidebar {
+  flex: 0 0 220px;
+  background: #1b0c22;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 1.25rem;
+  position: sticky;
+  top: 1.5rem;
+}
+
+.filters-heading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.filter-group {
+  margin-bottom: 1.25rem;
+}
+
+.filter-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #cbb8d4;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.6rem;
+}
+
+.filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-tag {
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #cbb8d4;
+  background: transparent;
+  border: 1.5px solid #3a2a42;
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.filter-tag:hover {
+  border-color: #d63bdf;
+  color: #fff;
+}
+
+.filter-tag.active {
+  background: #d63bdf;
+  border-color: #d63bdf;
+  color: #fff;
+}
+
+.filter-select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  border: 1.5px solid #3a2a42;
+  background: #0d0d0d;
+  color: #fff;
+  outline: none;
+}
+
+.filter-select:focus {
+  border-color: #d63bdf;
+}
+
+.filter-year-range {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-year-input {
+  width: 0;
+  flex: 1;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: 1.5px solid #3a2a42;
+  background: #0d0d0d;
+  color: #fff;
+  outline: none;
+}
+
+.filter-year-input:focus {
+  border-color: #d63bdf;
+}
+
+.filter-year-sep {
+  color: #9b80a8;
+  font-size: 0.85rem;
+}
+
+.filter-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.filter-rating input[type='range'] {
+  flex: 1;
+  accent-color: #d63bdf;
+}
+
+.filter-rating-value {
+  font-size: 0.85rem;
+  color: #d63bdf;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.filter-apply-btn {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 10px;
+  background: #d63bdf;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.filter-apply-btn:hover {
+  background: #c22fcb;
+}
+
+.advanced-results {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 800px) {
+  .advanced-search-layout {
+    flex-direction: column;
+  }
+
+  .filters-sidebar {
+    flex: 1 1 auto;
+    width: 100%;
+    position: static;
   }
 }
