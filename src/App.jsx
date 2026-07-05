@@ -5,6 +5,7 @@ import SignUpPage from './pages/SignUpPage';
 import FeedPage from './pages/FeedPage';
 import SearchPage from './pages/SearchPage';
 import ProfilePage from './pages/ProfilePage';
+import ShowDetailPage from './pages/ShowDetailPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path="/feed" element={<FeedPage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/show/:id" element={<ShowDetailPage />} />
     </Routes>
   );
 }
