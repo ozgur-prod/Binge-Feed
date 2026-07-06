@@ -34,13 +34,5 @@ export const showsAPI = {
   getPopular: () => request('/shows/popular'),
   getTrending: () => request('/shows/trending'),
   search: (query) => request(`/shows/search?q=${encodeURIComponent(query)}`),
-  discover: ({ genres, platforms, yearFrom, yearTo, minRating } = {}) => {
-    const params = new URLSearchParams();
-    if (genres?.length) params.set('genres', genres.join(','));
-    if (platforms?.length) params.set('platforms', platforms.join(','));
-    if (yearFrom) params.set('yearFrom', yearFrom);
-    if (yearTo) params.set('yearTo', yearTo);
-    if (minRating) params.set('minRating', minRating);
-    return request(`/shows/discover?${params.toString()}`);
-  },
+  discover: (filters) => request(`/shows/discover?${new URLSearchParams(filters)}`),
 };

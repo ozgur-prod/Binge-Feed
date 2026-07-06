@@ -36,101 +36,222 @@ function ShowCard({ show }) {
   );
 }
 
-// TMDB IDs for query
+// TMDB genre ids for TV. There is no Thriller genre for TV, Mystery is the closest.
 const GENRES = [
   { id: 18, label: 'Drama' },
   { id: 35, label: 'Comedy' },
-  { id: 10765, label: 'Sci-Fi' },
-  { id: 9648, label: 'Thriller' },
+  { id: 10765, label: 'Sci-Fi & Fantasy' },
+  { id: 9648, label: 'Mystery' },
   { id: 80, label: 'Crime' },
-];
+  { id: 10759, label: 'Action & Adventure' },
+  { id: 16, label: 'Animation' },
+  { id: 99, label: 'Documentary' },
+  { id: 10751, label: 'Family' },
+  { id: 10764, label: 'Reality' },
+  { id: 10768, label: 'War & Politics' },
+].sort((a, b) => a.label.localeCompare(b.label));
 
+// Platform keys, the backend maps these to DE provider ids.
 const PLATFORMS = [
   { key: 'netflix', label: 'Netflix' },
   { key: 'hbo', label: 'HBO' },
   { key: 'appletv+', label: 'Apple TV+' },
   { key: 'prime', label: 'Prime' },
   { key: 'disney+', label: 'Disney+' },
+].sort((a, b) => a.label.localeCompare(b.label));
+
+const MIN_RATINGS = [6, 7, 8, 9];
+
+const SORTS = [
+  { value: 'popularity', label: 'Most Popular' },
+  { value: 'rating', label: 'Highest Rated' },
+  { value: 'newest', label: 'Newest' },
 ];
 
-// left-side filter sidebar for the Advanced Search tab
-function AdvancedFilters({ filters, onToggleGenre, onTogglePlatform, onChangeYearFrom, onChangeYearTo, onChangeRating, onApply }) {
+const YEARS = [];
+for (let y = new Date().getFullYear(); y >= 1980; y--) YEARS.push(y);
+
+function AdvancedSearch() {
+  const [title, setTitle] = useState('');
+  const [genres, setGenres] = useState([]);
+  const [platforms, setPlatforms] = useState([]);
+  const [yearFrom, setYearFrom] = useState('');
+  const [yearTo, setYearTo] = useState('');
+  const [minRating, setMinRating] = useState(null);
+  const [sortBy, setSortBy] = useState('popularity');
+  const [results, setResults] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const titleMode = title.trim().length > 0;
+  const hasFilters = genres.length || platforms.length || yearFrom || yearTo || minRating;
+
+  function toggle(list, setList, id) {
+    setList(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
+  }
+
+  useEffect(() => {
+    const filters = { sortBy };
+    if (title.trim()) filters.q = title.trim();
+    if (genres.length) filters.genres = genres.join('|');
+    if (platforms.length && !titleMode) filters.platforms = platforms.join(',');
+    if (yearFrom) filters.yearFrom = yearFrom;
+    if (yearTo) filters.yearTo = yearTo;
+    if (minRating) filters.minRating = minRating;
+
+    let stale = false;
+    setLoading(true);
+    setError(null);
+    // Debounce so typing a title fires one request, not one per keystroke.
+    const timer = setTimeout(() => {
+      showsAPI
+        .discover(filters)
+        .then((data) => {
+          if (stale) return;
+          setResults(data.results);
+          setTotal(data.total_results);
+        })
+        .catch((err) => {
+          if (!stale) setError(err.message);
+        })
+        .finally(() => {
+          if (!stale) setLoading(false);
+        });
+    }, 350);
+    // Ignore responses of outdated requests, quick filter clicks can answer out of order.
+    return () => {
+      stale = true;
+      clearTimeout(timer);
+    };
+  }, [title, genres, platforms, yearFrom, yearTo, minRating, sortBy]);
+
   return (
-    <aside className="filters-sidebar">
-      <h3 className="filters-heading">Filters</h3>
+    <div className="advanced-layout">
+      <aside className="filter-sidebar">
+        <h1 className="browse-title">Browse by <span className="title-accent">everything.</span></h1>
+        <p className="browse-subtitle">Narrow by genre, platform, year, or rating.</p>
 
-      <div className="filter-group">
-        <h4 className="filter-title">Genre</h4>
-        <div className="filter-tags">
-          {GENRES.map((g) => (
+        <div className="filter-group">
+          <h3>Title</h3>
+          <input
+            className="title-filter"
+            type="text"
+            placeholder="Search within filters…"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+
+        <div className="filter-group">
+          <h3>Genre</h3>
+          <div className="chip-row">
+            {GENRES.map((g) => (
+              <button
+                key={g.id}
+                className={`chip ${genres.includes(g.id) ? 'active' : ''}`}
+                onClick={() => toggle(genres, setGenres, g.id)}
+              >
+                {g.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="filter-group">
+          <h3>Platform</h3>
+          <div className="chip-row">
+            {PLATFORMS.map((p) => (
+              <button
+                key={p.key}
+                className={`chip ${platforms.includes(p.key) && !titleMode ? 'active' : ''}`}
+                disabled={titleMode}
+                onClick={() => toggle(platforms, setPlatforms, p.key)}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+          {titleMode && <p className="filter-hint">Not available for title search.</p>}
+        </div>
+
+        <div className="filter-group">
+          <h3>Year</h3>
+          <div className="year-row">
+            <select value={yearFrom} onChange={(e) => setYearFrom(e.target.value)}>
+              <option value="">Any</option>
+              {YEARS.map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+            <span className="year-to">to</span>
+            <select value={yearTo} onChange={(e) => setYearTo(e.target.value)}>
+              <option value="">Any</option>
+              {YEARS.map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="filter-group">
+          <h3>Minimum Rating</h3>
+          <div className="chip-row">
             <button
-              key={g.id}
-              type="button"
-              className={`filter-tag ${filters.genres.includes(g.id) ? 'active' : ''}`}
-              onClick={() => onToggleGenre(g.id)}
+              className={`chip ${minRating === null ? 'active' : ''}`}
+              onClick={() => setMinRating(null)}
             >
-              {g.label}
+              Any
             </button>
+            {MIN_RATINGS.map((r) => (
+              <button
+                key={r}
+                className={`chip ${minRating === r ? 'active' : ''}`}
+                onClick={() => setMinRating(r)}
+              >
+                ★{r}+
+              </button>
+            ))}
+          </div>
+        </div>
+      </aside>
+
+      <section className="advanced-results">
+        <div className="results-head">
+          {/* at rest the count reads like a catalog total, so only show it once a filter narrows things */}
+          <p className="results-count">
+            {loading ? (
+              'Loading…'
+            ) : titleMode ? (
+              `Top matches for "${title.trim()}"`
+            ) : hasFilters ? (
+              `${total.toLocaleString()} shows`
+            ) : (
+              <>Popular <span className="hint-accent">right now</span></>
+            )}
+          </p>
+          <label className="sort-label">
+            Sort by:
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              {SORTS.map((s) => (
+                <option key={s.value} value={s.value}>{s.label}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        {error && <p className="search-error">{error}</p>}
+        {!loading && !error && results.length === 0 && (
+          <p className="search-empty">No shows match these filters.</p>
+        )}
+
+        <div className="results-grid">
+          {results.map((show) => (
+            <ShowCard key={show.id} show={show} />
           ))}
         </div>
-      </div>
-
-      <div className="filter-group">
-        <h4 className="filter-title">Platform</h4>
-        <div className="filter-tags">
-          {PLATFORMS.map((p) => (
-            <button
-              key={p.key}
-              type="button"
-              className={`filter-tag ${filters.platforms.includes(p.key) ? 'active' : ''}`}
-              onClick={() => onTogglePlatform(p.key)}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="filter-group">
-        <h4 className="filter-title">Year</h4>
-        <div className="filter-year-range">
-          <input
-            className="filter-year-input"
-            type="number"
-            placeholder="From"
-            value={filters.yearFrom}
-            onChange={(e) => onChangeYearFrom(e.target.value)}
-          />
-          <span className="filter-year-sep">...</span>
-          <input
-            className="filter-year-input"
-            type="number"
-            placeholder="To"
-            value={filters.yearTo}
-            onChange={(e) => onChangeYearTo(e.target.value)}
-          />
-        </div>
-      </div>
-
-      <div className="filter-group">
-        <h4 className="filter-title">Minimum Rating</h4>
-        <div className="filter-rating">
-          <input
-            type="range"
-            min="0"
-            max="10"
-            step="0.5"
-            value={filters.rating}
-            onChange={(e) => onChangeRating(e.target.value)}
-          />
-          <span className="filter-rating-value">★ {filters.rating}</span>
-        </div>
-      </div>
-
-      <button type="button" className="filter-apply-btn" onClick={onApply}>
-        Apply Filters
-      </button>
-    </aside>
+      </section>
+    </div>
   );
 }
 
@@ -142,68 +263,16 @@ function SearchPage() {
   const [error, setError] = useState(null);
   const [searched, setSearched] = useState(false);
 
-  const [filters, setFilters] = useState({ genres: [], platforms: [], yearFrom: '', yearTo: '', rating: 0 });
-  const [advancedResults, setAdvancedResults] = useState([]);
-  const [advancedLoading, setAdvancedLoading] = useState(false);
-  const [advancedSearched, setAdvancedSearched] = useState(false);
-
   const [popular, setPopular] = useState([]);
   const [popularLoading, setPopularLoading] = useState(true);
 
-  // default grid content before a search/filter is run
+  // default grid content before a search is run
   useEffect(() => {
     showsAPI.getPopular()
       .then((data) => setPopular(data.results || []))
       .catch((err) => setError(err.message))
       .finally(() => setPopularLoading(false));
   }, []);
-
-  function toggleGenre(id) {
-    setFilters((f) => ({
-      ...f,
-      genres: f.genres.includes(id) ? f.genres.filter((g) => g !== id) : [...f.genres, id],
-    }));
-  }
-
-  function togglePlatform(name) {
-    setFilters((f) => ({
-      ...f,
-      platforms: f.platforms.includes(name) ? f.platforms.filter((p) => p !== name) : [...f.platforms, name],
-    }));
-  }
-
-  function changeYearFrom(yearFrom) {
-    setFilters((f) => ({ ...f, yearFrom }));
-  }
-
-  function changeYearTo(yearTo) {
-    setFilters((f) => ({ ...f, yearTo }));
-  }
-
-  function changeRating(rating) {
-    setFilters((f) => ({ ...f, rating: Number(rating) }));
-  }
-
-  // sends selected filters to the backend /shows/discover endpoint
-  async function applyFilters() {
-    setAdvancedLoading(true);
-    setAdvancedSearched(true);
-    try {
-      const data = await showsAPI.discover({
-        genres: filters.genres,
-        platforms: filters.platforms,
-        yearFrom: filters.yearFrom,
-        yearTo: filters.yearTo,
-        minRating: filters.rating,
-      });
-      setAdvancedResults(data.results || []);
-    } catch (err) {
-      setError(err.message);
-      setAdvancedResults([]);
-    } finally {
-      setAdvancedLoading(false);
-    }
-  }
 
   async function handleSearch(e) {
     e.preventDefault();
@@ -269,35 +338,7 @@ function SearchPage() {
           </>
         )}
 
-        {activeTab === 'advanced' && (
-          <div className="advanced-search-layout">
-            <AdvancedFilters
-              filters={filters}
-              onToggleGenre={toggleGenre}
-              onTogglePlatform={togglePlatform}
-              onChangeYearFrom={changeYearFrom}
-              onChangeYearTo={changeYearTo}
-              onChangeRating={changeRating}
-              onApply={applyFilters}
-            />
-
-            <div className="advanced-results">
-              {!advancedSearched && <p className="search-hint">Popular <span className="hint-accent">right now</span></p>}
-
-              {(advancedLoading || (!advancedSearched && popularLoading)) && <p className="search-hint">Loading…</p>}
-
-              {!advancedLoading && advancedSearched && advancedResults.length === 0 && (
-                <p className="search-empty">No results match these filters.</p>
-              )}
-
-              <div className="results-grid">
-                {(advancedSearched ? advancedResults : popular).map((show) => (
-                  <ShowCard key={show.id} show={show} />
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
+        {activeTab === 'advanced' && <AdvancedSearch />}
       </main>
     </div>
   );
