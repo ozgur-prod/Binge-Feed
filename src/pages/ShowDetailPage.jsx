@@ -17,7 +17,7 @@ const PROVIDER_URLS = {
   11:   'https://mubi.com',
   15:   'https://www.hulu.com',
   20:   'https://www.joyn.de',
-  29:   'https://www.sky.de/sky-go',
+  29:   'https://www.skygo.sky.de',
   30:   'https://www.wowtv.de',
   39:   'https://www.nowtv.com',
   40:   'https://www.chili.com',
@@ -83,11 +83,9 @@ export default function ShowDetailPage() {
 
     showsAPI.getWatchProviders(id)
       .then((data) => {
-        const results = data.results || {};
-        const countryData = results['DE'] || results['US'] || Object.values(results)[0] || {};
-        const providers = countryData.flatrate || countryData.buy || countryData.ads || [];
+        const providers = data.flatrate || data.buy || data.ads || [];
         setWatchProviders(providers);
-        if (countryData.link) setWatchLink(countryData.link);
+        if (data.link) setWatchLink(data.link);
       })
       .catch(() => {});
   }, [id]);
