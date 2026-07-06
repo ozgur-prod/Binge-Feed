@@ -3,11 +3,14 @@ import './Header.css';
 
 function Header({ active }) {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
+  const isPremium = user.tier === 'premium';
 
   return (
     <header className="feed-nav">
-      <div className="feed-logo" onClick={() => navigate('/feed')} style={{ cursor: 'pointer' }}>
+      <div className={`feed-logo${isPremium ? ' feed-logo--premium' : ''}`} onClick={() => navigate('/feed')} style={{ cursor: 'pointer' }}>
         Binge<span>Feed</span>
+        {isPremium && <span className="logo-premium"> | Premium</span>}
         <svg className="play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
       </div>
 
@@ -37,6 +40,15 @@ function Header({ active }) {
           </svg>
         </button>
       </nav>
+
+      <div className="header-actions">
+        {isPremium ? (
+          <button className="get-premium-btn" onClick={() => navigate('/premium')}>Enjoy Premium</button>
+        ) : (
+          <button className="get-premium-btn" onClick={() => navigate('/premium')}>Get Premium</button>
+        )}
+        <button className="logout-btn" onClick={() => { localStorage.clear(); sessionStorage.clear(); navigate('/'); }}>Log Out</button>
+      </div>
     </header>
   );
 }

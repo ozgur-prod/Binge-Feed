@@ -6,6 +6,8 @@ import FeedPage from './pages/FeedPage';
 import SearchPage from './pages/SearchPage';
 import ProfilePage from './pages/ProfilePage';
 import ShowDetailPage from './pages/ShowDetailPage';
+import PremiumPage from './pages/PremiumPage';
+import PremiumSuccessPage from './pages/PremiumSuccessPage';
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
       <Route path="/search" element={<SearchPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/show/:id" element={<ShowDetailPage />} />
+      <Route path="/premium" element={<PremiumPage />} />
+      <Route path="/premium/success" element={<PremiumSuccessPage />} />
     </Routes>
   );
 }
