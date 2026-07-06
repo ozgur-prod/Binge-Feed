@@ -130,10 +130,11 @@ function ProfilePage() {
                 favorites.map((show) => (
                   <img
                     key={show.id}
-                    className="favorite-poster"
+                    className="favorite-poster clickable"
                     src={`${POSTER_BASE}${show.poster_path}`}
                     alt={show.name}
                     title={show.name}
+                    onClick={() => navigate(`/show/${show.id}`)}
                   />
                 ))
               )}
@@ -189,9 +190,11 @@ function ProfilePage() {
                     {list.shows.map((show) => (
                       <img
                         key={show.id}
+                        className="clickable"
                         src={`${POSTER_BASE}${show.poster_path}`}
                         alt={show.name}
                         title={show.name}
+                        onClick={() => navigate(`/show/${show.id}`)}
                       />
                     ))}
                   </div>

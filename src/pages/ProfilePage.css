@@ -245,3 +245,5 @@
     grid-template-columns: 1fr;
   }
 }
+.clickable { cursor: pointer; }
+.clickable:hover { opacity: 0.85; }

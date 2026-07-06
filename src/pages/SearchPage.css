@@ -199,6 +199,9 @@
   .search-form {
     flex-direction: column;
   }
+}.clickable { cursor: pointer; }
+.clickable:hover { opacity: 0.85; }
+
 }
 
 /* Advanced search */

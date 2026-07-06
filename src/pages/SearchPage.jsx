@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { showsAPI } from '../services/api';
 import Header from '../components/Header';
@@ -5,12 +7,13 @@ import './SearchPage.css';
 
 // Poster card with year/platform/rating shown for popular, search, and advanced results
 function ShowCard({ show }) {
+  const navigate = useNavigate();
   const posterUrl = show.poster_path
     ? `https://image.tmdb.org/t/p/w300${show.poster_path}`
     : null;
 
   return (
-    <article className="show-card">
+    <article className="show-card clickable" onClick={() => navigate(`/show/${show.id}`)}>
       <div className="show-poster">
         {posterUrl ? (
           <img src={posterUrl} alt={show.name} />
