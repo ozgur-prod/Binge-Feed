@@ -186,22 +186,12 @@
   color: #d63bdf;
 }
 
-.show-platform {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #cbb8d4;
-  background: #2e1a3a;
-  border-radius: 999px;
-  padding: 0.15rem 0.55rem;
-}
-
 @media (max-width: 600px) {
   .search-form {
     flex-direction: column;
   }
 }.clickable { cursor: pointer; }
-.clickable:hover { opacity: 0.85; }
-
+.clickable:hover { opacity: 0.85;
 }
 
 /* Advanced search */

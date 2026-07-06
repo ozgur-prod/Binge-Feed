@@ -1,11 +1,10 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { showsAPI } from '../services/api';
 import Header from '../components/Header';
 import './SearchPage.css';
 
-// Poster card with year/platform/rating shown for popular, search, and advanced results
+// Poster card with year/rating shown for popular, search, and advanced results
 function ShowCard({ show }) {
   const navigate = useNavigate();
   const posterUrl = show.poster_path
@@ -27,9 +26,6 @@ function ShowCard({ show }) {
           {show.first_air_date && (
             <span className="show-year">{show.first_air_date.slice(0, 4)}</span>
           )}
-          {show.platforms?.map((platform) => (
-            <span key={platform} className="show-platform">{platform}</span>
-          ))}
           {show.vote_average > 0 && (
             <span className="show-rating">★ {show.vote_average.toFixed(1)}</span>
           )}
@@ -222,7 +218,7 @@ function AdvancedSearch() {
       <section className="advanced-results">
         <div className="results-head">
           {/* at rest the count reads like a catalog total, so only show it once a filter narrows things */}
-          <p className="results-count">
+          <p className={!loading && !titleMode && !hasFilters ? 'search-hint' : 'results-count'}>
             {loading ? (
               'Loading…'
             ) : titleMode ? (
@@ -269,9 +265,9 @@ function SearchPage() {
   const [popular, setPopular] = useState([]);
   const [popularLoading, setPopularLoading] = useState(true);
 
-  // default grid content before a search is run
+  // default grid content before a search is run - same query Advanced Search uses at rest
   useEffect(() => {
-    showsAPI.getPopular()
+    showsAPI.discover({ sortBy: 'popularity' })
       .then((data) => setPopular(data.results || []))
       .catch((err) => setError(err.message))
       .finally(() => setPopularLoading(false));
