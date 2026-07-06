@@ -34,4 +34,7 @@ export const showsAPI = {
   getPopular: () => request('/shows/popular'),
   getTrending: () => request('/shows/trending'),
   search: (query) => request(`/shows/search?q=${encodeURIComponent(query)}`),
+  getDetails: (id) => request(`/shows/${id}`),
+  getSeason: (id, season) => request(`/shows/${id}/season/${season}`),
+  getWatchProviders: (id) => request(`/shows/${id}/watch-providers`),
 };

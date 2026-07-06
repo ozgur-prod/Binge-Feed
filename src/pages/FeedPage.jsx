@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { showsAPI } from '../services/api';
 import Header from '../components/Header';
 import './FeedPage.css';
@@ -29,8 +30,10 @@ function Stars({ count, max = 5 }) {
 }
 
 function FeedCard({ show, post }) {
+  const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
+  const goToShow = () => show?.id && navigate(`/show/${show.id}`);
 
   return (
     <article className="feed-card">
@@ -42,7 +45,7 @@ function FeedCard({ show, post }) {
 
       <div className="card-body">
         {show?.poster_path ? (
-          <img className="poster" src={`${POSTER_BASE}${show.poster_path}`} alt={show.name} />
+          <img className="poster clickable" src={`${POSTER_BASE}${show.poster_path}`} alt={show.name} onClick={goToShow} />
         ) : (
           <div className="poster poster-placeholder" />
         )}
@@ -64,7 +67,7 @@ function FeedCard({ show, post }) {
           </div>
 
           <p className="post-text">{post.text}</p>
-          {show && <p className="show-name">{show.name}</p>}
+          {show && <p className="show-name clickable" onClick={goToShow}>{show.name}</p>}
           <p className="post-time">{post.time}</p>
         </div>
       </div>
@@ -96,16 +99,18 @@ function FeedCard({ show, post }) {
 }
 
 function DiscussionCard({ show, post }) {
+  const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
+  const goToShow = () => show?.id && navigate(`/show/${show.id}`);
 
   return (
     <article className="disc-card">
       <div className="disc-header">
         {show?.poster_path && (
-          <img className="disc-poster" src={`${POSTER_BASE}${show.poster_path}`} alt={show.name} />
+          <img className="disc-poster clickable" src={`${POSTER_BASE}${show.poster_path}`} alt={show.name} onClick={goToShow} />
         )}
         <div className="disc-show-info">
-          {show && <p className="disc-show-name">{show.name}</p>}
+          {show && <p className="disc-show-name clickable" onClick={goToShow}>{show.name}</p>}
           <span className="disc-label">{post.label}</span>
         </div>
         <span className="disc-heat">🔥 Trending</span>
