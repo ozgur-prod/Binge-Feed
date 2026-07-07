@@ -19,6 +19,8 @@ function authHeaders() {
 
 export const authAPI = {
   signup: (body) => request('/auth/signup', { method: 'POST', body: JSON.stringify(body) }),
+  signupRequest: (body) => request('/auth/signup-request', { method: 'POST', body: JSON.stringify(body) }),
+  verifySignup: (body) => request('/auth/verify-signup', { method: 'POST', body: JSON.stringify(body) }),
   login: (body) => request('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
   sendResetCode: (body) => request('/auth/forgot-password', { method: 'POST', body: JSON.stringify(body) }),
   verifyResetCode: (body) => request('/auth/verify-reset-code', { method: 'POST', body: JSON.stringify(body) }),
@@ -28,6 +30,11 @@ export const authAPI = {
 export const usersAPI = {
   getMe: () => request('/users/me', { headers: authHeaders() }),
   updateMe: (body) => request('/users/me', { method: 'PUT', headers: authHeaders(), body: JSON.stringify(body) }),
+  getUser: (id) => request(`/users/${id}`, { headers: authHeaders() }),
+  follow: (id) => request(`/users/${id}/follow`, { method: 'POST', headers: authHeaders() }),
+  unfollow: (id) => request(`/users/${id}/follow`, { method: 'DELETE', headers: authHeaders() }),
+  getFollowers: (id) => request(`/users/${id}/followers`),
+  getFollowing: (id) => request(`/users/${id}/following`),
 };
 
 export const showsAPI = {
@@ -37,4 +44,5 @@ export const showsAPI = {
   getDetails: (id) => request(`/shows/${id}`),
   getSeason: (id, season) => request(`/shows/${id}/season/${season}`),
   getWatchProviders: (id) => request(`/shows/${id}/watch-providers`),
+  discover: (filters) => request(`/shows/discover?${new URLSearchParams(filters)}`),
 };
