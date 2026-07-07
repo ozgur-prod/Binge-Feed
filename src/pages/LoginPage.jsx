@@ -11,6 +11,7 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
@@ -19,6 +20,8 @@ function LoginPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setSubmitted(true);
+    if (!form.email || !form.password) return;
     setError('');
     setLoading(true);
     try {
@@ -45,7 +48,7 @@ function LoginPage() {
       <main className="auth-container">
         <h1 className="auth-title">Login to your account</h1>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <div className="field">
             <label htmlFor="email">Email:</label>
             <input
@@ -54,9 +57,9 @@ function LoginPage() {
               type="email"
               value={form.email}
               onChange={handleChange}
-              required
               autoComplete="email"
             />
+            {submitted && !form.email && <p className="field-error">This field is required.</p>}
           </div>
 
           <div className="field">
@@ -68,13 +71,13 @@ function LoginPage() {
                 type={showPassword ? 'text' : 'password'}
                 value={form.password}
                 onChange={handleChange}
-                required
                 autoComplete="current-password"
               />
               <button type="button" className="show-btn" onClick={() => setShowPassword((v) => !v)}>
                 {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
+            {submitted && !form.password && <p className="field-error">This field is required.</p>}
           </div>
 
           <div className="remember-row">
