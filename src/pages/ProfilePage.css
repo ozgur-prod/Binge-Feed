@@ -247,3 +247,16 @@
 }
 .clickable { cursor: pointer; }
 .clickable:hover { opacity: 0.85; }
+
+.profile-follow-counts {
+  font-size: 0.85rem;
+  color: #cbb8d4;
+  margin-top: 0.4rem;
+}
+.profile-follow-counts strong {
+  color: #fff;
+}
+.profile-follow-counts .follow-dot {
+  margin: 0 0.5rem;
+  color: #6b5a75;
+}

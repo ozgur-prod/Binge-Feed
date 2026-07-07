@@ -107,6 +107,13 @@ function ProfilePage() {
               <h1 className="profile-handle">{user ? user.handle : '…'}</h1>
               {user?.displayName && <p className="profile-display-name">{user.displayName}</p>}
               {user?.bio && <p className="profile-bio">{user.bio}</p>}
+              {user && (
+                <p className="profile-follow-counts">
+                  <strong>{user.followingCount ?? 0}</strong> Following
+                  <span className="follow-dot">·</span>
+                  <strong>{user.followersCount ?? 0}</strong> Followers
+                </p>
+              )}
             </div>
             <button className="pill-btn" onClick={() => setShowEdit(true)} disabled={!user}>
               Edit Profile
