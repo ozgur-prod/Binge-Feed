@@ -19,6 +19,8 @@ function authHeaders() {
 
 export const authAPI = {
   signup: (body) => request('/auth/signup', { method: 'POST', body: JSON.stringify(body) }),
+  signupRequest: (body) => request('/auth/signup-request', { method: 'POST', body: JSON.stringify(body) }),
+  verifySignup: (body) => request('/auth/verify-signup', { method: 'POST', body: JSON.stringify(body) }),
   login: (body) => request('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
   sendResetCode: (body) => request('/auth/forgot-password', { method: 'POST', body: JSON.stringify(body) }),
   verifyResetCode: (body) => request('/auth/verify-reset-code', { method: 'POST', body: JSON.stringify(body) }),

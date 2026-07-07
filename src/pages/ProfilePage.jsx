@@ -79,13 +79,6 @@ function ProfilePage() {
     storage.setItem('user', JSON.stringify(updatedUser));
   }
 
-  function handleLogout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    sessionStorage.clear();
-    navigate('/');
-  }
-
   return (
     <div className="profile-page">
       <Header active="profile" />
@@ -110,9 +103,6 @@ function ProfilePage() {
             </div>
             <button className="pill-btn" onClick={() => setShowEdit(true)} disabled={!user}>
               Edit Profile
-            </button>
-            <button className="pill-btn pill-btn-muted" onClick={handleLogout}>
-              Log out
             </button>
           </section>
 
