@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { usersAPI, showsAPI } from '../services/api';
 import Header from '../components/Header';
 import EditProfileModal from '../components/EditProfileModal';
+import FollowListModal from '../components/FollowListModal';
 import './ProfilePage.css';
 
 const POSTER_BASE = 'https://image.tmdb.org/t/p/w154';
@@ -38,6 +39,7 @@ function ProfilePage() {
   const [favorites, setFavorites] = useState([]);
   const [lists, setLists] = useState([]);
   const [showEdit, setShowEdit] = useState(false);
+  const [followModal, setFollowModal] = useState(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -109,9 +111,13 @@ function ProfilePage() {
               {user?.bio && <p className="profile-bio">{user.bio}</p>}
               {user && (
                 <p className="profile-follow-counts">
-                  <strong>{user.followingCount ?? 0}</strong> Following
+                  <button className="follow-count-btn" onClick={() => setFollowModal('following')}>
+                    <strong>{user.followingCount ?? 0}</strong> Following
+                  </button>
                   <span className="follow-dot">·</span>
-                  <strong>{user.followersCount ?? 0}</strong> Followers
+                  <button className="follow-count-btn" onClick={() => setFollowModal('followers')}>
+                    <strong>{user.followersCount ?? 0}</strong> Followers
+                  </button>
                 </p>
               )}
             </div>
@@ -214,6 +220,10 @@ function ProfilePage() {
 
       {showEdit && user && (
         <EditProfileModal user={user} onClose={() => setShowEdit(false)} onSaved={handleSaved} />
+      )}
+
+      {followModal && user && (
+        <FollowListModal userId={user.id} type={followModal} onClose={() => setFollowModal(null)} />
       )}
     </div>
   );

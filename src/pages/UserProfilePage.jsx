@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usersAPI } from '../services/api';
 import Header from '../components/Header';
+import FollowListModal from '../components/FollowListModal';
 import './ProfilePage.css';
 
 function UserProfilePage() {
@@ -9,6 +10,7 @@ function UserProfilePage() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [followModal, setFollowModal] = useState(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -67,9 +69,13 @@ function UserProfilePage() {
                 {user.displayName && <p className="profile-display-name">{user.displayName}</p>}
                 {user.bio && <p className="profile-bio">{user.bio}</p>}
                 <p className="profile-follow-counts">
-                  <strong>{user.followingCount ?? 0}</strong> Following
+                  <button className="follow-count-btn" onClick={() => setFollowModal('following')}>
+                    <strong>{user.followingCount ?? 0}</strong> Following
+                  </button>
                   <span className="follow-dot">·</span>
-                  <strong>{user.followersCount ?? 0}</strong> Followers
+                  <button className="follow-count-btn" onClick={() => setFollowModal('followers')}>
+                    <strong>{user.followersCount ?? 0}</strong> Followers
+                  </button>
                 </p>
               </div>
               {user.isSelf ? (
@@ -89,6 +95,10 @@ function UserProfilePage() {
           )}
         </div>
       </main>
+
+      {followModal && user && (
+        <FollowListModal userId={user.id} type={followModal} onClose={() => setFollowModal(null)} />
+      )}
     </div>
   );
 }
