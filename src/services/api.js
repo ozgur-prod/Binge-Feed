@@ -46,3 +46,17 @@ export const showsAPI = {
   getWatchProviders: (id) => request(`/shows/${id}/watch-providers`),
   discover: (filters) => request(`/shows/discover?${new URLSearchParams(filters)}`),
 };
+
+export const commentsAPI = {
+  list: ({ showId, season, episode }) =>
+    request(`/comments?${new URLSearchParams({ showId, season, episode })}`, { headers: authHeaders() }),
+  create: ({ showId, season, episode, text, parentId }) =>
+    request('/comments', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ showId, season, episode, text, parentId }),
+    }),
+  remove: (id) => request(`/comments/${id}`, { method: 'DELETE', headers: authHeaders() }),
+  like: (id) => request(`/comments/${id}/like`, { method: 'POST', headers: authHeaders() }),
+  unlike: (id) => request(`/comments/${id}/like`, { method: 'DELETE', headers: authHeaders() }),
+};

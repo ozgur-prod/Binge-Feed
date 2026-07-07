@@ -228,6 +228,15 @@
   border-bottom: none;
 }
 
+.episode-row.clickable {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.episode-row.clickable:hover {
+  background: #1a1a1a;
+}
+
 .ep-number {
   flex: 1;
   color: #ddd;

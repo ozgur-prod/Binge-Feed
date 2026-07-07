@@ -1,0 +1,314 @@
+.episode-page {
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+}
+
+.episode-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.detail-loading,
+.detail-error {
+  text-align: center;
+  padding: 4rem;
+  color: #888;
+}
+
+.back-link {
+  display: inline-block;
+  color: #c850c0;
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Hero */
+.episode-hero {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.episode-still {
+  width: 320px;
+  min-width: 320px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+.episode-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.episode-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #c850c0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.episode-meta {
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.episode-overview {
+  color: #ccc;
+  line-height: 1.5;
+}
+
+/* Comments */
+.comments-section {
+  margin-top: 2rem;
+}
+
+.comments-section h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.comment-input {
+  background: #111;
+  border: 1.5px solid #222;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  min-height: 70px;
+  resize: vertical;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: #c850c0;
+}
+
+.comment-submit {
+  align-self: flex-end;
+  background: #c850c0;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.comment-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.login-prompt {
+  color: #999;
+  margin-bottom: 1.5rem;
+}
+
+.login-link {
+  color: #c850c0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.no-comments {
+  color: #666;
+  font-style: italic;
+}
+
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.comment-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.comment-row {
+  background: #111;
+  border: 1.5px solid #1e1e1e;
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+}
+
+.comment-row.deleted {
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.comment-main {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.comment-avatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  background: #c850c0;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.comment-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-header {
+  margin-bottom: 0.2rem;
+}
+
+.comment-author {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.comment-author.muted {
+  color: #777;
+  font-weight: 400;
+}
+
+.comment-text {
+  color: #ddd;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0 0 0.4rem;
+}
+
+.mention {
+  color: #c850c0;
+  font-weight: 600;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.action-link {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.action-link:hover:not(:disabled) {
+  color: #fff;
+}
+
+.action-link:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.action-link.active {
+  color: #c850c0;
+}
+
+.action-link.danger:hover {
+  color: #e05252;
+}
+
+/* Replies - one indented level, never deeper */
+.comment-replies {
+  margin-left: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.comment-replies .comment-row {
+  background: #161616;
+}
+
+/* Reply composer */
+.reply-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.reply-input {
+  flex: 1;
+  background: #0a0a0a;
+  border: 1.5px solid #222;
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+
+.reply-input:focus {
+  outline: none;
+  border-color: #c850c0;
+}
+
+.reply-submit,
+.reply-cancel {
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reply-submit {
+  background: #c850c0;
+  color: #fff;
+}
+
+.reply-cancel {
+  background: transparent;
+  color: #999;
+}
+
+.reply-cancel:hover {
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  .episode-hero {
+    flex-direction: column;
+  }
+
+  .episode-still {
+    width: 100%;
+    min-width: 0;
+  }
+}

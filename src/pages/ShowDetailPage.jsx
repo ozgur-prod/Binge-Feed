@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import Stars from '../components/Stars';
 import { showsAPI } from '../services/api';
 import './ShowDetailPage.css';
 
@@ -46,18 +47,6 @@ const PROVIDER_URLS = {
   2660: 'https://www.amazon.de/gp/video/storefront',
 };
 
-function Stars({ value, max = 5 }) {
-  const filled = Math.round((value / 10) * max);
-  return (
-    <span className="stars">
-      {Array.from({ length: max }, (_, i) => (
-        <span key={i} className={i < filled ? 'star filled' : 'star'}>★</span>
-      ))}
-      <span className="rating-num">{((value / 10) * 5).toFixed(1)}</span>
-    </span>
-  );
-}
-
 export default function ShowDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -66,9 +55,9 @@ export default function ShowDetailPage() {
   const [seasons, setSeasons] = useState([]);
   const [activeSeason, setActiveSeason] = useState(1);
   const [episodes, setEpisodes] = useState([]);
-  const [loadingEpisodes, setLoadingEpisodes] = useState(false);
+  const [loadedSeason, setLoadedSeason] = useState(null);
+  const loadingEpisodes = activeSeason !== loadedSeason;
   const [watchProviders, setWatchProviders] = useState([]);
-  const [watchLink, setWatchLink] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -82,21 +71,16 @@ export default function ShowDetailPage() {
       .catch(() => setError('Failed to load show details.'));
 
     showsAPI.getWatchProviders(id)
-      .then((data) => {
-        const providers = data.flatrate || data.buy || data.ads || [];
-        setWatchProviders(providers);
-        if (data.link) setWatchLink(data.link);
-      })
+      .then((data) => setWatchProviders(data.flatrate || data.buy || data.ads || []))
       .catch(() => {});
   }, [id]);
 
   useEffect(() => {
     if (!activeSeason) return;
-    setLoadingEpisodes(true);
     showsAPI.getSeason(id, activeSeason)
       .then((data) => setEpisodes(data.episodes || []))
       .catch(() => setEpisodes([]))
-      .finally(() => setLoadingEpisodes(false));
+      .finally(() => setLoadedSeason(activeSeason));
   }, [id, activeSeason]);
 
   if (error) return (
@@ -207,7 +191,11 @@ export default function ShowDetailPage() {
                 <p className="detail-loading">Loading episodes…</p>
               ) : (
                 episodes.map((ep) => (
-                  <div key={ep.id} className="episode-row">
+                  <div
+                    key={ep.id}
+                    className="episode-row clickable"
+                    onClick={() => navigate(`/show/${id}/season/${activeSeason}/episode/${ep.episode_number}`)}
+                  >
                     <span className="ep-number">{ep.episode_number}. {ep.name}</span>
                     {ep.vote_average > 0 && (
                       <span className="ep-rating">
