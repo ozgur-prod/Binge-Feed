@@ -24,6 +24,8 @@ function Header({ active }) {
   const [showLogout, setShowLogout] = useState(false);
 
   const isLoggedIn = !!(localStorage.getItem('token') || sessionStorage.getItem('token'));
+  const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
+  const isPremium = user.tier === 'premium';
 
   function handleLogout() {
     localStorage.removeItem('token');
@@ -36,8 +38,9 @@ function Header({ active }) {
   return (
     <>
       <header className="feed-nav">
-        <div className="feed-logo" onClick={() => navigate('/feed')} style={{ cursor: 'pointer' }}>
+        <div className={`feed-logo${isPremium ? ' feed-logo--premium' : ''}`} onClick={() => navigate('/feed')} style={{ cursor: 'pointer' }}>
           Binge<span>Feed</span>
+          {isPremium && <span className="logo-premium"> | Premium</span>}
           <svg className="play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
         </div>
 
@@ -76,6 +79,12 @@ function Header({ active }) {
             </button>
           )}
         </nav>
+
+        <div className="header-actions">
+          <button className="get-premium-btn" onClick={() => navigate('/premium')}>
+            {isPremium ? 'Enjoy Premium' : 'Get Premium'}
+          </button>
+        </div>
       </header>
 
       {showLogout && <LogoutModal onConfirm={handleLogout} onCancel={() => setShowLogout(false)} />}

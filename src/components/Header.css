@@ -123,3 +123,35 @@
 }
 
 .logout-confirm:hover { background: #e74c3c; }
+
+.feed-logo .logo-premium {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #b8860b !important;
+}
+
+.feed-logo--premium .play {
+  color: #b8860b;
+  border-color: #b8860b;
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.get-premium-btn {
+  background: #b8860b;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.get-premium-btn:hover { opacity: 0.85; }
