@@ -170,6 +170,15 @@ function ProfilePage() {
               ))}
             </div>
           </section>
+
+          {user?.tier === 'premium' && (
+            <button
+              className="cancel-premium-btn"
+              onClick={() => navigate('/premium/cancel')}
+            >
+              Cancel Premium
+            </button>
+          )}
         </div>
 
         <aside className="profile-sidebar">

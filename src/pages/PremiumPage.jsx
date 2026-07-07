@@ -55,7 +55,7 @@ export default function PremiumPage() {
         <div className="premium-hero">
           <div className="premium-badge">PREMIUM</div>
           <h1 className="premium-title">Upgrade your BingeFeed experience</h1>
-          <p className="premium-subtitle">One-time payment. Lifetime access. No subscriptions.</p>
+          <p className="premium-subtitle">First month free. Then €3.99/month. Cancel anytime.</p>
         </div>
 
         <div className="premium-grid">
@@ -72,9 +72,10 @@ export default function PremiumPage() {
 
         <div className="premium-cta">
           <div className="premium-price">
-            <span className="premium-amount">€4.99</span>
-            <span className="premium-period">one-time</span>
+            <span className="premium-amount">€3.99</span>
+            <span className="premium-period">/month</span>
           </div>
+          <p style={{ color: '#b8860b', fontWeight: 600, fontSize: '0.9rem', margin: 0 }}>🎁 First month free</p>
 
           {user.tier === 'premium' ? (
             <div className="premium-already">You already have Premium ✓</div>

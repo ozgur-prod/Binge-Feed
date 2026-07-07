@@ -38,7 +38,7 @@ export default function PremiumSuccessPage() {
         <>
           <div style={{ fontSize: '4rem' }}>🎉</div>
           <h1 style={{ color: '#d63bdf', fontSize: '2rem', fontWeight: 800 }}>Welcome to Premium!</h1>
-          <p style={{ color: '#cbb8d4', textAlign: 'center', maxWidth: '400px' }}>Your account has been upgraded. Enjoy all the premium features of BingeFeed.</p>
+          <p style={{ color: '#cbb8d4', textAlign: 'center', maxWidth: '400px' }}>Your free trial has started. Enjoy all premium features for 30 days — then €3.99/month, cancel anytime.</p>
           <button onClick={() => navigate('/feed')} style={{ background: '#d63bdf', color: '#fff', border: 'none', borderRadius: '10px', padding: '0.85rem 2.5rem', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
             Go to Feed
           </button>
