@@ -37,4 +37,5 @@ export const showsAPI = {
   getDetails: (id) => request(`/shows/${id}`),
   getSeason: (id, season) => request(`/shows/${id}/season/${season}`),
   getWatchProviders: (id) => request(`/shows/${id}/watch-providers`),
+  discover: (filters) => request(`/shows/discover?${new URLSearchParams(filters)}`),
 };

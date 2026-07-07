@@ -123,7 +123,8 @@
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  /* Fixed column counts that divide 20 (the page size) so the last row stays full */
+  grid-template-columns: repeat(5, 1fr);
   gap: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -190,4 +191,163 @@
     flex-direction: column;
   }
 }.clickable { cursor: pointer; }
-.clickable:hover { opacity: 0.85; }
+.clickable:hover { opacity: 0.85;
+}
+
+/* Advanced search */
+.advanced-layout {
+  display: grid;
+  /* minmax(0, ...) lets the results column shrink, else it overflows the page. Removing adds a horizontal scrollbar, maybe review later? */
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.browse-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: left;
+  margin-bottom: 0.2rem;
+}
+
+.browse-subtitle {
+  font-size: 0.8rem;
+  color: #9b80a8;
+  margin-bottom: 1.5rem;
+}
+
+.filter-group {
+  margin-bottom: 1.4rem;
+}
+
+.filter-group h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #cbb8d4;
+  border-bottom: 1.5px solid #444;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.7rem;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.chip {
+  font-family: inherit;
+  font-size: 0.78rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 8px;
+  border: 1.5px solid #d63bdf;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.chip:hover {
+  background: #3a1440;
+}
+
+.chip.active {
+  background: #d63bdf;
+}
+
+.chip:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.chip:disabled:hover {
+  background: transparent;
+}
+
+.title-filter {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  border: 1.5px solid #d63bdf;
+  background: #1b0c22;
+  color: #fff;
+  outline: none;
+}
+
+.title-filter::placeholder {
+  color: #9b80a8;
+}
+
+.title-filter:focus {
+  border-color: #f05cf5;
+}
+
+.filter-hint {
+  font-size: 0.72rem;
+  color: #9b80a8;
+  margin-top: 0.5rem;
+}
+
+.year-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.year-row select,
+.sort-label select {
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  border: 1.5px solid #d63bdf;
+  background: #1b0c22;
+  color: #fff;
+  cursor: pointer;
+  outline: none;
+}
+
+.year-to {
+  font-size: 0.85rem;
+  color: #9b80a8;
+}
+
+.results-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+
+.results-count {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.sort-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #cbb8d4;
+}
+
+@media (max-width: 800px) {
+  .advanced-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .results-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
