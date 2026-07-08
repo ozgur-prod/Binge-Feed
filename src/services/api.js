@@ -46,3 +46,9 @@ export const showsAPI = {
   getWatchProviders: (id) => request(`/shows/${id}/watch-providers`),
   discover: (filters) => request(`/shows/discover?${new URLSearchParams(filters)}`),
 };
+
+export const favoritesAPI = {
+  list: (userId) => request(`/users/${userId}/favorites`),
+  add: (body) => request('/users/me/favorites', { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }),
+  remove: (showId) => request(`/users/me/favorites/${showId}`, { method: 'DELETE', headers: authHeaders() }),
+};

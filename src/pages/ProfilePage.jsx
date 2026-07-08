@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usersAPI, showsAPI } from '../services/api';
+import { usersAPI, showsAPI, favoritesAPI } from '../services/api';
 import Header from '../components/Header';
 import EditProfileModal from '../components/EditProfileModal';
 import FollowListModal from '../components/FollowListModal';
+import FavoritesModal from '../components/FavoritesModal';
 import './ProfilePage.css';
 
 const POSTER_BASE = 'https://image.tmdb.org/t/p/w154';
+const FAVORITES_PREVIEW = 5;
 
-// Mock data until favorites, diary and lists get their own models
-const FAVORITE_TITLES = ['Invincible', 'Euphoria', 'A Knight of the Seven Kingdoms', 'Severance'];
-
+// Mock data until diary and lists get their own models
 const DIARY = [
   {
     month: 'May',
@@ -40,6 +40,7 @@ function ProfilePage() {
   const [lists, setLists] = useState([]);
   const [showEdit, setShowEdit] = useState(false);
   const [followModal, setFollowModal] = useState(null);
+  const [showAllFavorites, setShowAllFavorites] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -52,7 +53,13 @@ function ProfilePage() {
 
     usersAPI
       .getMe()
-      .then((data) => setUser(data.user))
+      .then((data) => {
+        setUser(data.user);
+        favoritesAPI
+          .list(data.user.id)
+          .then((f) => setFavorites(f.favorites))
+          .catch(console.error);
+      })
       .catch((err) => {
         if (err.message.toLowerCase().includes('token') || err.message.toLowerCase().includes('auth')) {
           navigate('/login');
@@ -60,10 +67,6 @@ function ProfilePage() {
           setError(err.message);
         }
       });
-
-    Promise.all(FAVORITE_TITLES.map((title) => showsAPI.search(title)))
-      .then((results) => setFavorites(results.map((r) => r.results[0]).filter(Boolean)))
-      .catch(console.error);
 
     Promise.all(
       LISTS.map(async (list) => {
@@ -74,6 +77,11 @@ function ProfilePage() {
       .then(setLists)
       .catch(console.error);
   }, [navigate]);
+
+  async function removeFavorite(showId) {
+    await favoritesAPI.remove(showId);
+    setFavorites((prev) => prev.filter((f) => f.showId !== showId));
+  }
 
   function handleSaved(updatedUser) {
     setUser(updatedUser);
@@ -128,18 +136,28 @@ function ProfilePage() {
             </div>
             <div className="favorites-row">
               {favorites.length === 0 ? (
-                <p className="profile-loading">Loading favorites…</p>
+                <p className="favorites-empty">No favorites yet. Add shows from their page.</p>
               ) : (
-                favorites.map((show) => (
-                  <img
-                    key={show.id}
-                    className="favorite-poster clickable"
-                    src={`${POSTER_BASE}${show.poster_path}`}
-                    alt={show.name}
-                    title={show.name}
-                    onClick={() => navigate(`/show/${show.id}`)}
-                  />
-                ))
+                <>
+                  {(favorites.length > FAVORITES_PREVIEW
+                    ? favorites.slice(0, FAVORITES_PREVIEW - 1)
+                    : favorites
+                  ).map((fav) => (
+                    <img
+                      key={fav.showId}
+                      className="favorite-poster clickable"
+                      src={fav.posterUrl}
+                      alt={fav.showName}
+                      title={fav.showName}
+                      onClick={() => navigate(`/show/${fav.showId}`)}
+                    />
+                  ))}
+                  {favorites.length > FAVORITES_PREVIEW && (
+                    <button className="favorites-more" onClick={() => setShowAllFavorites(true)}>
+                      +{favorites.length - (FAVORITES_PREVIEW - 1)} more
+                    </button>
+                  )}
+                </>
               )}
             </div>
           </section>
@@ -223,6 +241,14 @@ function ProfilePage() {
 
       {followModal && user && (
         <FollowListModal userId={user.id} type={followModal} onClose={() => setFollowModal(null)} />
+      )}
+
+      {showAllFavorites && (
+        <FavoritesModal
+          favorites={favorites}
+          onRemove={removeFavorite}
+          onClose={() => setShowAllFavorites(false)}
+        />
       )}
     </div>
   );
