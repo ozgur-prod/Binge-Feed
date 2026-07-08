@@ -143,6 +143,23 @@
   display: flex;
   gap: 1.25rem;
   flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.favorite-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 120px;
+}
+
+.favorite-tile-name {
+  font-size: 0.75rem;
+  color: #cbb8d4;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .favorite-poster {
@@ -175,6 +192,31 @@
 .favorites-more:hover {
   border-color: #d63bdf;
   color: #d63bdf;
+}
+
+.favorites-cta {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.65rem;
+  border: 1.5px dashed #4a3a52;
+  border-radius: 8px;
+  background: transparent;
+  color: #9b80a8;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.favorites-cta:hover {
+  border-color: #d63bdf;
+  color: #d63bdf;
+}
+
+.favorites-cta-empty {
+  margin-top: 0;
+  padding: 1.6rem;
+  font-size: 1rem;
 }
 
 /* Diary */

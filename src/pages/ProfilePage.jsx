@@ -83,6 +83,18 @@ function ProfilePage() {
     setFavorites((prev) => prev.filter((f) => f.showId !== showId));
   }
 
+  async function addFavorite(show) {
+    await favoritesAPI.add({ showId: show.id });
+    setFavorites((prev) => [
+      {
+        showId: show.id,
+        showName: show.name,
+        posterUrl: show.poster_path ? `https://image.tmdb.org/t/p/w300${show.poster_path}` : null,
+      },
+      ...prev,
+    ]);
+  }
+
   function handleSaved(updatedUser) {
     setUser(updatedUser);
     const storage = localStorage.getItem('user') ? localStorage : sessionStorage;
@@ -132,34 +144,41 @@ function ProfilePage() {
           <section className="profile-section">
             <div className="section-head">
               <h2>Favorite Series</h2>
-              <button className="pill-btn pill-btn-small">Edit</button>
+              <button className="pill-btn pill-btn-small" onClick={() => setShowAllFavorites(true)}>
+                {favorites.length === 0 ? 'Add' : 'Edit'}
+              </button>
             </div>
-            <div className="favorites-row">
-              {favorites.length === 0 ? (
-                <p className="favorites-empty">No favorites yet. Add shows from their page.</p>
-              ) : (
-                <>
-                  {(favorites.length > FAVORITES_PREVIEW
-                    ? favorites.slice(0, FAVORITES_PREVIEW - 1)
-                    : favorites
-                  ).map((fav) => (
+            {favorites.length === 0 ? (
+              <button
+                className="favorites-cta favorites-cta-empty"
+                onClick={() => setShowAllFavorites(true)}
+              >
+                + Add shows to your favorites
+              </button>
+            ) : (
+              <div className="favorites-row">
+                {(favorites.length > FAVORITES_PREVIEW
+                  ? favorites.slice(0, FAVORITES_PREVIEW - 1)
+                  : favorites
+                ).map((fav) => (
+                  <div className="favorite-tile" key={fav.showId}>
                     <img
-                      key={fav.showId}
                       className="favorite-poster clickable"
                       src={fav.posterUrl}
                       alt={fav.showName}
                       title={fav.showName}
                       onClick={() => navigate(`/show/${fav.showId}`)}
                     />
-                  ))}
-                  {favorites.length > FAVORITES_PREVIEW && (
-                    <button className="favorites-more" onClick={() => setShowAllFavorites(true)}>
-                      +{favorites.length - (FAVORITES_PREVIEW - 1)} more
-                    </button>
-                  )}
-                </>
-              )}
-            </div>
+                    <span className="favorite-tile-name">{fav.showName}</span>
+                  </div>
+                ))}
+                {favorites.length > FAVORITES_PREVIEW && (
+                  <button className="favorites-more" onClick={() => setShowAllFavorites(true)}>
+                    +{favorites.length - (FAVORITES_PREVIEW - 1)} more
+                  </button>
+                )}
+              </div>
+            )}
           </section>
 
           <section className="profile-section">
@@ -246,6 +265,7 @@ function ProfilePage() {
       {showAllFavorites && (
         <FavoritesModal
           favorites={favorites}
+          onAdd={addFavorite}
           onRemove={removeFavorite}
           onClose={() => setShowAllFavorites(false)}
         />
