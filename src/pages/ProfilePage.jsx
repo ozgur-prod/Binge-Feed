@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usersAPI, showsAPI, favoritesAPI } from '../services/api';
+import { usersAPI, favoritesAPI, listsAPI } from '../services/api';
 import Header from '../components/Header';
 import EditProfileModal from '../components/EditProfileModal';
 import FollowListModal from '../components/FollowListModal';
 import FavoritesModal from '../components/FavoritesModal';
+import ListsModal from '../components/ListsModal';
 import './ProfilePage.css';
 
-const POSTER_BASE = 'https://image.tmdb.org/t/p/w154';
 const FAVORITES_PREVIEW = 5;
+const LIST_THUMBS_PREVIEW = 3;
+const LISTS_PREVIEW = 5;
 
-// Mock data until diary and lists get their own models
+// Mock data until the diary gets its own model
 const DIARY = [
   {
     month: 'May',
@@ -28,11 +30,6 @@ const DIARY = [
   },
 ];
 
-const LISTS = [
-  { name: 'makes you feel alive', titles: ['The Boys', 'Andor', 'Breaking Bad'] },
-  { name: 'could watch these forever and ever', titles: ['The Sopranos', 'Modern Family', 'Friends'] },
-];
-
 function ProfilePage() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -41,10 +38,10 @@ function ProfilePage() {
   const [showEdit, setShowEdit] = useState(false);
   const [followModal, setFollowModal] = useState(null);
   const [showAllFavorites, setShowAllFavorites] = useState(false);
+  const [showLists, setShowLists] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Page requires login. The mock sections still get real posters via TMDB search.
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     if (!token) {
       navigate('/login');
@@ -59,6 +56,10 @@ function ProfilePage() {
           .list(data.user.id)
           .then((f) => setFavorites(f.favorites))
           .catch(console.error);
+        listsAPI
+          .list(data.user.id)
+          .then((l) => setLists(l.lists))
+          .catch(console.error);
       })
       .catch((err) => {
         if (err.message.toLowerCase().includes('token') || err.message.toLowerCase().includes('auth')) {
@@ -67,15 +68,6 @@ function ProfilePage() {
           setError(err.message);
         }
       });
-
-    Promise.all(
-      LISTS.map(async (list) => {
-        const results = await Promise.all(list.titles.map((title) => showsAPI.search(title)));
-        return { name: list.name, shows: results.map((r) => r.results[0]).filter(Boolean) };
-      })
-    )
-      .then(setLists)
-      .catch(console.error);
   }, [navigate]);
 
   async function removeFavorite(showId) {
@@ -227,28 +219,45 @@ function ProfilePage() {
           <div className="lists-section">
             <div className="section-head">
               <h2>Lists</h2>
-              <button className="pill-btn pill-btn-small">Create</button>
+              <button className="pill-btn pill-btn-small" onClick={() => setShowLists(true)} disabled={!user}>
+                {lists.length === 0 ? 'Create' : 'Edit'}
+              </button>
             </div>
             {lists.length === 0 ? (
-              <p className="profile-loading">Loading lists…</p>
+              <button className="lists-empty" onClick={() => setShowLists(true)} disabled={!user}>
+                + Create your first list
+              </button>
             ) : (
-              lists.map((list) => (
-                <div className="list-block" key={list.name}>
-                  <p className="list-name">{list.name}</p>
-                  <div className="list-thumbs">
-                    {list.shows.map((show) => (
-                      <img
-                        key={show.id}
-                        className="clickable"
-                        src={`${POSTER_BASE}${show.poster_path}`}
-                        alt={show.name}
-                        title={show.name}
-                        onClick={() => navigate(`/show/${show.id}`)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))
+              <div className="lists-grid">
+                {lists.slice(0, LISTS_PREVIEW).map((list) => (
+                  <button className="list-card" key={list.id} onClick={() => setShowLists(true)}>
+                    <div className="list-card-posters">
+                      {list.shows.length === 0 ? (
+                        <span className="list-card-empty">Empty</span>
+                      ) : (
+                        list.shows.slice(0, LIST_THUMBS_PREVIEW).map((show) => (
+                          <img
+                            key={show.showId}
+                            src={show.posterUrl}
+                            alt={show.showName}
+                            title={show.showName}
+                          />
+                        ))
+                      )}
+                    </div>
+                    <p className="list-card-name">{list.title}</p>
+                    <p className="list-card-count">
+                      {list.showCount} {list.showCount === 1 ? 'show' : 'shows'}
+                    </p>
+                  </button>
+                ))}
+                {lists.length > LISTS_PREVIEW && (
+                  <button className="list-card-more" onClick={() => setShowLists(true)}>
+                    <span className="list-card-more-count">+{lists.length - LISTS_PREVIEW}</span>
+                    <span className="list-card-more-title">View all</span>
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </aside>
@@ -270,6 +279,8 @@ function ProfilePage() {
           onClose={() => setShowAllFavorites(false)}
         />
       )}
+
+      {showLists && <ListsModal lists={lists} setLists={setLists} onClose={() => setShowLists(false)} />}
     </div>
   );
 }

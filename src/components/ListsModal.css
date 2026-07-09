@@ -1,0 +1,145 @@
+.lists-create {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.lists-create .favorites-search {
+  margin-bottom: 1rem;
+}
+
+.lists-create .pill-btn-small {
+  margin-bottom: 1rem;
+  white-space: nowrap;
+}
+
+.lists-back {
+  background: none;
+  border: none;
+  color: #9b80a8;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 0.5rem;
+}
+
+.lists-back:hover {
+  color: #d63bdf;
+}
+
+.lists-overview {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lists-overview-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lists-overview-open {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: #1b0c22;
+  border: 1px solid #3a2942;
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.lists-overview-open:hover {
+  border-color: #d63bdf;
+}
+
+.lists-overview-title {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.lists-overview-count {
+  color: #9b80a8;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.lists-overview-delete {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: #2e1a3a;
+  color: #cbb8d4;
+  cursor: pointer;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.lists-overview-delete:hover {
+  background: #a3324a;
+  color: #fff;
+}
+
+.list-check {
+  font-size: 0.75rem;
+  color: #9b80a8;
+  white-space: nowrap;
+}
+
+.list-check.on {
+  color: #d63bdf;
+  font-weight: 600;
+}
+
+.lists-confirm {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.lists-confirm-text {
+  font-size: 0.75rem;
+  color: #cbb8d4;
+  white-space: nowrap;
+}
+
+.lists-confirm-yes,
+.lists-confirm-no {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.lists-confirm-yes {
+  background: #a3324a;
+  color: #fff;
+}
+
+.lists-confirm-yes:hover {
+  background: #c23a58;
+}
+
+.lists-confirm-no {
+  background: #2e1a3a;
+  color: #cbb8d4;
+}
+
+.lists-confirm-no:hover {
+  background: #4a3a52;
+  color: #fff;
+}

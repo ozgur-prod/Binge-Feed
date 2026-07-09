@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import AddToListModal from '../components/AddToListModal';
 import { showsAPI, usersAPI, favoritesAPI } from '../services/api';
 import './ShowDetailPage.css';
 
@@ -70,6 +71,7 @@ export default function ShowDetailPage() {
   const [watchProviders, setWatchProviders] = useState([]);
   const [watchLink, setWatchLink] = useState('');
   const [isFavorited, setIsFavorited] = useState(false);
+  const [showAddToList, setShowAddToList] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -98,6 +100,15 @@ export default function ShowDetailPage() {
         .catch(() => {});
     }
   }, [id]);
+
+  function openAddToList() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    setShowAddToList(true);
+  }
 
   async function toggleFavorite() {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -200,7 +211,7 @@ export default function ShowDetailPage() {
             )}
 
             <div className="detail-actions">
-              <button className="action-btn primary">
+              <button className="action-btn primary" onClick={openAddToList}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
@@ -255,6 +266,10 @@ export default function ShowDetailPage() {
           </div>
         </div>
       </div>
+
+      {showAddToList && show && (
+        <AddToListModal show={show} onClose={() => setShowAddToList(false)} />
+      )}
     </div>
   );
 }

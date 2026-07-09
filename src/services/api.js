@@ -52,3 +52,12 @@ export const favoritesAPI = {
   add: (body) => request('/users/me/favorites', { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }),
   remove: (showId) => request(`/users/me/favorites/${showId}`, { method: 'DELETE', headers: authHeaders() }),
 };
+
+export const listsAPI = {
+  list: (userId) => request(`/users/${userId}/lists`),
+  create: (body) => request('/users/me/lists', { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }),
+  rename: (listId, body) => request(`/users/me/lists/${listId}`, { method: 'PATCH', headers: authHeaders(), body: JSON.stringify(body) }),
+  remove: (listId) => request(`/users/me/lists/${listId}`, { method: 'DELETE', headers: authHeaders() }),
+  addShow: (listId, body) => request(`/users/me/lists/${listId}/shows`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }),
+  removeShow: (listId, showId) => request(`/users/me/lists/${listId}/shows/${showId}`, { method: 'DELETE', headers: authHeaders() }),
+};
