@@ -4,9 +4,7 @@ import { StarIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './RatePopup.css';
 
-// season/episode both set = episode review (rating-only, backend forbids text).
-// season/episode omitted = show review (text required).
-export default function RatePopup({ showId, season, episode, onClose, onRated }) {
+export default function RatePopup({ showId, season, episode, reviewId, onClose, onRated, onDeleted }) {
   const isEpisode = season != null && episode != null;
 
   const [rating, setRating] = useState(0);
@@ -14,6 +12,7 @@ export default function RatePopup({ showId, season, episode, onClose, onRated })
   const [text, setText] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -22,17 +21,32 @@ export default function RatePopup({ showId, season, episode, onClose, onRated })
     setError('');
     setLoading(true);
     try {
-      await reviewsAPI.create(
+      const { review } = await reviewsAPI.create(
         isEpisode
           ? { showId, season, episode, rating }
           : { showId, rating, text: text.trim() }
       );
-      onRated(rating);
+      onRated(review);
       onClose();
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!window.confirm('Delete your rating?')) return;
+    setError('');
+    setDeleting(true);
+    try {
+      await reviewsAPI.remove(reviewId);
+      onDeleted();
+      onClose();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -79,10 +93,21 @@ export default function RatePopup({ showId, season, episode, onClose, onRated })
           <button
             className="modal-btn"
             type="submit"
-            disabled={loading || !rating || (!isEpisode && !text.trim())}
+            disabled={loading || deleting || !rating || (!isEpisode && !text.trim())}
           >
             {loading ? 'Saving…' : 'Submit Rating'}
           </button>
+
+          {reviewId && (
+            <button
+              type="button"
+              className="delete-rating-btn"
+              onClick={handleDelete}
+              disabled={loading || deleting}
+            >
+              {deleting ? 'Deleting…' : 'Delete Rating'}
+            </button>
+          )}
         </form>
       </div>
     </div>

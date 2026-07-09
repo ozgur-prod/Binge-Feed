@@ -60,7 +60,7 @@
 
 .episode-subheader {
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
@@ -69,7 +69,12 @@
 .episode-name-date {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 0.2rem;
+}
+
+.episode-name-date .watched-btn {
+  margin-top: 0.4rem;
 }
 
 .episode-name {
@@ -87,11 +92,19 @@
 
 .episode-rating-block {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.episode-rating-block .rate-btn {
+  margin-top: auto;
 }
 
 .rate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   background: transparent;
   border: 1.5px solid #c850c0;
   color: #c850c0;
@@ -106,6 +119,29 @@
 .rate-btn:hover {
   background: #c850c0;
   color: #fff;
+}
+
+.watched-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: 1.5px solid #c850c0;
+  color: #c850c0;
+  border-radius: 8px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.watched-btn:hover {
+  background: rgba(200, 80, 192, 0.15);
+}
+
+.watched-btn.active {
+  background: rgba(200, 80, 192, 0.15);
 }
 
 .episode-overview {
@@ -233,6 +269,15 @@
   font-style: italic;
 }
 
+.comment-author.premium {
+  color: #b8860b;
+}
+
+.premium-badge {
+  color: #b8860b;
+  margin-left: -0.15rem;
+}
+
 .comment-row-top-right {
   display: flex;
   align-items: center;
@@ -276,21 +321,12 @@
   margin-left: 0.5rem;
 }
 
-/* Row 2: text left, delete + reply right */
-.comment-row-bottom {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
+/* Row 2: comment text */
 .comment-text {
   color: #ddd;
   font-size: 0.9rem;
   line-height: 1.4;
-  margin: 0;
-  flex: 1;
-  min-width: 0;
+  margin: 0 0 0.6rem;
 }
 
 .comment-text .muted {
@@ -301,6 +337,42 @@
 .mention {
   color: #c850c0;
   font-weight: 600;
+}
+
+/* Row 3: replies toggle left, delete + reply right */
+.comment-row-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.replies-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: 1.5px solid #c850c0;
+  color: #c850c0;
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.replies-toggle-btn:hover {
+  background: rgba(200, 80, 192, 0.15);
+}
+
+.replies-arrow {
+  transition: transform 0.15s ease;
+  transform: rotate(-90deg);
+}
+
+.replies-toggle-btn.expanded .replies-arrow {
+  transform: rotate(0deg);
 }
 
 .comment-row-actions {

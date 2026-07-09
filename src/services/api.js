@@ -69,4 +69,23 @@ export const reviewsAPI = {
       headers: authHeaders(),
       body: JSON.stringify({ showId, season, episode, rating, text }),
     }),
+  list: ({ showId, season, episode }) => {
+    const params = { showId };
+    if (season != null) params.season = season;
+    if (episode != null) params.episode = episode;
+    return request(`/reviews?${new URLSearchParams(params)}`, { headers: authHeaders() });
+  },
+  remove: (id) => request(`/reviews/${id}`, { method: 'DELETE', headers: authHeaders() }),
+};
+
+export const progressAPI = {
+  mark: ({ showId, season, episode }) =>
+    request('/progress', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ showId, season, episode }) }),
+  unmark: ({ showId, season, episode }) =>
+    request('/progress', { method: 'DELETE', headers: authHeaders(), body: JSON.stringify({ showId, season, episode }) }),
+  get: ({ showId, season }) => {
+    const params = { showId };
+    if (season != null) params.season = season;
+    return request(`/progress?${new URLSearchParams(params)}`, { headers: authHeaders() });
+  },
 };

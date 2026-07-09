@@ -1,16 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Stars from '../components/Stars';
 import RatePopup from '../components/RatePopup.jsx';
-import { HeartIcon, TrashIcon, UserIcon } from '../components/icons';
-import { showsAPI, commentsAPI } from '../services/api';
+import { HeartIcon, TrashIcon, UserIcon, ChevronDownIcon, PlayIcon, CheckIcon, StarIcon } from '../components/icons';
+import { showsAPI, commentsAPI, reviewsAPI, progressAPI } from '../services/api';
 import './EpisodePage.css';
 
 const STILL_BASE = 'https://image.tmdb.org/t/p/w780';
 
-// TMDB air dates are plain "YYYY-MM-DD" with no time - parse as UTC so the
-// displayed date can't shift a day off in negative-UTC-offset timezones.
 function formatDate(dateOnly) {
   const [y, m, d] = dateOnly.split('-').map(Number);
   return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-US', {
@@ -38,8 +36,7 @@ function isLoggedIn() {
   return !!(localStorage.getItem('token') || sessionStorage.getItem('token'));
 }
 
-// Normalizes a raw create-comment response (Mongoose doc shape: _id, parent, replyTo as raw id)
-// into the same shape getComments() returns (id, likeCount, likedByMe, replyTo: {id, handle}).
+// Normalizes a raw create comment to display structure
 function normalizeCreated(raw, mentionHandle) {
   return {
     id: raw._id,
@@ -52,9 +49,14 @@ function normalizeCreated(raw, mentionHandle) {
   };
 }
 
-function CommentRow({ comment, isTopLevel, me, onReply, onToggleLike, onDelete, replyingTo, setReplyingTo, replyText, setReplyText, onSubmitReply }) {
+function CommentRow({
+  comment, isTopLevel, me, onReply, onToggleLike, onDelete,
+  replyingTo, setReplyingTo, replyText, setReplyText, onSubmitReply,
+  repliesCount, expanded, onToggleReplies,
+}) {
   const isDeleted = comment.createdBy === null;
   const isMine = !isDeleted && me.id === comment.createdBy?._id;
+  const isPremium = !isDeleted && comment.createdBy?.tier === 'premium';
   const isReplying = replyingTo === comment.id;
 
   return (
@@ -70,9 +72,10 @@ function CommentRow({ comment, isTopLevel, me, onReply, onToggleLike, onDelete, 
               <UserIcon />
             </span>
           )}
-          <span className={`comment-author ${isDeleted ? 'muted' : ''}`}>
+          <span className={`comment-author ${isDeleted ? 'muted' : ''} ${isPremium ? 'premium' : ''}`}>
             {isDeleted ? 'unknown user' : comment.createdBy.handle}
           </span>
+          {isPremium && <PlayIcon className="premium-badge" size={14} />}
         </div>
 
         <div className="comment-row-top-right">
@@ -93,17 +96,29 @@ function CommentRow({ comment, isTopLevel, me, onReply, onToggleLike, onDelete, 
         </div>
       </div>
 
-      <div className="comment-row-bottom">
-        <p className="comment-text">
-          {isDeleted ? (
-            <span className="muted">[deleted]</span>
-          ) : (
-            <>
-              {comment.replyTo && <span className="mention">@{comment.replyTo.handle} </span>}
-              {comment.text}
-            </>
-          )}
-        </p>
+      <p className="comment-text">
+        {isDeleted ? (
+          <span className="muted">[deleted]</span>
+        ) : (
+          <>
+            {comment.replyTo && <span className="mention">@{comment.replyTo.handle} </span>}
+            {comment.text}
+          </>
+        )}
+      </p>
+
+      <div className="comment-row-footer">
+        {isTopLevel ? (
+          <button
+            type="button"
+            className={`replies-toggle-btn ${expanded ? 'expanded' : ''}`}
+            onClick={onToggleReplies}
+          >
+            <ChevronDownIcon className="replies-arrow" />
+            Replies ({repliesCount})
+          </button>
+        ) : <span />}
+
         <div className="comment-row-actions">
           {isMine && (
             <button className="icon-btn danger" onClick={() => onDelete(comment.id, isTopLevel)} aria-label="Delete comment">
@@ -143,7 +158,7 @@ function CommentRow({ comment, isTopLevel, me, onReply, onToggleLike, onDelete, 
 
 export default function EpisodePage() {
   const { id, season, episode: episodeNumber } = useParams();
-  const me = currentUser();
+  const me = useMemo(() => currentUser(), []);
 
   const [showName, setShowName] = useState('');
   const [episode, setEpisode] = useState(null);
@@ -157,25 +172,56 @@ export default function EpisodePage() {
   const [posting, setPosting] = useState(false);
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
+  const [expandedIds, setExpandedIds] = useState(() => new Set());
+
+  function toggleReplies(commentId) {
+    setExpandedIds((ids) => {
+      const next = new Set(ids);
+      if (next.has(commentId)) next.delete(commentId);
+      else next.add(commentId);
+      return next;
+    });
+  }
 
   const [showRateModal, setShowRateModal] = useState(false);
   const [myRating, setMyRating] = useState(null);
+  const [myReviewId, setMyReviewId] = useState(null);
+
+  const [watched, setWatched] = useState(false);
 
   useEffect(() => {
     Promise.all([
       showsAPI.getDetails(id),
       showsAPI.getSeason(id, season),
       commentsAPI.list({ showId: id, season, episode: episodeNumber }),
+      isLoggedIn() ? reviewsAPI.list({ showId: id, season, episode: episodeNumber }) : Promise.resolve(null),
+      isLoggedIn() ? progressAPI.get({ showId: id, season }) : Promise.resolve(null),
     ])
-      .then(([show, seasonData, commentsData]) => {
+      .then(([show, seasonData, commentsData, reviewsData, progressData]) => {
         setShowName(show.name);
         const ep = (seasonData.episodes || []).find((e) => e.episode_number === Number(episodeNumber));
         setEpisode(ep || null);
         setComments(commentsData.comments || []);
+        const mine = reviewsData?.reviews.find((r) => r.createdBy?._id === me.id);
+        setMyRating(mine ? mine.rating : null);
+        setMyReviewId(mine ? mine._id : null);
+        setWatched(!!progressData?.watched.includes(Number(episodeNumber)));
       })
       .catch(() => setError('Failed to load this episode.'))
       .finally(() => setLoadedKey(`${id}/${season}/${episodeNumber}`));
-  }, [id, season, episodeNumber]);
+  }, [id, season, episodeNumber, me.id]);
+
+  async function toggleWatched() {
+    const wasWatched = watched;
+    setWatched(!wasWatched); // optimistic - flip immediately, revert only if the request fails
+    try {
+      if (wasWatched) await progressAPI.unmark({ showId: id, season, episode: episodeNumber });
+      else await progressAPI.mark({ showId: id, season, episode: episodeNumber });
+    } catch (err) {
+      setWatched(wasWatched);
+      setError(err.message);
+    }
+  }
 
   function findNode(nodeId) {
     for (const c of comments) {
@@ -192,7 +238,7 @@ export default function EpisodePage() {
     setPosting(true);
     try {
       const { comment: raw } = await commentsAPI.create({ showId: id, season, episode: episodeNumber, text: newText.trim() });
-      setComments((cs) => [...cs, { ...normalizeCreated(raw), replies: [] }]);
+      setComments((cs) => [{ ...normalizeCreated(raw), replies: [] }, ...cs]);
       setNewText('');
     } catch (err) {
       setError(err.message);
@@ -214,7 +260,7 @@ export default function EpisodePage() {
       const topId = raw.parent;
       const mentionTarget = raw.replyTo ? findNode(raw.replyTo) : null;
       const normalized = normalizeCreated(raw, mentionTarget?.createdBy?.handle);
-      setComments((cs) => cs.map((c) => (c.id === topId ? { ...c, replies: [...c.replies, normalized] } : c)));
+      setComments((cs) => cs.map((c) => (c.id === topId ? { ...c, replies: [normalized, ...c.replies] } : c)));
       setReplyingTo(null);
       setReplyText('');
     } catch (err) {
@@ -279,12 +325,23 @@ export default function EpisodePage() {
               <div className="episode-name-date">
                 <p className="episode-name">{episode.name}</p>
                 {episode.air_date && <p className="episode-date">{formatDate(episode.air_date)}</p>}
+                {isLoggedIn() && (
+                  <button
+                    type="button"
+                    className={`watched-btn ${watched ? 'active' : ''}`}
+                    onClick={toggleWatched}
+                  >
+                    <CheckIcon/>
+                    {watched ? 'Watched' : 'Mark as Watched'}
+                  </button>
+                )}
               </div>
               <div className="episode-rating-block">
                 {episode.vote_average > 0 && <Stars value={episode.vote_average} />}
                 {isLoggedIn() && (
                   <button type="button" className="rate-btn" onClick={() => setShowRateModal(true)}>
-                    {myRating ? `★ Rated ${myRating / 2}` : 'Rate'}
+                    <StarIcon fill={myRating ? 'currentColor' : 'none'} />
+                    {myRating ? `Rated ${myRating / 2}` : 'Rate'}
                   </button>
                 )}
               </div>
@@ -328,8 +385,11 @@ export default function EpisodePage() {
                   replyText={replyText}
                   setReplyText={setReplyText}
                   onSubmitReply={handleSubmitReply}
+                  repliesCount={c.replies.length}
+                  expanded={expandedIds.has(c.id)}
+                  onToggleReplies={() => toggleReplies(c.id)}
                 />
-                {c.replies.length > 0 && (
+                {expandedIds.has(c.id) && c.replies.length > 0 && (
                   <div className="comment-replies">
                     {c.replies.map((r) => (
                       <CommentRow
@@ -361,8 +421,16 @@ export default function EpisodePage() {
           showId={id}
           season={season}
           episode={episodeNumber}
+          reviewId={myReviewId}
           onClose={() => setShowRateModal(false)}
-          onRated={setMyRating}
+          onRated={(review) => {
+            setMyRating(review.rating);
+            setMyReviewId(review._id);
+          }}
+          onDeleted={() => {
+            setMyRating(null);
+            setMyReviewId(null);
+          }}
         />
       )}
     </div>
