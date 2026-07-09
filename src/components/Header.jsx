@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
+import { PlayIcon, UserIcon } from './icons';
 import './Header.css';
 
 function LogoutModal({ onConfirm, onCancel }) {
@@ -41,7 +42,7 @@ function Header({ active }) {
         <div className={`feed-logo${isPremium ? ' feed-logo--premium' : ''}`} onClick={() => navigate('/feed')} style={{ cursor: 'pointer' }}>
           Binge<span>Feed</span>
           {isPremium && <span className="logo-premium"> | Premium</span>}
-          <svg className="play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+          <PlayIcon className="play" />
         </div>
 
         <nav className="feed-nav-icons">
@@ -57,10 +58,7 @@ function Header({ active }) {
             </svg>
           </button>
           <button className={`nav-icon ${active === 'profile' ? 'active' : ''}`} title="Profile" onClick={() => navigate('/profile')}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
+            <UserIcon />
           </button>
           <button className={`nav-icon ${active === 'help' ? 'active' : ''}`} title="Help">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -178,6 +178,9 @@
 
 .show-year,
 .show-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
   font-size: 0.8rem;
   color: #cbb8d4;
 }
@@ -236,6 +239,9 @@
 }
 
 .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
   font-family: inherit;
   font-size: 0.78rem;
   padding: 0.3rem 0.75rem;

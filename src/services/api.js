@@ -61,3 +61,46 @@ export const listsAPI = {
   addShow: (listId, body) => request(`/users/me/lists/${listId}/shows`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }),
   removeShow: (listId, showId) => request(`/users/me/lists/${listId}/shows/${showId}`, { method: 'DELETE', headers: authHeaders() }),
 };
+
+export const commentsAPI = {
+  list: ({ showId, season, episode }) =>
+    request(`/comments?${new URLSearchParams({ showId, season, episode })}`, { headers: authHeaders() }),
+  create: ({ showId, season, episode, text, parentId }) =>
+    request('/comments', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ showId, season, episode, text, parentId }),
+    }),
+  remove: (id) => request(`/comments/${id}`, { method: 'DELETE', headers: authHeaders() }),
+  like: (id) => request(`/comments/${id}/like`, { method: 'POST', headers: authHeaders() }),
+  unlike: (id) => request(`/comments/${id}/like`, { method: 'DELETE', headers: authHeaders() }),
+};
+
+export const reviewsAPI = {
+  // season/episode omitted = show review (text required); both set = episode review (rating-only).
+  create: ({ showId, season, episode, rating, text }) =>
+    request('/reviews', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ showId, season, episode, rating, text }),
+    }),
+  list: ({ showId, season, episode }) => {
+    const params = { showId };
+    if (season != null) params.season = season;
+    if (episode != null) params.episode = episode;
+    return request(`/reviews?${new URLSearchParams(params)}`, { headers: authHeaders() });
+  },
+  remove: (id) => request(`/reviews/${id}`, { method: 'DELETE', headers: authHeaders() }),
+};
+
+export const progressAPI = {
+  mark: ({ showId, season, episode }) =>
+    request('/progress', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ showId, season, episode }) }),
+  unmark: ({ showId, season, episode }) =>
+    request('/progress', { method: 'DELETE', headers: authHeaders(), body: JSON.stringify({ showId, season, episode }) }),
+  get: ({ showId, season }) => {
+    const params = { showId };
+    if (season != null) params.season = season;
+    return request(`/progress?${new URLSearchParams(params)}`, { headers: authHeaders() });
+  },
+};
