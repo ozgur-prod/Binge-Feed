@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import AddToListModal from '../components/AddToListModal';
+import Toast from '../components/Toast';
 import { showsAPI, usersAPI, favoritesAPI } from '../services/api';
 import './ShowDetailPage.css';
 
@@ -72,6 +73,7 @@ export default function ShowDetailPage() {
   const [watchLink, setWatchLink] = useState('');
   const [isFavorited, setIsFavorited] = useState(false);
   const [showAddToList, setShowAddToList] = useState(false);
+  const [favError, setFavError] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -124,8 +126,9 @@ export default function ShowDetailPage() {
         await favoritesAPI.add({ showId: show.id });
         setIsFavorited(true);
       }
+      setFavError('');
     } catch (err) {
-      setError(err.message);
+      setFavError(err.message);
     }
   }
 
@@ -270,6 +273,8 @@ export default function ShowDetailPage() {
       {showAddToList && show && (
         <AddToListModal show={show} onClose={() => setShowAddToList(false)} />
       )}
+
+      {favError && <Toast message={favError} onClose={() => setFavError('')} />}
     </div>
   );
 }

@@ -8,7 +8,6 @@ import FavoritesModal from '../components/FavoritesModal';
 import ListsModal from '../components/ListsModal';
 import './ProfilePage.css';
 
-const FAVORITES_PREVIEW = 5;
 const LIST_THUMBS_PREVIEW = 3;
 const LISTS_PREVIEW = 5;
 
@@ -149,10 +148,7 @@ function ProfilePage() {
               </button>
             ) : (
               <div className="favorites-row">
-                {(favorites.length > FAVORITES_PREVIEW
-                  ? favorites.slice(0, FAVORITES_PREVIEW - 1)
-                  : favorites
-                ).map((fav) => (
+                {favorites.map((fav) => (
                   <div className="favorite-tile" key={fav.showId}>
                     <img
                       className="favorite-poster clickable"
@@ -164,11 +160,6 @@ function ProfilePage() {
                     <span className="favorite-tile-name">{fav.showName}</span>
                   </div>
                 ))}
-                {favorites.length > FAVORITES_PREVIEW && (
-                  <button className="favorites-more" onClick={() => setShowAllFavorites(true)}>
-                    +{favorites.length - (FAVORITES_PREVIEW - 1)} more
-                  </button>
-                )}
               </div>
             )}
           </section>

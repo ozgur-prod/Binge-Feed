@@ -175,25 +175,6 @@
   font-size: 0.9rem;
 }
 
-.favorites-more {
-  width: 120px;
-  aspect-ratio: 2 / 3;
-  border: 2px dashed #4a3a52;
-  border-radius: 6px;
-  background: transparent;
-  color: #cbb8d4;
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
-}
-
-.favorites-more:hover {
-  border-color: #d63bdf;
-  color: #d63bdf;
-}
-
 .favorites-cta {
   width: 100%;
   margin-top: 1rem;
