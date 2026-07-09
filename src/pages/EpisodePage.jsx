@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Stars from '../components/Stars';
+import RatePopup from '../components/RatePopup.jsx';
 import { HeartIcon, TrashIcon, UserIcon } from '../components/icons';
 import { showsAPI, commentsAPI } from '../services/api';
 import './EpisodePage.css';
@@ -157,6 +158,9 @@ export default function EpisodePage() {
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
 
+  const [showRateModal, setShowRateModal] = useState(false);
+  const [myRating, setMyRating] = useState(null);
+
   useEffect(() => {
     Promise.all([
       showsAPI.getDetails(id),
@@ -278,7 +282,11 @@ export default function EpisodePage() {
               </div>
               <div className="episode-rating-block">
                 {episode.vote_average > 0 && <Stars value={episode.vote_average} />}
-                <button type="button" className="rate-btn">Rate</button>
+                {isLoggedIn() && (
+                  <button type="button" className="rate-btn" onClick={() => setShowRateModal(true)}>
+                    {myRating ? `★ Rated ${myRating / 2}` : 'Rate'}
+                  </button>
+                )}
               </div>
             </div>
 
@@ -347,6 +355,16 @@ export default function EpisodePage() {
         </div>
         )}
       </div>
+
+      {showRateModal && (
+        <RatePopup
+          showId={id}
+          season={season}
+          episode={episodeNumber}
+          onClose={() => setShowRateModal(false)}
+          onRated={setMyRating}
+        />
+      )}
     </div>
   );
 }

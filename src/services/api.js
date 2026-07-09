@@ -60,3 +60,13 @@ export const commentsAPI = {
   like: (id) => request(`/comments/${id}/like`, { method: 'POST', headers: authHeaders() }),
   unlike: (id) => request(`/comments/${id}/like`, { method: 'DELETE', headers: authHeaders() }),
 };
+
+export const reviewsAPI = {
+  // season/episode omitted = show review (text required); both set = episode review (rating-only).
+  create: ({ showId, season, episode, rating, text }) =>
+    request('/reviews', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ showId, season, episode, rating, text }),
+    }),
+};

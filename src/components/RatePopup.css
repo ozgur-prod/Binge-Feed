@@ -1,0 +1,19 @@
+.star-picker {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.star-picker-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #c850c0;
+  transition: transform 0.1s ease;
+}
+
+.star-picker-btn:hover {
+  transform: scale(1.1);
+}
