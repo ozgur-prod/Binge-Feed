@@ -1,11 +1,33 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Stars from '../components/Stars';
+import { HeartIcon, TrashIcon, UserIcon } from '../components/icons';
 import { showsAPI, commentsAPI } from '../services/api';
 import './EpisodePage.css';
 
 const STILL_BASE = 'https://image.tmdb.org/t/p/w780';
+
+// TMDB air dates are plain "YYYY-MM-DD" with no time - parse as UTC so the
+// displayed date can't shift a day off in negative-UTC-offset timezones.
+function formatDate(dateOnly) {
+  const [y, m, d] = dateOnly.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+  });
+}
+
+// Floors to the largest unit, e.g. 2h45m elapsed reads "2 hours ago", not "3 hours ago".
+function timeAgo(isoString) {
+  const minutes = Math.floor((Date.now() - new Date(isoString).getTime()) / 60000);
+  if (minutes < 1) return 'just now';
+  if (minutes < 60) return `${minutes} min ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days} day${days === 1 ? '' : 's'} ago`;
+  return new Date(isoString).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
 
 function currentUser() {
   return JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
@@ -36,70 +58,90 @@ function CommentRow({ comment, isTopLevel, me, onReply, onToggleLike, onDelete, 
 
   return (
     <div className={`comment-row ${isDeleted ? 'deleted' : ''}`}>
-      <div className="comment-main">
-        {!isDeleted && (
-          <div className="comment-avatar">{comment.createdBy.displayName?.[0]?.toUpperCase() || '?'}</div>
-        )}
-        <div className="comment-body">
-          <div className="comment-header">
-            {isDeleted ? (
-              <span className="comment-author muted">unknown user</span>
-            ) : (
-              <span className="comment-author">{comment.createdBy.displayName}</span>
-            )}
-          </div>
-          <p className="comment-text">
-            {comment.replyTo && <span className="mention">@{comment.replyTo.handle} </span>}
-            {comment.text}
-          </p>
-          <div className="comment-actions">
-            {!isDeleted && (
+      <div className="comment-row-top">
+        <div className="comment-identity">
+          {isDeleted ? (
+            <span className="comment-avatar placeholder"><UserIcon /></span>
+          ) : comment.createdBy.avatarUrl ? (
+            <img className="comment-avatar" src={comment.createdBy.avatarUrl} alt={comment.createdBy.handle} />
+          ) : (
+            <span className="comment-avatar placeholder">
+              <UserIcon />
+            </span>
+          )}
+          <span className={`comment-author ${isDeleted ? 'muted' : ''}`}>
+            {isDeleted ? 'unknown user' : comment.createdBy.handle}
+          </span>
+        </div>
+
+        <div className="comment-row-top-right">
+          {!isDeleted && (
+            <>
+              <span className="like-count">{comment.likeCount > 0 ? comment.likeCount : ''}</span>
               <button
-                className={`action-link ${comment.likedByMe ? 'active' : ''}`}
+                className={`heart-btn ${comment.likedByMe ? 'active' : ''}`}
                 onClick={() => onToggleLike(comment.id, comment.likedByMe)}
                 disabled={!isLoggedIn()}
+                aria-label="Like"
               >
-                ♥ {comment.likeCount > 0 ? comment.likeCount : ''}
+                <HeartIcon fill={comment.likedByMe ? 'currentColor' : 'none'} />
               </button>
-            )}
-            {isLoggedIn() && (
-              <button className="action-link" onClick={() => onReply(comment.id)}>Reply</button>
-            )}
-            {isMine && (
-              <button className="action-link danger" onClick={() => onDelete(comment.id, isTopLevel)}>Delete</button>
-            )}
-          </div>
+            </>
+          )}
+          <span className="comment-timestamp">{timeAgo(comment.createdAt)}</span>
+        </div>
+      </div>
 
-          {isReplying && (
-            <form
-              className="reply-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                onSubmitReply(comment.id);
-              }}
-            >
-              <input
-                className="reply-input"
-                type="text"
-                maxLength={1000}
-                autoFocus
-                placeholder={`Reply to ${comment.createdBy?.displayName || 'this comment'}...`}
-                value={replyText}
-                onChange={(e) => setReplyText(e.target.value)}
-              />
-              <button className="reply-submit" type="submit">Post</button>
-              <button type="button" className="reply-cancel" onClick={() => setReplyingTo(null)}>Cancel</button>
-            </form>
+      <div className="comment-row-bottom">
+        <p className="comment-text">
+          {isDeleted ? (
+            <span className="muted">[deleted]</span>
+          ) : (
+            <>
+              {comment.replyTo && <span className="mention">@{comment.replyTo.handle} </span>}
+              {comment.text}
+            </>
+          )}
+        </p>
+        <div className="comment-row-actions">
+          {isMine && (
+            <button className="icon-btn danger" onClick={() => onDelete(comment.id, isTopLevel)} aria-label="Delete comment">
+              <TrashIcon />
+            </button>
+          )}
+          {isLoggedIn() && (
+            <button className="reply-btn" onClick={() => onReply(comment.id)}>Reply</button>
           )}
         </div>
       </div>
+
+      {isReplying && (
+        <form
+          className="reply-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmitReply(comment.id);
+          }}
+        >
+          <input
+            className="reply-input"
+            type="text"
+            maxLength={1000}
+            autoFocus
+            placeholder={`Reply to ${comment.createdBy?.handle || 'this comment'}...`}
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+          />
+          <button className="reply-submit" type="submit">Post</button>
+          <button type="button" className="reply-cancel" onClick={() => setReplyingTo(null)}>Cancel</button>
+        </form>
+      )}
     </div>
   );
 }
 
 export default function EpisodePage() {
   const { id, season, episode: episodeNumber } = useParams();
-  const navigate = useNavigate();
   const me = currentUser();
 
   const [showName, setShowName] = useState('');
@@ -227,36 +269,39 @@ export default function EpisodePage() {
             <img className="episode-still" src={`${STILL_BASE}${episode.still_path}`} alt={episode.name} />
           )}
           <div className="episode-info">
-            <h1 className="episode-title">
-              S{season}E{episodeNumber}: {episode.name}
-              {episode.vote_average > 0 && <Stars value={episode.vote_average} />}
-            </h1>
-            {episode.air_date && <p className="episode-meta">{episode.air_date}</p>}
+            <h1 className="episode-title">{showName} Season {season} Episode {episodeNumber}</h1>
+
+            <div className="episode-subheader">
+              <div className="episode-name-date">
+                <p className="episode-name">{episode.name}</p>
+                {episode.air_date && <p className="episode-date">{formatDate(episode.air_date)}</p>}
+              </div>
+              <div className="episode-rating-block">
+                {episode.vote_average > 0 && <Stars value={episode.vote_average} />}
+                <button type="button" className="rate-btn">Rate</button>
+              </div>
+            </div>
+
             {episode.overview && <p className="episode-overview">{episode.overview}</p>}
           </div>
         </div>
 
+        {isLoggedIn() && (
         <div className="comments-section">
           <h2>Discussion</h2>
 
-          {isLoggedIn() ? (
-            <form className="comment-form" onSubmit={handlePostTopLevel}>
-              <textarea
-                className="comment-input"
-                maxLength={1000}
-                placeholder="Share your thoughts on this episode..."
-                value={newText}
-                onChange={(e) => setNewText(e.target.value)}
-              />
-              <button className="comment-submit" type="submit" disabled={posting || !newText.trim()}>
-                {posting ? 'Posting…' : 'Post'}
-              </button>
-            </form>
-          ) : (
-            <p className="login-prompt">
-              <span className="login-link" onClick={() => navigate('/login')}>Log in</span> to join the discussion.
-            </p>
-          )}
+          <form className="comment-form" onSubmit={handlePostTopLevel}>
+            <textarea
+              className="comment-input"
+              maxLength={1000}
+              placeholder="Share your thoughts on this episode..."
+              value={newText}
+              onChange={(e) => setNewText(e.target.value)}
+            />
+            <button className="comment-submit" type="submit" disabled={posting || !newText.trim()}>
+              {posting ? 'Posting…' : 'Post'}
+            </button>
+          </form>
 
           {comments.length === 0 && <p className="no-comments">No comments yet. Be the first!</p>}
 
@@ -300,6 +345,7 @@ export default function EpisodePage() {
             ))}
           </div>
         </div>
+        )}
       </div>
     </div>
   );

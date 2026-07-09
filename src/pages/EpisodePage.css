@@ -52,19 +52,60 @@
 }
 
 .episode-title {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: #c850c0;
   margin: 0;
+}
+
+.episode-subheader {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
-.episode-meta {
+.episode-name-date {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.episode-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.episode-date {
   color: #999;
   font-size: 0.85rem;
+  margin: 0;
+}
+
+.episode-rating-block {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rate-btn {
+  background: transparent;
+  border: 1.5px solid #c850c0;
+  color: #c850c0;
+  border-radius: 8px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.rate-btn:hover {
+  background: #c850c0;
+  color: #fff;
 }
 
 .episode-overview {
@@ -122,17 +163,6 @@
   cursor: not-allowed;
 }
 
-.login-prompt {
-  color: #999;
-  margin-bottom: 1.5rem;
-}
-
-.login-link {
-  color: #c850c0;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
 .no-comments {
   color: #666;
   font-style: italic;
@@ -152,19 +182,22 @@
 
 .comment-row {
   background: #111;
-  border: 1.5px solid #1e1e1e;
+  border: 0.5px solid #c850c0;
   border-radius: 10px;
   padding: 0.9rem 1rem;
 }
 
 .comment-row.deleted {
   opacity: 0.6;
-  font-style: italic;
+  border-color: #3a2a3a;
 }
 
-.comment-main {
+/* Row 1: avatar left, like count + heart + timestamp right */
+.comment-row-top {
   display: flex;
-  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
 }
 
 .comment-avatar {
@@ -172,39 +205,97 @@
   height: 34px;
   min-width: 34px;
   border-radius: 50%;
-  background: #c850c0;
+  object-fit: cover;
+}
+
+.comment-avatar.placeholder {
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 0.85rem;
 }
 
-.comment-body {
-  flex: 1;
-  min-width: 0;
-}
-
-.comment-header {
-  margin-bottom: 0.2rem;
+.comment-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .comment-author {
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  color: #fff;
 }
 
 .comment-author.muted {
   color: #777;
   font-weight: 400;
+  font-style: italic;
+}
+
+.comment-row-top-right {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.like-count {
+  color: #999;
+  font-size: 0.8rem;
+  min-width: 0.8rem;
+  text-align: right;
+}
+
+.heart-btn {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.heart-btn:hover:not(:disabled) {
+  color: #e05299;
+}
+
+.heart-btn.active {
+  color: #e0257a;
+}
+
+.heart-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.comment-timestamp {
+  color: #777;
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+}
+
+/* Row 2: text left, delete + reply right */
+.comment-row-bottom {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .comment-text {
   color: #ddd;
   font-size: 0.9rem;
   line-height: 1.4;
-  margin: 0 0 0.4rem;
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-text .muted {
+  color: #777;
+  font-style: italic;
 }
 
 .mention {
@@ -212,35 +303,50 @@
   font-weight: 600;
 }
 
-.comment-actions {
+.comment-row-actions {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
 }
 
-.action-link {
+.reply-btn {
+  background: #c850c0;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.reply-btn:hover {
+  background: #db5cd2;
+}
+
+.reply-btn:active {
+  transform: scale(0.96);
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
   background: none;
   border: none;
-  color: #999;
-  font-size: 0.8rem;
+  color: #fff;
   cursor: pointer;
   padding: 0;
+  opacity: 0.7;
 }
 
-.action-link:hover:not(:disabled) {
-  color: #fff;
+.icon-btn:hover {
+  opacity: 1;
 }
 
-.action-link:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.action-link.active {
-  color: #c850c0;
-}
-
-.action-link.danger:hover {
-  color: #e05252;
+.icon-btn.danger:hover {
+  filter: drop-shadow(0 0 2px #e05252);
 }
 
 /* Replies - one indented level, never deeper */
