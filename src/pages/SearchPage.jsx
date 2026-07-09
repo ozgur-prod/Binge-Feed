@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { showsAPI } from '../services/api';
 import Header from '../components/Header';
+import { StarIcon } from '../components/icons';
 import './SearchPage.css';
 
 // Poster card with year/rating shown for popular, search, and advanced results
@@ -27,7 +28,7 @@ function ShowCard({ show }) {
             <span className="show-year">{show.first_air_date.slice(0, 4)}</span>
           )}
           {show.vote_average > 0 && (
-            <span className="show-rating">★ {show.vote_average.toFixed(1)}</span>
+            <span className="show-rating"><StarIcon size={13} fill="currentColor" /> {show.vote_average.toFixed(1)}</span>
           )}
         </div>
       </div>
@@ -208,7 +209,7 @@ function AdvancedSearch() {
                 className={`chip ${minRating === r ? 'active' : ''}`}
                 onClick={() => setMinRating(r)}
               >
-                ★{r}+
+                <StarIcon size={13} fill="currentColor" />{r}+
               </button>
             ))}
           </div>
