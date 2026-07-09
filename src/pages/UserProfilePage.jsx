@@ -10,17 +10,18 @@ function UserProfilePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [loadedId, setLoadedId] = useState(null);
+  const loading = id !== loadedId;
   const [busy, setBusy] = useState(false);
   const [followModal, setFollowModal] = useState(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    setUser(null);
-    setError('');
     usersAPI
       .getUser(id)
       .then((data) => setUser(data.user))
-      .catch((err) => setError(err.message));
+      .catch((err) => setError(err.message))
+      .finally(() => setLoadedId(id));
   }, [id]);
 
   async function toggleFollow() {
@@ -50,10 +51,10 @@ function UserProfilePage() {
       <Header />
       <main className="profile-main">
         <div className="profile-content">
-          {error && <p className="profile-error">{error}</p>}
-          {!user && !error && <p className="profile-loading">Loading…</p>}
+          {loading && <p className="profile-loading">Loading…</p>}
+          {!loading && error && <p className="profile-error">{error}</p>}
 
-          {user && (
+          {!loading && user && (
             <section className="profile-header">
               {user.avatarUrl ? (
                 <img className="profile-avatar" src={user.avatarUrl} alt={user.handle} />
