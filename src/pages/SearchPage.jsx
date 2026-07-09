@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { showsAPI } from '../services/api';
 import Header from '../components/Header';
+import { StarIcon } from '../components/icons';
 import './SearchPage.css';
 
 // Poster card with year/rating shown for popular, search, and advanced results
@@ -27,7 +28,7 @@ function ShowCard({ show }) {
             <span className="show-year">{show.first_air_date.slice(0, 4)}</span>
           )}
           {show.vote_average > 0 && (
-            <span className="show-rating">★ {show.vote_average.toFixed(1)}</span>
+            <span className="show-rating"><StarIcon size={13} fill="currentColor" /> {show.vote_average.toFixed(1)}</span>
           )}
         </div>
       </div>
@@ -80,7 +81,6 @@ function AdvancedSearch() {
   const [sortBy, setSortBy] = useState('popularity');
   const [results, setResults] = useState([]);
   const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const titleMode = title.trim().length > 0;
@@ -90,18 +90,23 @@ function AdvancedSearch() {
     setList(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
   }
 
-  useEffect(() => {
-    const filters = { sortBy };
-    if (title.trim()) filters.q = title.trim();
-    if (genres.length) filters.genres = genres.join('|');
-    if (platforms.length && !titleMode) filters.platforms = platforms.join(',');
-    if (yearFrom) filters.yearFrom = yearFrom;
-    if (yearTo) filters.yearTo = yearTo;
-    if (minRating) filters.minRating = minRating;
+  const filters = useMemo(() => {
+    const f = { sortBy };
+    if (title.trim()) f.q = title.trim();
+    if (genres.length) f.genres = genres.join('|');
+    if (platforms.length && !titleMode) f.platforms = platforms.join(',');
+    if (yearFrom) f.yearFrom = yearFrom;
+    if (yearTo) f.yearTo = yearTo;
+    if (minRating) f.minRating = minRating;
+    return f;
+  }, [title, genres, platforms, yearFrom, yearTo, minRating, sortBy, titleMode]);
 
+  const filtersKey = useMemo(() => JSON.stringify(filters), [filters]);
+  const [loadedFiltersKey, setLoadedFiltersKey] = useState(null);
+  const loading = filtersKey !== loadedFiltersKey;
+
+  useEffect(() => {
     let stale = false;
-    setLoading(true);
-    setError(null);
     // Debounce so typing a title fires one request, not one per keystroke.
     const timer = setTimeout(() => {
       showsAPI
@@ -110,12 +115,13 @@ function AdvancedSearch() {
           if (stale) return;
           setResults(data.results);
           setTotal(data.total_results);
+          setError(null);
         })
         .catch((err) => {
           if (!stale) setError(err.message);
         })
         .finally(() => {
-          if (!stale) setLoading(false);
+          if (!stale) setLoadedFiltersKey(filtersKey);
         });
     }, 350);
     // Ignore responses of outdated requests, quick filter clicks can answer out of order.
@@ -123,7 +129,7 @@ function AdvancedSearch() {
       stale = true;
       clearTimeout(timer);
     };
-  }, [title, genres, platforms, yearFrom, yearTo, minRating, sortBy]);
+  }, [filters, filtersKey]);
 
   return (
     <div className="advanced-layout">
@@ -208,7 +214,7 @@ function AdvancedSearch() {
                 className={`chip ${minRating === r ? 'active' : ''}`}
                 onClick={() => setMinRating(r)}
               >
-                ★{r}+
+                <StarIcon size={13} fill="currentColor" />{r}+
               </button>
             ))}
           </div>
@@ -239,7 +245,7 @@ function AdvancedSearch() {
           </label>
         </div>
 
-        {error && <p className="search-error">{error}</p>}
+        {!loading && error && <p className="search-error">{error}</p>}
         {!loading && !error && results.length === 0 && (
           <p className="search-empty">No shows match these filters.</p>
         )}

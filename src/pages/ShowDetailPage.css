@@ -228,20 +228,52 @@
   border-bottom: none;
 }
 
+.episode-row.clickable {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.episode-row.clickable:hover {
+  background: #1a1a1a;
+}
+
 .ep-number {
   flex: 1;
   color: #ddd;
 }
 
 .ep-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
   color: #c850c0;
   font-size: 0.85rem;
   font-weight: 600;
 }
 
 .ep-check {
-  color: #555;
-  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: 1.5px solid #555;
+  border-radius: 50%;
+  color: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.ep-check:hover {
+  border-color: #c850c0;
+}
+
+.ep-check.watched {
+  background: #c850c0;
+  border-color: #c850c0;
+  color: #fff;
 }
 
 /* Reviews panel */
@@ -261,6 +293,42 @@
 .no-reviews {
   color: #666;
   font-size: 0.85rem;
+}
+
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.review-row {
+  border-bottom: 1px solid #1e1e1e;
+  padding-bottom: 0.9rem;
+}
+
+.review-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.review-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+
+.review-author {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.review-text {
+  color: #ccc;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin: 0;
 }
 
 @media (max-width: 800px) {

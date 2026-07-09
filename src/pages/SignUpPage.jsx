@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { authAPI } from '../services/api';
+import { PlayIcon } from '../components/icons';
 import './AuthPages.css';
 import '../components/ForgotPasswordModal.css';
 
 function validatePassword(password) {
   if (password.length < 8) return 'Password must be at least 8 characters.';
   if (!/[0-9]/.test(password)) return 'Password must contain at least one number.';
-  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) return 'Password must contain at least one special character.';
+  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) return 'Password must contain at least one special character.';
   return null;
 }
 
@@ -139,7 +140,7 @@ function SignUpPage() {
     <div className="auth-page">
       <header className="nav">
         <Link to="/" className="logo">Binge<span>Feed</span>
-          <svg className="play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+          <PlayIcon className="play" />
         </Link>
       </header>
 

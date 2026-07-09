@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import ForgotPasswordModal from '../components/ForgotPasswordModal';
+import { PlayIcon } from '../components/icons';
 import './AuthPages.css';
 
 function LoginPage() {
@@ -41,7 +42,7 @@ function LoginPage() {
     <div className="auth-page">
       <header className="nav">
         <Link to="/" className="logo">Binge<span>Feed</span>
-          <svg className="play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+          <PlayIcon className="play" />
         </Link>
       </header>
 

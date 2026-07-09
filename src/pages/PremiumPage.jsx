@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeftIcon } from '../components/icons';
 import './PremiumPage.css';
 
 const BASE_URL = 'http://localhost:8080/api';
@@ -44,9 +45,7 @@ export default function PremiumPage() {
     <div className="premium-page">
       <header className="premium-nav">
         <button className="premium-back" onClick={() => navigate('/feed')}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
+          <ChevronLeftIcon />
           Back to Feed
         </button>
       </header>

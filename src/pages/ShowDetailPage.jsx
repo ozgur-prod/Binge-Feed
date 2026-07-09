@@ -1,8 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import { showsAPI } from '../services/api';
+import Stars from '../components/Stars';
+import RatePopup from '../components/RatePopup.jsx';
+import { PlusIcon, StarIcon, CheckIcon } from '../components/icons';
+import { showsAPI, progressAPI, reviewsAPI } from '../services/api';
 import './ShowDetailPage.css';
+
+function isLoggedIn() {
+  return !!(localStorage.getItem('token') || sessionStorage.getItem('token'));
+}
+
+function currentUser() {
+  return JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
+}
 
 const POSTER_BASE = 'https://image.tmdb.org/t/p/w342';
 const BACKDROP_BASE = 'https://image.tmdb.org/t/p/w1280';
@@ -46,18 +57,6 @@ const PROVIDER_URLS = {
   2660: 'https://www.amazon.de/gp/video/storefront',
 };
 
-function Stars({ value, max = 5 }) {
-  const filled = Math.round((value / 10) * max);
-  return (
-    <span className="stars">
-      {Array.from({ length: max }, (_, i) => (
-        <span key={i} className={i < filled ? 'star filled' : 'star'}>★</span>
-      ))}
-      <span className="rating-num">{((value / 10) * 5).toFixed(1)}</span>
-    </span>
-  );
-}
-
 export default function ShowDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -66,10 +65,17 @@ export default function ShowDetailPage() {
   const [seasons, setSeasons] = useState([]);
   const [activeSeason, setActiveSeason] = useState(1);
   const [episodes, setEpisodes] = useState([]);
-  const [loadingEpisodes, setLoadingEpisodes] = useState(false);
+  const [loadedSeason, setLoadedSeason] = useState(null);
+  const loadingEpisodes = activeSeason !== loadedSeason;
   const [watchProviders, setWatchProviders] = useState([]);
-  const [watchLink, setWatchLink] = useState('');
+  const [watchedEpisodes, setWatchedEpisodes] = useState(() => new Set());
   const [error, setError] = useState('');
+
+  const [reviews, setReviews] = useState([]);
+  const [showRateModal, setShowRateModal] = useState(false);
+  const [myRating, setMyRating] = useState(null);
+  const [myReviewId, setMyReviewId] = useState(null);
+  const me = useMemo(() => currentUser(), []);
 
   useEffect(() => {
     showsAPI.getDetails(id)
@@ -82,22 +88,53 @@ export default function ShowDetailPage() {
       .catch(() => setError('Failed to load show details.'));
 
     showsAPI.getWatchProviders(id)
+      .then((data) => setWatchProviders(data.flatrate || data.buy || data.ads || []))
+      .catch(() => {});
+
+    reviewsAPI.list({ showId: id })
       .then((data) => {
-        const providers = data.flatrate || data.buy || data.ads || [];
-        setWatchProviders(providers);
-        if (data.link) setWatchLink(data.link);
+        setReviews(data.reviews || []);
+        const mine = data.reviews.find((r) => r.createdBy?._id === me.id);
+        setMyRating(mine ? mine.rating : null);
+        setMyReviewId(mine ? mine._id : null);
       })
       .catch(() => {});
-  }, [id]);
+  }, [id, me.id]);
 
   useEffect(() => {
     if (!activeSeason) return;
-    setLoadingEpisodes(true);
-    showsAPI.getSeason(id, activeSeason)
-      .then((data) => setEpisodes(data.episodes || []))
+    Promise.all([
+      showsAPI.getSeason(id, activeSeason),
+      isLoggedIn() ? progressAPI.get({ showId: id, season: activeSeason }) : Promise.resolve(null),
+    ])
+      .then(([data, progressData]) => {
+        setEpisodes(data.episodes || []);
+        setWatchedEpisodes(new Set(progressData?.watched || []));
+      })
       .catch(() => setEpisodes([]))
-      .finally(() => setLoadingEpisodes(false));
+      .finally(() => setLoadedSeason(activeSeason));
   }, [id, activeSeason]);
+
+  function flipWatched(episodeNumber, isWatched) {
+    setWatchedEpisodes((prev) => {
+      const next = new Set(prev);
+      if (isWatched) next.add(episodeNumber);
+      else next.delete(episodeNumber);
+      return next;
+    });
+  }
+
+  async function toggleWatched(e, episodeNumber) {
+    e.stopPropagation();
+    const wasWatched = watchedEpisodes.has(episodeNumber);
+    flipWatched(episodeNumber, !wasWatched); // optimistic - flip immediately, revert only if the request fails
+    try {
+      if (wasWatched) await progressAPI.unmark({ showId: id, season: activeSeason, episode: episodeNumber });
+      else await progressAPI.mark({ showId: id, season: activeSeason, episode: episodeNumber });
+    } catch {
+      flipWatched(episodeNumber, wasWatched);
+    }
+  }
 
   if (error) return (
     <div className="show-detail-page">
@@ -173,17 +210,19 @@ export default function ShowDetailPage() {
 
             <div className="detail-actions">
               <button className="action-btn primary">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
+                <PlusIcon />
                 Add to List
               </button>
               <button className="action-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
+                <StarIcon />
                 Favourite
               </button>
+              {isLoggedIn() && (
+                <button className="action-btn" onClick={() => setShowRateModal(true)}>
+                  <StarIcon fill={myRating ? 'currentColor' : 'none'} />
+                  {myRating ? `Rated ${myRating / 2}` : 'Rate'}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -207,14 +246,27 @@ export default function ShowDetailPage() {
                 <p className="detail-loading">Loading episodes…</p>
               ) : (
                 episodes.map((ep) => (
-                  <div key={ep.id} className="episode-row">
+                  <div
+                    key={ep.id}
+                    className="episode-row clickable"
+                    onClick={() => navigate(`/show/${id}/season/${activeSeason}/episode/${ep.episode_number}`)}
+                  >
                     <span className="ep-number">{ep.episode_number}. {ep.name}</span>
                     {ep.vote_average > 0 && (
                       <span className="ep-rating">
-                        ★ {((ep.vote_average / 10) * 5).toFixed(1)}
+                        <StarIcon size={14} fill="currentColor" /> {((ep.vote_average / 10) * 5).toFixed(1)}
                       </span>
                     )}
-                    <span className="ep-check">✓</span>
+                    {isLoggedIn() && (
+                      <button
+                        type="button"
+                        className={`ep-check ${watchedEpisodes.has(ep.episode_number) ? 'watched' : ''}`}
+                        onClick={(e) => toggleWatched(e, ep.episode_number)}
+                        aria-label={watchedEpisodes.has(ep.episode_number) ? 'Mark as unwatched' : 'Mark as watched'}
+                      >
+                        <CheckIcon size={14} />
+                      </button>
+                    )}
                   </div>
                 ))
               )}
@@ -223,10 +275,45 @@ export default function ShowDetailPage() {
 
           <div className="latest-reviews">
             <h2>Latest Reviews</h2>
-            <p className="no-reviews">No reviews yet. Be the first!</p>
+            {reviews.length === 0 ? (
+              <p className="no-reviews">No reviews yet. Be the first!</p>
+            ) : (
+              <div className="review-list">
+                {reviews.map((r) => (
+                  <div key={r._id} className="review-row">
+                    <div className="review-row-top">
+                      <span className="review-author">{r.createdBy?.handle || 'unknown user'}</span>
+                      <Stars value={r.rating} />
+                    </div>
+                    <p className="review-text">{r.text}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {showRateModal && (
+        <RatePopup
+          showId={id}
+          reviewId={myReviewId}
+          onClose={() => setShowRateModal(false)}
+          onRated={(review) => {
+            setMyRating(review.rating);
+            setMyReviewId(review._id);
+            setReviews((rs) => {
+              const withoutMine = rs.filter((r) => r._id !== review._id);
+              return [review, ...withoutMine];
+            });
+          }}
+          onDeleted={() => {
+            setMyRating(null);
+            setReviews((rs) => rs.filter((r) => r._id !== myReviewId));
+            setMyReviewId(null);
+          }}
+        />
+      )}
     </div>
   );
 }

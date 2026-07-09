@@ -3,23 +3,25 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { usersAPI } from '../services/api';
 import Header from '../components/Header';
 import FollowListModal from '../components/FollowListModal';
+import { UserIcon } from '../components/icons';
 import './ProfilePage.css';
 
 function UserProfilePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [loadedId, setLoadedId] = useState(null);
+  const loading = id !== loadedId;
   const [busy, setBusy] = useState(false);
   const [followModal, setFollowModal] = useState(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    setUser(null);
-    setError('');
     usersAPI
       .getUser(id)
       .then((data) => setUser(data.user))
-      .catch((err) => setError(err.message));
+      .catch((err) => setError(err.message))
+      .finally(() => setLoadedId(id));
   }, [id]);
 
   async function toggleFollow() {
@@ -49,19 +51,16 @@ function UserProfilePage() {
       <Header />
       <main className="profile-main">
         <div className="profile-content">
-          {error && <p className="profile-error">{error}</p>}
-          {!user && !error && <p className="profile-loading">Loading…</p>}
+          {loading && <p className="profile-loading">Loading…</p>}
+          {!loading && error && <p className="profile-error">{error}</p>}
 
-          {user && (
+          {!loading && user && (
             <section className="profile-header">
               {user.avatarUrl ? (
                 <img className="profile-avatar" src={user.avatarUrl} alt={user.handle} />
               ) : (
                 <span className="profile-avatar profile-avatar-placeholder">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
+                  <UserIcon strokeWidth={1.5} />
                 </span>
               )}
               <div className="profile-identity">
