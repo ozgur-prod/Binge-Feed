@@ -80,6 +80,7 @@ export default function ShowDetailPage() {
   const [reviews, setReviews] = useState([]);
   const [showRateModal, setShowRateModal] = useState(false);
   const [myRating, setMyRating] = useState(null);
+  const [myReviewText, setMyReviewText] = useState('');
   const [myReviewId, setMyReviewId] = useState(null);
   const me = useMemo(() => currentUser(), []);
 
@@ -110,6 +111,7 @@ export default function ShowDetailPage() {
         setReviews(data.reviews || []);
         const mine = data.reviews.find((r) => r.createdBy?._id === me.id);
         setMyRating(mine ? mine.rating : null);
+        setMyReviewText(mine ? (mine.text || '') : '');
         setMyReviewId(mine ? mine._id : null);
       })
       .catch(() => {});
@@ -271,7 +273,7 @@ export default function ShowDetailPage() {
               {isLoggedIn() && (
                 <button className="action-btn" onClick={() => setShowRateModal(true)}>
                   <StarIcon fill={myRating ? 'currentColor' : 'none'} />
-                  {myRating ? `Rated ${myRating / 2}` : 'Rate'}
+                  {myRating ? `Rated ${myRating / 2}` : 'Rate / Review'}
                 </button>
               )}
             </div>
@@ -325,21 +327,33 @@ export default function ShowDetailPage() {
           </div>
 
           <div className="latest-reviews">
-            <h2>Latest Reviews</h2>
+            <div className="reviews-section-head">
+              <h2>Reviews</h2>
+              <button className="see-all-reviews" onClick={() => navigate(`/show/${id}/reviews`)}>
+                See all →
+              </button>
+            </div>
             {reviews.length === 0 ? (
               <p className="no-reviews">No reviews yet. Be the first!</p>
             ) : (
-              <div className="review-list">
-                {reviews.map((r) => (
-                  <div key={r._id} className="review-row">
-                    <div className="review-row-top">
-                      <span className="review-author">{r.createdBy?.handle || 'unknown user'}</span>
-                      <Stars value={r.rating} />
+              <>
+                <div className="review-list">
+                  {reviews.slice(0, 3).map((r) => (
+                    <div key={r._id} className="review-row">
+                      <div className="review-row-top">
+                        <span className="review-author">{r.createdBy?.handle || 'unknown user'}</span>
+                        <Stars value={r.rating} />
+                      </div>
+                      <p className="review-text">{r.text}</p>
                     </div>
-                    <p className="review-text">{r.text}</p>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+                {reviews.length > 3 && (
+                  <button className="see-all-reviews-btn" onClick={() => navigate(`/show/${id}/reviews`)}>
+                    See all {reviews.length} reviews
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -355,9 +369,12 @@ export default function ShowDetailPage() {
         <RatePopup
           showId={id}
           reviewId={myReviewId}
+          initialRating={myRating}
+          initialText={myReviewText}
           onClose={() => setShowRateModal(false)}
           onRated={(review) => {
             setMyRating(review.rating);
+            setMyReviewText(review.text || '');
             setMyReviewId(review._id);
             setReviews((rs) => {
               const withoutMine = rs.filter((r) => r._id !== review._id);

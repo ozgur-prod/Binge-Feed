@@ -8,6 +8,7 @@ import ProfilePage from './pages/ProfilePage';
 import UserProfilePage from './pages/UserProfilePage';
 import ShowDetailPage from './pages/ShowDetailPage';
 import EpisodePage from './pages/EpisodePage';
+import ReviewsPage from './pages/ReviewsPage';
 import PremiumPage from './pages/PremiumPage';
 import PremiumSuccessPage from './pages/PremiumSuccessPage';
 import CancelPremiumPage from './pages/CancelPremiumPage';
@@ -23,6 +24,7 @@ function App() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/user/:id" element={<UserProfilePage />} />
       <Route path="/show/:id" element={<ShowDetailPage />} />
+      <Route path="/show/:id/reviews" element={<ReviewsPage />} />
       <Route path="/show/:id/season/:season/episode/:episode" element={<EpisodePage />} />
       <Route path="/premium" element={<PremiumPage />} />
       <Route path="/premium/success" element={<PremiumSuccessPage />} />

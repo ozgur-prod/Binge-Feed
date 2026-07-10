@@ -422,6 +422,7 @@ export default function EpisodePage() {
           season={season}
           episode={episodeNumber}
           reviewId={myReviewId}
+          initialRating={myRating}
           onClose={() => setShowRateModal(false)}
           onRated={(review) => {
             setMyRating(review.rating);

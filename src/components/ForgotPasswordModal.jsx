@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { authAPI } from '../services/api';
 import './ForgotPasswordModal.css';
 
@@ -20,6 +20,7 @@ export default function ForgotPasswordModal({ onClose }) {
   const [passwordError, setPasswordError] = useState('');
   const [confirmError, setConfirmError] = useState('');
   const [loading, setLoading] = useState(false);
+  const mouseDownOnOverlay = useRef(false);
 
   async function handleSendCode(e) {
     e.preventDefault();
@@ -67,7 +68,11 @@ export default function ForgotPasswordModal({ onClose }) {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div
+      className="modal-overlay"
+      onMouseDown={(e) => { mouseDownOnOverlay.current = e.target === e.currentTarget; }}
+      onClick={() => { if (mouseDownOnOverlay.current) onClose(); }}
+    >
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}>✕</button>
 
