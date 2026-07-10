@@ -94,8 +94,10 @@ export const reviewsAPI = {
 };
 
 export const progressAPI = {
-  mark: ({ showId, season, episode }) =>
-    request('/progress', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ showId, season, episode }) }),
+  mark: ({ showId, season, episode, watchedAt }) =>
+    request('/progress', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ showId, season, episode, watchedAt }) }),
+  update: ({ current, next }) =>
+    request('/progress', { method: 'PATCH', headers: authHeaders(), body: JSON.stringify({ current, next }) }),
   unmark: ({ showId, season, episode }) =>
     request('/progress', { method: 'DELETE', headers: authHeaders(), body: JSON.stringify({ showId, season, episode }) }),
   get: ({ showId, season }) => {
@@ -103,4 +105,6 @@ export const progressAPI = {
     if (season != null) params.season = season;
     return request(`/progress?${new URLSearchParams(params)}`, { headers: authHeaders() });
   },
+  history: ({ skip = 0, limit = 60 } = {}) =>
+    request(`/progress/history?${new URLSearchParams({ skip, limit })}`, { headers: authHeaders() }),
 };

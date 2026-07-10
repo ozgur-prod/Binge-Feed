@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import Header from '../components/Header';
 import AddToListModal from '../components/AddToListModal';
 import Toast from '../components/Toast';
@@ -62,6 +62,7 @@ const PROVIDER_URLS = {
 export default function ShowDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [show, setShow] = useState(null);
   const [seasons, setSeasons] = useState([]);
@@ -81,6 +82,14 @@ export default function ShowDetailPage() {
   const [myRating, setMyRating] = useState(null);
   const [myReviewId, setMyReviewId] = useState(null);
   const me = useMemo(() => currentUser(), []);
+
+  // open a specific season tab when navigated with ?season=N (e.g. from the profile Diary).
+  useEffect(() => {
+    const wanted = Number(searchParams.get('season'));
+    if (wanted && seasons.some((s) => s.season_number === wanted)) {
+      setActiveSeason(wanted);
+    }
+  }, [searchParams, seasons]);
 
   useEffect(() => {
     showsAPI.getDetails(id)

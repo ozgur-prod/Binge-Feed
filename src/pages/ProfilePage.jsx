@@ -1,45 +1,97 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usersAPI, favoritesAPI, listsAPI } from '../services/api';
+import { usersAPI, favoritesAPI, listsAPI, progressAPI } from '../services/api';
 import Header from '../components/Header';
 import EditProfileModal from '../components/EditProfileModal';
 import FollowListModal from '../components/FollowListModal';
 import FavoritesModal from '../components/FavoritesModal';
 import ListsModal from '../components/ListsModal';
-import { UserIcon, CalendarIcon } from '../components/icons';
+import DiaryEntries from '../components/DiaryEntries';
+import DiaryModal from '../components/DiaryModal';
+import LogModal from '../components/LogModal';
+import { UserIcon } from '../components/icons';
 import './ProfilePage.css';
 
 const LIST_THUMBS_PREVIEW = 3;
 const LISTS_PREVIEW = 5;
+const DIARY_PREVIEW = 4; // max # of entries directly shown on the profile before "View all"
 
-// Mock data until the diary gets its own model
-const DIARY = [
-  {
-    month: 'May',
-    entries: [
-      { day: 16, text: 'Euphoria S3 E1' },
-      { day: 9, text: 'How I Met Your Mother S3 E24' },
-    ],
-  },
-  {
-    month: 'April',
-    entries: [
-      { day: 30, text: 'Game of Thrones S1 E1' },
-      { day: 29, text: 'How I Met Your Mother S3 E23' },
-    ],
-  },
-];
+function relativeDay(date) {
+  const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const now = new Date();
+  const diffDays = Math.round((startOfDay(now) - startOfDay(date)) / 86400000);
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return date.toLocaleDateString('en-US', { weekday: 'long' });
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    ...(date.getFullYear() !== now.getFullYear() ? { year: 'numeric' } : {}),
+  });
+}
+
+// group the flat watch history (newest first) into ordered day->show blocks, each holding
+// that show's seasons/episodes watched on that day. Keeps chronology and stays compact.
+function buildDiary(entries) {
+  const blocks = [];
+  const byKey = new Map();
+  for (const e of entries) {
+    const d = new Date(e.watchedAt);
+    const dayKey = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const key = `${dayKey}|${e.showId}`;
+    let block = byKey.get(key);
+    if (!block) {
+      block = {
+        dayKey,
+        dayLabel: relativeDay(d),
+        dateISO: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
+        showId: e.showId,
+        showName: e.showName,
+        posterUrl: e.posterUrl,
+        count: 0,
+        seasons: [],
+        seasonMap: new Map(),
+      };
+      byKey.set(key, block);
+      blocks.push(block);
+    }
+    block.count += 1;
+    let season = block.seasonMap.get(e.season);
+    if (!season) {
+      season = { season: e.season, episodes: [] };
+      block.seasonMap.set(e.season, season);
+      block.seasons.push(season);
+    }
+    season.episodes.push(e.episode);
+  }
+  for (const block of blocks) {
+    block.seasons.sort((a, b) => a.season - b.season);
+    for (const s of block.seasons) s.episodes.sort((a, b) => a - b);
+  }
+  return blocks;
+}
 
 function ProfilePage() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [lists, setLists] = useState([]);
+  const [diaryEntries, setDiaryEntries] = useState([]);
+  const [diaryTotal, setDiaryTotal] = useState(0);
+  const [diaryShowCount, setDiaryShowCount] = useState(0);
+  const [diaryHasMore, setDiaryHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [followModal, setFollowModal] = useState(null);
   const [showAllFavorites, setShowAllFavorites] = useState(false);
   const [showLists, setShowLists] = useState(false);
+  const [showDiary, setShowDiary] = useState(false);
+  const [diaryStartManage, setDiaryStartManage] = useState(false);
+  const [showLog, setShowLog] = useState(false);
+  const [editEntry, setEditEntry] = useState(null);
   const [error, setError] = useState('');
+
+  const diaryBlocks = useMemo(() => buildDiary(diaryEntries), [diaryEntries]);
 
   useEffect(() => {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -60,6 +112,7 @@ function ProfilePage() {
           .list(data.user.id)
           .then((l) => setLists(l.lists))
           .catch(console.error);
+        loadDiary();
       })
       .catch((err) => {
         if (err.message.toLowerCase().includes('token') || err.message.toLowerCase().includes('auth')) {
@@ -85,6 +138,42 @@ function ProfilePage() {
       },
       ...prev,
     ]);
+  }
+
+  function loadDiary() {
+    progressAPI
+      .history()
+      .then((h) => {
+        setDiaryEntries(h.diary);
+        setDiaryTotal(h.total);
+        setDiaryShowCount(h.showCount);
+        setDiaryHasMore(h.hasMore);
+      })
+      .catch(console.error);
+  }
+
+  async function deleteEntry(entry) {
+    try {
+      await progressAPI.unmark({ showId: entry.showId, season: entry.season, episode: entry.episode });
+      loadDiary();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function loadMoreDiary() {
+    setLoadingMore(true);
+    try {
+      const h = await progressAPI.history({ skip: diaryEntries.length });
+      setDiaryEntries((prev) => [...prev, ...h.diary]);
+      setDiaryHasMore(h.hasMore);
+      setDiaryTotal(h.total);
+      setDiaryShowCount(h.showCount);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingMore(false);
+    }
   }
 
   function handleSaved(updatedUser) {
@@ -165,25 +254,38 @@ function ProfilePage() {
           <section className="profile-section">
             <div className="section-head">
               <h2>Diary</h2>
-              <button className="pill-btn pill-btn-small">Log</button>
+              <div className="section-head-btns">
+                {diaryBlocks.length > 0 && (
+                  <button
+                    className="pill-btn pill-btn-small"
+                    onClick={() => { setDiaryStartManage(true); setShowDiary(true); }}
+                    disabled={!user}
+                  >
+                    Edit
+                  </button>
+                )}
+                <button className="pill-btn pill-btn-small" onClick={() => setShowLog(true)} disabled={!user}>
+                  Log
+                </button>
+              </div>
             </div>
             <div className="diary">
-              {DIARY.map((group) => (
-                <div className="diary-month" key={group.month}>
-                  <div className="diary-month-label">
-                    <CalendarIcon />
-                    <span>{group.month}</span>
-                  </div>
-                  <ul className="diary-entries">
-                    {group.entries.map((entry) => (
-                      <li key={`${group.month}-${entry.day}`}>
-                        <span className="diary-day">{entry.day}</span>
-                        <span className="diary-text">{entry.text}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+              {diaryBlocks.length === 0 ? (
+                <p className="diary-empty">No episodes logged yet.</p>
+              ) : (
+                <>
+                  <DiaryEntries blocks={diaryBlocks.slice(0, DIARY_PREVIEW)} />
+                  {(diaryBlocks.length > DIARY_PREVIEW || diaryHasMore) && (
+                    <button
+                      className="diary-view-all"
+                      onClick={() => { setDiaryStartManage(false); setShowDiary(true); }}
+                    >
+                      View all ({diaryTotal} episode{diaryTotal === 1 ? '' : 's'} across {diaryShowCount} show
+                      {diaryShowCount === 1 ? '' : 's'})
+                    </button>
+                  )}
+                </>
+              )}
             </div>
           </section>
 
@@ -265,6 +367,29 @@ function ProfilePage() {
       )}
 
       {showLists && <ListsModal lists={lists} setLists={setLists} onClose={() => setShowLists(false)} />}
+
+      {showDiary && (
+        <DiaryModal
+          blocks={diaryBlocks}
+          total={diaryTotal}
+          showCount={diaryShowCount}
+          hasMore={diaryHasMore}
+          loadingMore={loadingMore}
+          onLoadMore={loadMoreDiary}
+          onEditEpisode={setEditEntry}
+          onDeleteEpisode={deleteEntry}
+          initialManage={diaryStartManage}
+          onClose={() => setShowDiary(false)}
+        />
+      )}
+
+      {(showLog || editEntry) && (
+        <LogModal
+          initial={editEntry}
+          onSaved={loadDiary}
+          onClose={() => { setShowLog(false); setEditEntry(null); }}
+        />
+      )}
     </div>
   );
 }
