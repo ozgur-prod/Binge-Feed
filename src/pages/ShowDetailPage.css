@@ -284,11 +284,45 @@
   padding: 1.2rem;
 }
 
+.reviews-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
 .latest-reviews h2 {
   font-size: 1.1rem;
   color: #c850c0;
-  margin: 0 0 1rem;
+  margin: 0;
 }
+
+.see-all-reviews {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.see-all-reviews:hover { color: #d63bdf; }
+
+.see-all-reviews-btn {
+  margin-top: 1rem;
+  width: 100%;
+  background: none;
+  border: 1px solid #2a2a2a;
+  color: #888;
+  font-size: 0.85rem;
+  padding: 0.55rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.see-all-reviews-btn:hover { border-color: #d63bdf; color: #d63bdf; }
 
 .no-reviews {
   color: #666;
