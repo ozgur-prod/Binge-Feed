@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { authAPI } from '../services/api';
+import { authAPI, saveSession } from '../services/api';
 import ForgotPasswordModal from '../components/ForgotPasswordModal';
 import { PlayIcon } from '../components/icons';
 import './AuthPages.css';
@@ -27,9 +27,7 @@ function LoginPage() {
     setLoading(true);
     try {
       const data = await authAPI.login({ email: form.email, password: form.password });
-      const storage = form.remember ? localStorage : sessionStorage;
-      storage.setItem('token', data.token);
-      storage.setItem('user', JSON.stringify(data.user));
+      saveSession(data, form.remember);
       navigate('/feed');
     } catch (err) {
       setError(err.message);
