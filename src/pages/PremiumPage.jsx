@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  ChevronLeftIcon, StarIcon, BellIcon, BarChartIcon, PaletteIcon,
-  MessageCircleIcon, RocketIcon, GiftIcon, LockIcon, CheckIcon,
+  ChevronLeftIcon, StarIcon, ListIcon, CrownIcon,
+  GiftIcon, LockIcon, CheckIcon,
 } from '../components/icons';
 import './PremiumPage.css';
 
@@ -10,11 +10,8 @@ const BASE_URL = 'http://localhost:8080/api';
 
 const FEATURES = [
   { icon: StarIcon, title: 'Ad-free experience', desc: 'No interruptions, ever.' },
-  { icon: BellIcon, title: 'Episode notifications', desc: 'Get notified when new episodes drop.' },
-  { icon: BarChartIcon, title: 'Advanced stats', desc: 'Deep analytics on your watching habits.' },
-  { icon: PaletteIcon, title: 'Custom profile themes', desc: 'Stand out with exclusive profile styles.' },
-  { icon: MessageCircleIcon, title: 'Priority in discussions', desc: 'Your comments are highlighted in Hot Discussions.' },
-  { icon: RocketIcon, title: 'Early access', desc: 'Be first to try new BingeFeed features.' },
+  { icon: ListIcon, title: 'Weekly curated lists', desc: 'Hand-picked shows every week, just for you.' },
+  { icon: CrownIcon, title: 'Shine with a golden username', desc: 'Stand out with an exclusive gold profile badge.' },
 ];
 
 export default function PremiumPage() {

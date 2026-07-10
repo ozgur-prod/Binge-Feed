@@ -31,6 +31,7 @@ function App() {
       <Route path="/premium" element={<RequireAuth><PremiumPage /></RequireAuth>} />
       <Route path="/premium/success" element={<RequireAuth><PremiumSuccessPage /></RequireAuth>} />
       <Route path="/premium/cancel" element={<RequireAuth><CancelPremiumPage /></RequireAuth>} />
+      <Route path="/weekly-fix" element={<RequireAuth><WeeklyFixPage /></RequireAuth>} />
     </Routes>
   );
 }
