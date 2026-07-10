@@ -61,21 +61,6 @@
 
 .feed-card:hover { border-color: #d63bdf88; }
 
-.bookmark-btn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  padding: 0.2rem;
-  display: flex;
-}
-
-.bookmark-btn svg { width: 1.2rem; height: 1.2rem; }
-.bookmark-btn:hover { color: #fff; }
-
 .card-body {
   display: flex;
   gap: 1rem;
@@ -224,6 +209,7 @@
   font-size: 0.78rem;
   color: #888;
   margin: 0.5rem 0 0;
+  text-align: right;
 }
 
 .load-more-btn {
@@ -315,39 +301,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-}
-
-.disc-user {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.disc-avatar {
-  width: 1.6rem;
-  height: 1.6rem;
-  background: #d63bdf;
-  color: #fff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.disc-username {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #cbb8d4;
-}
-
-.disc-time {
-  font-size: 0.75rem;
-  color: #555;
-  margin-left: auto;
 }
 
 .disc-text {

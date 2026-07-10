@@ -118,3 +118,8 @@ export const feedAPI = {
     return request(`/feed?${new URLSearchParams(params)}`, { headers: authHeaders() });
   },
 };
+
+export const discussionsAPI = {
+  get: ({ days = 7, limit = 20 } = {}) =>
+    request(`/discussions?${new URLSearchParams({ days, limit })}`, { headers: authHeaders() }),
+};

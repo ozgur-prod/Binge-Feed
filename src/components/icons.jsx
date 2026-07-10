@@ -1,6 +1,6 @@
 import {
   Heart, Trash2, User, MessageSquare, Bookmark, Share2, Repeat,
-  Plus, Star, PenLine, List, Calendar, ChevronLeft, ChevronDown, Play, Check, Crown,
+  Plus, Star, PenLine, List, Calendar, ChevronLeft, ChevronRight, ChevronDown, Play, Check, Crown,
   X, Flame, Bell, BarChart3, Palette, MessageCircle, Rocket, Gift, Lock,
   PartyPopper, TriangleAlert, Hand, Home, Search, CircleHelp, LogOut,
 } from 'lucide-react';
@@ -21,6 +21,7 @@ export const PenLineIcon = (props) => <PenLine {...defaults} {...props} />;
 export const ListIcon = (props) => <List {...defaults} {...props} />;
 export const CalendarIcon = (props) => <Calendar {...defaults} {...props} />;
 export const ChevronLeftIcon = (props) => <ChevronLeft {...defaults} {...props} />;
+export const ChevronRightIcon = (props) => <ChevronRight {...defaults} {...props} />;
 export const ChevronDownIcon = (props) => <ChevronDown {...defaults} {...props} />;
 export const CheckIcon = (props) => <Check {...defaults} {...props} />;
 export const XIcon = (props) => <X {...defaults} {...props} />;

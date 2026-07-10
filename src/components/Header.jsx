@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
-import { PlayIcon, UserIcon, HomeIcon, SearchIcon, CircleHelpIcon, LogOutIcon } from './icons';
+import { PlayIcon, UserIcon, HomeIcon, SearchIcon, LogOutIcon } from './icons';
 import './Header.css';
 
 function LogoutModal({ onConfirm, onCancel }) {
@@ -59,9 +59,6 @@ function Header({ active }) {
           </button>
           <button className={`nav-icon ${active === 'profile' ? 'active' : ''}`} title="Profile" onClick={() => navigate('/profile')}>
             <UserIcon />
-          </button>
-          <button className={`nav-icon ${active === 'help' ? 'active' : ''}`} title="Help">
-            <CircleHelpIcon />
           </button>
           {isLoggedIn && (
             <button className="nav-icon nav-icon-logout" title="Log out" onClick={() => setShowLogout(true)}>

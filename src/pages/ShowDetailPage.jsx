@@ -6,7 +6,7 @@ import Toast from '../components/Toast';
 import Stars from '../components/Stars';
 import RatePopup from '../components/RatePopup.jsx';
 import CommentAuthor from '../components/CommentAuthor';
-import { PlusIcon, StarIcon, CheckIcon } from '../components/icons';
+import { PlusIcon, StarIcon, CheckIcon, ChevronRightIcon } from '../components/icons';
 import { showsAPI, usersAPI, favoritesAPI, progressAPI, reviewsAPI } from '../services/api';
 import './ShowDetailPage.css';
 
@@ -328,7 +328,7 @@ export default function ShowDetailPage() {
             <div className="reviews-section-head">
               <h2>Reviews</h2>
               <button className="see-all-reviews" onClick={() => navigate(`/show/${id}/reviews`)}>
-                See all →
+                See all <ChevronRightIcon size={14} />
               </button>
             </div>
             {reviews.length === 0 ? (
