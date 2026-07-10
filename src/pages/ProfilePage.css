@@ -64,6 +64,21 @@
   color: #d63bdf;
   line-height: 1.2;
   overflow-wrap: anywhere;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.profile-handle--premium {
+  color: #b8860b;
+}
+
+.profile-handle-play {
+  color: #b8860b;
+  border: 1.5px solid #b8860b;
+  border-radius: 4px;
+  padding: 2px;
+  flex-shrink: 0;
 }
 
 .profile-display-name {

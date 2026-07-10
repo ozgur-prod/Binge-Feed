@@ -9,7 +9,7 @@ import ListsModal from '../components/ListsModal';
 import DiaryEntries from '../components/DiaryEntries';
 import DiaryModal from '../components/DiaryModal';
 import LogModal from '../components/LogModal';
-import { UserIcon } from '../components/icons';
+import { UserIcon, PlayIcon } from '../components/icons';
 import './ProfilePage.css';
 
 const LIST_THUMBS_PREVIEW = 3;
@@ -197,7 +197,10 @@ function ProfilePage() {
               </span>
             )}
             <div className="profile-identity">
-              <h1 className="profile-handle">{user ? user.handle : '…'}</h1>
+              <h1 className={`profile-handle${user?.tier === 'premium' ? ' profile-handle--premium' : ''}`}>
+                {user ? user.handle : '…'}
+                {user?.tier === 'premium' && <PlayIcon size={20} className="profile-handle-play" />}
+              </h1>
               {user?.displayName && <p className="profile-display-name">{user.displayName}</p>}
               {user?.bio && <p className="profile-bio">{user.bio}</p>}
               {user && (

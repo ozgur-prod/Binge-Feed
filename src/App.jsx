@@ -12,6 +12,7 @@ import ReviewsPage from './pages/ReviewsPage';
 import PremiumPage from './pages/PremiumPage';
 import PremiumSuccessPage from './pages/PremiumSuccessPage';
 import CancelPremiumPage from './pages/CancelPremiumPage';
+import WeeklyFixPage from './pages/WeeklyFixPage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
       <Route path="/premium" element={<PremiumPage />} />
       <Route path="/premium/success" element={<PremiumSuccessPage />} />
       <Route path="/premium/cancel" element={<CancelPremiumPage />} />
+      <Route path="/weekly-fix" element={<WeeklyFixPage />} />
     </Routes>
   );
 }
