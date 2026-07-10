@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
-import { PlayIcon, UserIcon } from './icons';
+import { PlayIcon, UserIcon, HomeIcon, SearchIcon, LogOutIcon } from './icons';
 import './Header.css';
 
 function LogoutModal({ onConfirm, onCancel }) {
@@ -52,33 +52,17 @@ function Header({ active }) {
 
         <nav className="feed-nav-icons">
           <button className={`nav-icon ${active === 'home' ? 'active' : ''}`} title="Home" onClick={() => navigate('/feed')}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-              <polyline points="9 22 9 12 15 12 15 22" />
-            </svg>
+            <HomeIcon />
           </button>
           <button className={`nav-icon ${active === 'search' ? 'active' : ''}`} title="Search" onClick={() => navigate('/search')}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+            <SearchIcon />
           </button>
           <button className={`nav-icon ${active === 'profile' ? 'active' : ''}`} title="Profile" onClick={() => navigate('/profile')}>
             <UserIcon />
           </button>
-          <button className={`nav-icon ${active === 'help' ? 'active' : ''}`} title="Help">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-          </button>
           {isLoggedIn && (
             <button className="nav-icon nav-icon-logout" title="Log out" onClick={() => setShowLogout(true)}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
+              <LogOutIcon />
             </button>
           )}
         </nav>

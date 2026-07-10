@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showsAPI, listsAPI } from '../services/api';
+import { XIcon, CheckIcon, ChevronLeftIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './FavoritesModal.css';
 import './ListsModal.css';
@@ -14,25 +15,23 @@ export default function ListsModal({ lists, setLists, onClose }) {
   const [query, setQuery] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loadedQuery, setLoadedQuery] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [error, setError] = useState('');
 
   const activeList = lists.find((l) => l.id === activeListId) || null;
   const searching = searchQuery.length > 0;
+  const loading = searching && searchQuery !== loadedQuery;
 
+  // `results` is only ever rendered while `searching` is true, so there's nothing to reset when it's false.
   useEffect(() => {
-    if (!searching) {
-      setResults([]);
-      return;
-    }
+    if (!searching) return;
     let stale = false;
-    setLoading(true);
     showsAPI
       .search(searchQuery)
       .then((d) => { if (!stale) setResults((d.results || []).slice(0, 12)); })
       .catch(() => { if (!stale) setResults([]); })
-      .finally(() => { if (!stale) setLoading(false); });
+      .finally(() => { if (!stale) setLoadedQuery(searchQuery); });
     return () => { stale = true; };
   }, [searchQuery, searching]);
 
@@ -116,11 +115,11 @@ export default function ListsModal({ lists, setLists, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}><XIcon /></button>
 
         {activeList ? (
           <>
-            <button className="lists-back" onClick={openOverview}>← Lists</button>
+            <button className="lists-back" onClick={openOverview}><ChevronLeftIcon size={16} /> Lists</button>
             <h2 className="modal-title">{activeList.title}</h2>
             <input
               className="favorites-search"
@@ -154,7 +153,7 @@ export default function ListsModal({ lists, setLists, onClose }) {
                           ) : (
                             <div className="favorites-noimg">No image</div>
                           )}
-                          {already && <span className="favorites-add-check">✓</span>}
+                          {already && <span className="favorites-add-check"><CheckIcon size={14} /></span>}
                           <span className="favorites-item-name">{show.name}</span>
                         </button>
                       );
@@ -178,7 +177,7 @@ export default function ListsModal({ lists, setLists, onClose }) {
                         title="Remove from list"
                         onClick={() => removeShow(s.showId)}
                       >
-                        ✕
+                        <XIcon size={14} />
                       </button>
                       <span className="favorites-item-name">{s.showName}</span>
                     </div>
@@ -225,8 +224,8 @@ export default function ListsModal({ lists, setLists, onClose }) {
                       {confirmDeleteId === list.id ? (
                         <span className="lists-confirm">
                           <span className="lists-confirm-text">Delete?</span>
-                          <button className="lists-confirm-yes" title="Confirm delete" onClick={() => deleteList(list.id)}>✓</button>
-                          <button className="lists-confirm-no" title="Cancel" onClick={() => setConfirmDeleteId(null)}>✕</button>
+                          <button className="lists-confirm-yes" title="Confirm delete" onClick={() => deleteList(list.id)}><CheckIcon size={14} /></button>
+                          <button className="lists-confirm-no" title="Cancel" onClick={() => setConfirmDeleteId(null)}><XIcon size={14} /></button>
                         </span>
                       ) : (
                         <button
@@ -234,7 +233,7 @@ export default function ListsModal({ lists, setLists, onClose }) {
                           title="Delete list"
                           onClick={() => setConfirmDeleteId(list.id)}
                         >
-                          ✕
+                          <XIcon size={14} />
                         </button>
                       )}
                     </li>

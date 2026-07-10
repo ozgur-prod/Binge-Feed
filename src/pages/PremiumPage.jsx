@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeftIcon } from '../components/icons';
+import {
+  ChevronLeftIcon, StarIcon, BellIcon, BarChartIcon, PaletteIcon,
+  MessageCircleIcon, RocketIcon, GiftIcon, LockIcon, CheckIcon,
+} from '../components/icons';
 import './PremiumPage.css';
 
 const BASE_URL = 'http://localhost:8080/api';
 
 const FEATURES = [
-  { icon: '⭐', title: 'Ad-free experience', desc: 'No interruptions, ever.' },
-  { icon: '🔔', title: 'Episode notifications', desc: 'Get notified when new episodes drop.' },
-  { icon: '📊', title: 'Advanced stats', desc: 'Deep analytics on your watching habits.' },
-  { icon: '🎨', title: 'Custom profile themes', desc: 'Stand out with exclusive profile styles.' },
-  { icon: '💬', title: 'Priority in discussions', desc: 'Your comments are highlighted in Hot Discussions.' },
-  { icon: '🚀', title: 'Early access', desc: 'Be first to try new BingeFeed features.' },
+  { icon: StarIcon, title: 'Ad-free experience', desc: 'No interruptions, ever.' },
+  { icon: BellIcon, title: 'Episode notifications', desc: 'Get notified when new episodes drop.' },
+  { icon: BarChartIcon, title: 'Advanced stats', desc: 'Deep analytics on your watching habits.' },
+  { icon: PaletteIcon, title: 'Custom profile themes', desc: 'Stand out with exclusive profile styles.' },
+  { icon: MessageCircleIcon, title: 'Priority in discussions', desc: 'Your comments are highlighted in Hot Discussions.' },
+  { icon: RocketIcon, title: 'Early access', desc: 'Be first to try new BingeFeed features.' },
 ];
 
 export default function PremiumPage() {
@@ -60,7 +63,7 @@ export default function PremiumPage() {
         <div className="premium-grid">
           {FEATURES.map((f) => (
             <div className="premium-feature" key={f.title}>
-              <span className="premium-feature-icon">{f.icon}</span>
+              <f.icon className="premium-feature-icon" size={24} />
               <div>
                 <h3>{f.title}</h3>
                 <p>{f.desc}</p>
@@ -74,17 +77,17 @@ export default function PremiumPage() {
             <span className="premium-amount">€3.99</span>
             <span className="premium-period">/month</span>
           </div>
-          <p style={{ color: '#b8860b', fontWeight: 600, fontSize: '0.9rem', margin: 0 }}>🎁 First month free</p>
+          <p className="premium-free-month"><GiftIcon size={16} /> First month free</p>
 
           {user.tier === 'premium' ? (
-            <div className="premium-already">You already have Premium ✓</div>
+            <div className="premium-already"><CheckIcon size={16} /> You already have Premium</div>
           ) : (
             <>
               <button className="premium-btn" onClick={handleUpgrade} disabled={loading}>
                 {loading ? 'Redirecting to payment…' : 'Upgrade to Premium'}
               </button>
               {error && <p className="premium-error">{error}</p>}
-              <p className="premium-secure">🔒 Secure payment via Stripe</p>
+              <p className="premium-secure"><LockIcon size={14} /> Secure payment via Stripe</p>
             </>
           )}
         </div>

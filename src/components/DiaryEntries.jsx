@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { XIcon } from './icons';
 
 const CHIP_CAP = 12; // max episode chips per season before the "+N" toggle
 
@@ -34,7 +35,7 @@ function DiarySeason({ showId, showName, dateISO, season, episodes, onEditEpisod
                 title="Remove entry"
                 onClick={() => onDeleteEpisode({ showId, season, episode: ep })}
               >
-                ✕
+                <XIcon size={11} />
               </button>
             </span>
           ) : (

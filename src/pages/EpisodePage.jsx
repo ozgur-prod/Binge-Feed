@@ -3,7 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Stars from '../components/Stars';
 import RatePopup from '../components/RatePopup.jsx';
-import { HeartIcon, TrashIcon, UserIcon, ChevronDownIcon, PlayIcon, CheckIcon, StarIcon } from '../components/icons';
+import CommentAuthor from '../components/CommentAuthor';
+import { HeartIcon, TrashIcon, ChevronDownIcon, ChevronLeftIcon, CheckIcon, StarIcon } from '../components/icons';
 import { showsAPI, commentsAPI, reviewsAPI, progressAPI } from '../services/api';
 import './EpisodePage.css';
 
@@ -56,27 +57,12 @@ function CommentRow({
 }) {
   const isDeleted = comment.createdBy === null;
   const isMine = !isDeleted && me.id === comment.createdBy?._id;
-  const isPremium = !isDeleted && comment.createdBy?.tier === 'premium';
   const isReplying = replyingTo === comment.id;
 
   return (
     <div className={`comment-row ${isDeleted ? 'deleted' : ''}`}>
       <div className="comment-row-top">
-        <div className="comment-identity">
-          {isDeleted ? (
-            <span className="comment-avatar placeholder"><UserIcon /></span>
-          ) : comment.createdBy.avatarUrl ? (
-            <img className="comment-avatar" src={comment.createdBy.avatarUrl} alt={comment.createdBy.handle} />
-          ) : (
-            <span className="comment-avatar placeholder">
-              <UserIcon />
-            </span>
-          )}
-          <span className={`comment-author ${isDeleted ? 'muted' : ''} ${isPremium ? 'premium' : ''}`}>
-            {isDeleted ? 'unknown user' : comment.createdBy.handle}
-          </span>
-          {isPremium && <PlayIcon className="premium-badge" size={14} />}
-        </div>
+        <CommentAuthor user={comment.createdBy} deleted={isDeleted} />
 
         <div className="comment-row-top-right">
           {!isDeleted && (
@@ -312,7 +298,7 @@ export default function EpisodePage() {
       <Header />
 
       <div className="episode-content">
-        <Link className="back-link" to={`/show/${id}`}>← Back to {showName}</Link>
+        <Link className="back-link" to={`/show/${id}`}><ChevronLeftIcon size={16} /> Back to {showName}</Link>
 
         <div className="episode-hero">
           {episode.still_path && (
