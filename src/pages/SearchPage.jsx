@@ -28,7 +28,9 @@ function ShowCard({ show }) {
             <span className="show-year">{show.first_air_date.slice(0, 4)}</span>
           )}
           {show.vote_average > 0 && (
-            <span className="show-rating"><StarIcon size={13} fill="currentColor" /> {show.vote_average.toFixed(1)}</span>
+            <span className="show-rating">
+              <StarIcon size={13} fill="currentColor" /> {((show.vote_average / 10) * 5).toFixed(1)}
+            </span>
           )}
         </div>
       </div>
