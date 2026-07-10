@@ -9,7 +9,8 @@ import ListsModal from '../components/ListsModal';
 import DiaryEntries from '../components/DiaryEntries';
 import DiaryModal from '../components/DiaryModal';
 import LogModal from '../components/LogModal';
-import { UserIcon } from '../components/icons';
+import { UserIcon, PlayIcon } from '../components/icons';
+import AdBox from '../components/AdBox';
 import './ProfilePage.css';
 
 const LIST_THUMBS_PREVIEW = 3;
@@ -186,6 +187,12 @@ function ProfilePage() {
     <div className="profile-page">
       <Header active="profile" />
 
+      <div className="profile-layout">
+        <div className="feed-ad-col">
+          <AdBox className="feed-ad" />
+          <AdBox className="feed-ad" text="Another ad could be here." />
+        </div>
+
       <main className="profile-main">
         <div className="profile-content">
           <section className="profile-header">
@@ -197,7 +204,10 @@ function ProfilePage() {
               </span>
             )}
             <div className="profile-identity">
-              <h1 className="profile-handle">{user ? user.handle : '…'}</h1>
+              <h1 className={`profile-handle${user?.tier === 'premium' ? ' profile-handle--premium' : ''}`}>
+                {user ? user.handle : '…'}
+                {user?.tier === 'premium' && <PlayIcon size={20} className="profile-handle-play" />}
+              </h1>
               {user?.displayName && <p className="profile-display-name">{user.displayName}</p>}
               {user?.bio && <p className="profile-bio">{user.bio}</p>}
               {user && (
@@ -300,7 +310,7 @@ function ProfilePage() {
         </div>
 
         <aside className="profile-sidebar">
-          <div className="ad-box">Your ad could be here.</div>
+          <AdBox />
 
           <div className="lists-section">
             <div className="section-head">
@@ -348,6 +358,12 @@ function ProfilePage() {
           </div>
         </aside>
       </main>
+
+        <div className="feed-ad-col">
+          <AdBox className="feed-ad" />
+          <AdBox className="feed-ad" text="Another ad could be here." />
+        </div>
+      </div>
 
       {showEdit && user && (
         <EditProfileModal user={user} onClose={() => setShowEdit(false)} onSaved={handleSaved} />

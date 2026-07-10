@@ -13,6 +13,7 @@ import ReviewsPage from './pages/ReviewsPage';
 import PremiumPage from './pages/PremiumPage';
 import PremiumSuccessPage from './pages/PremiumSuccessPage';
 import CancelPremiumPage from './pages/CancelPremiumPage';
+import WeeklyFixPage from './pages/WeeklyFixPage';
 
 function App() {
   return (

@@ -68,7 +68,7 @@ function Header({ active }) {
         </nav>
 
         <div className="header-actions">
-          <button className="get-premium-btn" onClick={() => navigate('/premium')}>
+          <button className="get-premium-btn" onClick={() => navigate(isPremium ? '/weekly-fix' : '/premium')}>
             {isPremium ? 'Enjoy Premium' : 'Get Premium'}
           </button>
         </div>

@@ -12,3 +12,26 @@ body {
   color: #fff;
   min-height: 100vh;
 }
+
+/* Shared ad box */
+.ad-box {
+  background: #6e6e6e;
+  color: #333;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.page-ad {
+  max-width: 960px;
+  margin: 2rem auto;
+  height: 100px;
+}
+
+.search-ad {
+  height: 100px;
+  margin-top: 2rem;
+}

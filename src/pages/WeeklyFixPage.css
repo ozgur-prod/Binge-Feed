@@ -1,0 +1,145 @@
+.weekly-fix-page {
+  min-height: 100vh;
+  background: #0d0d0d;
+  color: #fff;
+}
+
+.weekly-fix-main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.weekly-fix-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  color: #888;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 2rem;
+  transition: color 0.15s;
+}
+
+.weekly-fix-back:hover { color: #fff; }
+
+.weekly-fix-back svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.weekly-fix-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.weekly-fix-badge {
+  display: inline-block;
+  background: #b8860b;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.25rem 0.8rem;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+}
+
+.weekly-fix-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #b8860b;
+  margin: 0 0 0.5rem;
+}
+
+.weekly-fix-subtitle {
+  color: #888;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.weekly-fix-loading,
+.weekly-fix-error {
+  text-align: center;
+  color: #888;
+  margin-top: 3rem;
+}
+
+.weekly-fix-error { color: #ff6b6b; }
+
+.weekly-fix-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.weekly-fix-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.weekly-fix-card:hover {
+  border-color: #b8860b;
+  background: #1c1a14;
+}
+
+.weekly-fix-rank {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #b8860b;
+  width: 2.5rem;
+  flex-shrink: 0;
+  padding-top: 0.25rem;
+}
+
+.weekly-fix-poster {
+  width: 80px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.weekly-fix-poster--placeholder {
+  background: #2a2a2a;
+}
+
+.weekly-fix-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.weekly-fix-show-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: #fff;
+}
+
+.weekly-fix-overview {
+  font-size: 0.875rem;
+  color: #aaa;
+  line-height: 1.5;
+  margin: 0 0 0.6rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.weekly-fix-rating {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #b8860b;
+}

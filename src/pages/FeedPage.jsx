@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { feedAPI, commentsAPI, discussionsAPI } from '../services/api';
 import Header from '../components/Header';
+import AdBox from '../components/AdBox';
 import { HeartIcon, MessageSquareIcon, StarIcon, FlameIcon } from '../components/icons';
 import CommentAuthor from '../components/CommentAuthor';
 import './FeedPage.css';
@@ -342,8 +343,13 @@ function FeedPage() {
 
   return (
     <div className="feed-page">
-      {/* Header is moved to be reusable */}
       <Header active="home" />
+
+      <div className="feed-layout">
+        <div className="feed-ad-col">
+          <AdBox className="feed-ad" />
+          <AdBox className="feed-ad" text="Another ad could be here." />
+        </div>
 
       <main className="feed-main">
         <div className="tab-bar">
@@ -396,6 +402,12 @@ function FeedPage() {
           </div>
         )}
       </main>
+
+        <div className="feed-ad-col">
+          <AdBox className="feed-ad" />
+          <AdBox className="feed-ad" text="Another ad could be here." />
+        </div>
+      </div>
     </div>
   );
 }

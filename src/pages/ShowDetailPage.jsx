@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import Header from '../components/Header';
+import AdBox from '../components/AdBox';
 import AddToListModal from '../components/AddToListModal';
 import Toast from '../components/Toast';
 import Stars from '../components/Stars';
@@ -386,6 +387,7 @@ export default function ShowDetailPage() {
           }}
         />
       )}
+      <AdBox className="page-ad" />
     </div>
   );
 }

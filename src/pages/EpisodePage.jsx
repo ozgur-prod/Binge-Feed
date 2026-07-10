@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Header from '../components/Header';
+import AdBox from '../components/AdBox';
 import Stars from '../components/Stars';
 import RatePopup from '../components/RatePopup.jsx';
 import CommentAuthor from '../components/CommentAuthor';
@@ -420,6 +421,7 @@ export default function EpisodePage() {
           }}
         />
       )}
+      <AdBox className="page-ad" />
     </div>
   );
 }

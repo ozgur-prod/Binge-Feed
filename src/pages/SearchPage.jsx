@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { showsAPI } from '../services/api';
 import Header from '../components/Header';
+import AdBox from '../components/AdBox';
 import { StarIcon } from '../components/icons';
 import './SearchPage.css';
 
@@ -304,6 +305,12 @@ function SearchPage() {
     <div className="search-page">
       <Header active="search" />
 
+      <div className="search-layout">
+        <div className="feed-ad-col">
+          <AdBox className="feed-ad" />
+          <AdBox className="feed-ad" text="Another ad could be here." />
+        </div>
+
       <main className="search-main">
         <div className="tab-bar">
           <button className={`tab ${activeTab === 'search' ? 'active' : ''}`} onClick={() => setActiveTab('search')}>Search</button>
@@ -346,7 +353,15 @@ function SearchPage() {
         )}
 
         {activeTab === 'advanced' && <AdvancedSearch />}
+
+        <AdBox className="search-ad" />
       </main>
+
+        <div className="feed-ad-col">
+          <AdBox className="feed-ad" />
+          <AdBox className="feed-ad" text="Another ad could be here." />
+        </div>
+      </div>
     </div>
   );
 }
