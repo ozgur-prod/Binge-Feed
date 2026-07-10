@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showsAPI, feedAPI, commentsAPI } from '../services/api';
 import Header from '../components/Header';
-import { BookmarkIcon, HeartIcon, MessageSquareIcon, RepeatIcon, StarIcon } from '../components/icons';
+import { BookmarkIcon, HeartIcon, MessageSquareIcon, RepeatIcon, StarIcon, FlameIcon } from '../components/icons';
 import CommentAuthor from '../components/CommentAuthor';
 import './FeedPage.css';
 
@@ -209,7 +209,7 @@ function DiscussionCard({ show, post }) {
           {show && <p className="disc-show-name clickable" onClick={goToShow}>{show.name}</p>}
           <span className="disc-label">{post.label}</span>
         </div>
-        <span className="disc-heat">🔥 Trending</span>
+        <span className="disc-heat"><FlameIcon size={14} /> Trending</span>
       </div>
 
       <div className="disc-body">

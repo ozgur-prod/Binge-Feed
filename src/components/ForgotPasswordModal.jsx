@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { authAPI } from '../services/api';
+import { XIcon } from './icons';
 import './ForgotPasswordModal.css';
 
 function validatePassword(password) {
@@ -69,7 +70,7 @@ export default function ForgotPasswordModal({ onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}><XIcon /></button>
 
         {step === 1 && (
           <>

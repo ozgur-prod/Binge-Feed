@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { usersAPI } from '../services/api';
+import { XIcon } from './icons';
 import './ForgotPasswordModal.css';
 
 export default function EditProfileModal({ user, onClose, onSaved }) {
@@ -41,7 +42,7 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}><XIcon /></button>
         <h2 className="modal-title">Edit Profile</h2>
         <p className="modal-subtitle">Update how your profile looks to others.</p>
 

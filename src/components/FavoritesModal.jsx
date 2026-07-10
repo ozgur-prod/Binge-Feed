@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showsAPI } from '../services/api';
+import { XIcon, CheckIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './FavoritesModal.css';
 
@@ -58,7 +59,7 @@ export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}><XIcon /></button>
         <h2 className="modal-title">Favorite Series</h2>
 
         <input
@@ -94,7 +95,7 @@ export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) 
                     ) : (
                       <div className="favorites-noimg">No image</div>
                     )}
-                    {already && <span className="favorites-add-check">✓</span>}
+                    {already && <span className="favorites-add-check"><CheckIcon size={14} /></span>}
                     <span className="favorites-item-name">{show.name}</span>
                   </button>
                 );
@@ -118,7 +119,7 @@ export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) 
                   title="Remove favorite"
                   onClick={() => onRemove(fav.showId)}
                 >
-                  ✕
+                  <XIcon size={14} />
                 </button>
                 <span className="favorites-item-name">{fav.showName}</span>
               </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usersAPI } from '../services/api';
-import { UserIcon } from './icons';
+import { UserIcon, XIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './FollowListModal.css';
 
@@ -24,7 +24,7 @@ export default function FollowListModal({ userId, type, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal follow-list-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}><XIcon /></button>
         <h2 className="modal-title">{type === 'followers' ? 'Followers' : 'Following'}</h2>
 
         {users === null ? (

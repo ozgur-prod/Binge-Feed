@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { PartyPopperIcon, AlertTriangleIcon } from '../components/icons';
 
 const BASE_URL = 'http://localhost:8080/api';
 
@@ -36,7 +37,7 @@ export default function PremiumSuccessPage() {
 
       {status === 'success' && (
         <>
-          <div style={{ fontSize: '4rem' }}>🎉</div>
+          <PartyPopperIcon size={56} color="#d63bdf" />
           <h1 style={{ color: '#d63bdf', fontSize: '2rem', fontWeight: 800 }}>Welcome to Premium!</h1>
           <p style={{ color: '#cbb8d4', textAlign: 'center', maxWidth: '400px' }}>Your free trial has started. Enjoy all premium features for 30 days — then €3.99/month, cancel anytime.</p>
           <button onClick={() => navigate('/feed')} style={{ background: '#d63bdf', color: '#fff', border: 'none', borderRadius: '10px', padding: '0.85rem 2.5rem', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
@@ -47,7 +48,7 @@ export default function PremiumSuccessPage() {
 
       {status === 'error' && (
         <>
-          <div style={{ fontSize: '3rem' }}>⚠️</div>
+          <AlertTriangleIcon size={44} color="#ff6b6b" />
           <h1 style={{ color: '#ff6b6b', fontSize: '1.5rem' }}>Something went wrong</h1>
           <p style={{ color: '#888', textAlign: 'center' }}>We couldn't confirm your payment. If you were charged, please contact support.</p>
           <button onClick={() => navigate('/premium')} style={{ background: 'transparent', color: '#d63bdf', border: '1.5px solid #d63bdf', borderRadius: '10px', padding: '0.75rem 2rem', fontSize: '1rem', cursor: 'pointer', fontFamily: 'inherit' }}>

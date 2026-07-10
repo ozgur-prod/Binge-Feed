@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { usersAPI, listsAPI } from '../services/api';
+import { XIcon, CheckIcon, PlusIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './FavoritesModal.css';
 import './ListsModal.css';
@@ -75,7 +76,7 @@ export default function AddToListModal({ show, onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}><XIcon /></button>
         <h2 className="modal-title">Add to List</h2>
 
         <div className="lists-create">
@@ -110,14 +111,14 @@ export default function AddToListModal({ show, onClose }) {
                   >
                     <span className="lists-overview-title">{list.title}</span>
                     <span className={isMember(list) ? 'list-check on' : 'list-check'}>
-                      {isMember(list) ? '✓ Added' : '+ Add'}
+                      {isMember(list) ? <><CheckIcon size={13} /> Added</> : <><PlusIcon size={13} /> Add</>}
                     </span>
                   </button>
                   {confirmDeleteId === list.id ? (
                     <span className="lists-confirm">
                       <span className="lists-confirm-text">Delete?</span>
-                      <button className="lists-confirm-yes" title="Confirm delete" onClick={() => deleteList(list.id)}>✓</button>
-                      <button className="lists-confirm-no" title="Cancel" onClick={() => setConfirmDeleteId(null)}>✕</button>
+                      <button className="lists-confirm-yes" title="Confirm delete" onClick={() => deleteList(list.id)}><CheckIcon size={14} /></button>
+                      <button className="lists-confirm-no" title="Cancel" onClick={() => setConfirmDeleteId(null)}><XIcon size={14} /></button>
                     </span>
                   ) : (
                     <button
@@ -125,7 +126,7 @@ export default function AddToListModal({ show, onClose }) {
                       title="Delete list"
                       onClick={() => setConfirmDeleteId(list.id)}
                     >
-                      ✕
+                      <XIcon size={14} />
                     </button>
                   )}
                 </li>

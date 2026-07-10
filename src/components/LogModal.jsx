@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { showsAPI, progressAPI } from '../services/api';
+import { XIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './FavoritesModal.css';
 import './LogModal.css';
@@ -129,7 +130,7 @@ export default function LogModal({ initial, onClose, onSaved }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal favorites-modal log-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}><XIcon /></button>
         <h2 className="modal-title">{editing ? 'Edit entry' : 'Log episodes'}</h2>
 
         <div className="log-body">
@@ -231,7 +232,7 @@ export default function LogModal({ initial, onClose, onSaved }) {
                 {pool.map((p) => (
                   <span className="log-pool-chip" key={keyOf(p)}>
                     S{p.season}E{p.episode}
-                    <button className="log-pool-x" onClick={() => setPool((prev) => prev.filter((x) => keyOf(x) !== keyOf(p)))}>✕</button>
+                    <button className="log-pool-x" onClick={() => setPool((prev) => prev.filter((x) => keyOf(x) !== keyOf(p)))}><XIcon size={12} /></button>
                   </span>
                 ))}
               </div>

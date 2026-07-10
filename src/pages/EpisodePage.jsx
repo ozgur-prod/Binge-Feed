@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import Stars from '../components/Stars';
 import RatePopup from '../components/RatePopup.jsx';
 import CommentAuthor from '../components/CommentAuthor';
-import { HeartIcon, TrashIcon, ChevronDownIcon, CheckIcon, StarIcon } from '../components/icons';
+import { HeartIcon, TrashIcon, ChevronDownIcon, ChevronLeftIcon, CheckIcon, StarIcon } from '../components/icons';
 import { showsAPI, commentsAPI, reviewsAPI, progressAPI } from '../services/api';
 import './EpisodePage.css';
 
@@ -298,7 +298,7 @@ export default function EpisodePage() {
       <Header />
 
       <div className="episode-content">
-        <Link className="back-link" to={`/show/${id}`}>← Back to {showName}</Link>
+        <Link className="back-link" to={`/show/${id}`}><ChevronLeftIcon size={16} /> Back to {showName}</Link>
 
         <div className="episode-hero">
           {episode.still_path && (
