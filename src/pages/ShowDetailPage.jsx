@@ -5,6 +5,7 @@ import AddToListModal from '../components/AddToListModal';
 import Toast from '../components/Toast';
 import Stars from '../components/Stars';
 import RatePopup from '../components/RatePopup.jsx';
+import CommentAuthor from '../components/CommentAuthor';
 import { PlusIcon, StarIcon, CheckIcon } from '../components/icons';
 import { showsAPI, usersAPI, favoritesAPI, progressAPI, reviewsAPI } from '../services/api';
 import './ShowDetailPage.css';
@@ -82,14 +83,8 @@ export default function ShowDetailPage() {
   const [myRating, setMyRating] = useState(null);
   const [myReviewId, setMyReviewId] = useState(null);
   const me = useMemo(() => currentUser(), []);
-
-  // open a specific season tab when navigated with ?season=N (e.g. from the profile Diary).
-  useEffect(() => {
-    const wanted = Number(searchParams.get('season'));
-    if (wanted && seasons.some((s) => s.season_number === wanted)) {
-      setActiveSeason(wanted);
-    }
-  }, [searchParams, seasons]);
+  // Captured once at mount - only used to pick the initial season tab (e.g. from the profile Diary's ?season=N link).
+  const [initialSeasonParam] = useState(() => Number(searchParams.get('season')));
 
   useEffect(() => {
     showsAPI.getDetails(id)
@@ -97,7 +92,10 @@ export default function ShowDetailPage() {
         setShow(data);
         const realSeasons = (data.seasons || []).filter((s) => s.season_number > 0);
         setSeasons(realSeasons);
-        if (realSeasons.length > 0) setActiveSeason(realSeasons[0].season_number);
+        if (realSeasons.length > 0) {
+          const wanted = realSeasons.some((s) => s.season_number === initialSeasonParam) ? initialSeasonParam : realSeasons[0].season_number;
+          setActiveSeason(wanted);
+        }
       })
       .catch(() => setError('Failed to load show details.'));
 
@@ -121,7 +119,7 @@ export default function ShowDetailPage() {
         .then((data) => setIsFavorited(data.favorites.some((f) => f.showId === Number(id))))
         .catch(() => {});
     }
-  }, [id, me.id]);
+  }, [id, me.id, initialSeasonParam]);
 
   function openAddToList() {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -333,7 +331,7 @@ export default function ShowDetailPage() {
                 {reviews.map((r) => (
                   <div key={r._id} className="review-row">
                     <div className="review-row-top">
-                      <span className="review-author">{r.createdBy?.handle || 'unknown user'}</span>
+                      <CommentAuthor user={r.createdBy} deleted={!r.createdBy} />
                       <Stars value={r.rating} />
                     </div>
                     <p className="review-text">{r.text}</p>

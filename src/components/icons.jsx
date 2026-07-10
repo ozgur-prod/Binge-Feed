@@ -1,6 +1,6 @@
 import {
   Heart, Trash2, User, MessageSquare, Bookmark, Share2, Repeat,
-  Plus, Star, PenLine, List, Calendar, ChevronLeft, ChevronDown, Play, Check,
+  Plus, Star, PenLine, List, Calendar, ChevronLeft, ChevronDown, Play, Check, Crown,
 } from 'lucide-react';
 
 // Icons we use to keep everything looking the same
@@ -23,3 +23,4 @@ export const ChevronDownIcon = (props) => <ChevronDown {...defaults} {...props} 
 export const CheckIcon = (props) => <Check {...defaults} {...props} />;
 
 export const PlayIcon = (props) => <Play size={18} fill="currentColor" stroke="none" {...props} />;
+export const CrownIcon = (props) => <Crown size={18} fill="currentColor" strokeWidth={1.5} {...props} />;

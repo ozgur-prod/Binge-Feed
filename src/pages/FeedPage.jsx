@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showsAPI, feedAPI, commentsAPI } from '../services/api';
 import Header from '../components/Header';
-import { BookmarkIcon, UserIcon, HeartIcon, MessageSquareIcon, RepeatIcon, StarIcon } from '../components/icons';
+import { BookmarkIcon, HeartIcon, MessageSquareIcon, RepeatIcon, StarIcon } from '../components/icons';
+import CommentAuthor from '../components/CommentAuthor';
 import './FeedPage.css';
 
 const POSTER_BASE = 'https://image.tmdb.org/t/p/w154';
@@ -68,10 +69,7 @@ function ReviewFeedCard({ item }) {
         )}
 
         <div className="card-content">
-          <div className="card-meta">
-            <span className="user-icon"><UserIcon /></span>
-            <span className="username">{item.createdBy?.handle}</span>
-          </div>
+          <CommentAuthor user={item.createdBy} />
 
           <div className="rating-row">
             <span className="rating-label">{label}</span>
@@ -144,10 +142,7 @@ function CommentFeedCard({ item, onLikeToggled }) {
         )}
 
         <div className="card-content">
-          <div className="card-meta">
-            <span className="user-icon"><UserIcon /></span>
-            <span className="username">{item.createdBy?.handle}</span>
-          </div>
+          <CommentAuthor user={item.createdBy} />
 
           <p className="rating-label">{label}</p>
 

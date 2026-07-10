@@ -168,7 +168,7 @@
 /* Body: episodes + reviews */
 .detail-body {
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: 1fr 400px;
   gap: 2rem;
   align-items: start;
 }
@@ -281,7 +281,7 @@
   background: #111;
   border: 1.5px solid #222;
   border-radius: 10px;
-  padding: 1.2rem;
+  padding: 1.5rem;
 }
 
 .latest-reviews h2 {
@@ -315,13 +315,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
   margin-bottom: 0.35rem;
 }
 
-.review-author {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #fff;
+.review-row-top .stars {
+  flex-shrink: 0;
 }
 
 .review-text {
