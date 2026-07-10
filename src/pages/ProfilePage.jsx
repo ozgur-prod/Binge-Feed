@@ -10,6 +10,7 @@ import DiaryEntries from '../components/DiaryEntries';
 import DiaryModal from '../components/DiaryModal';
 import LogModal from '../components/LogModal';
 import { UserIcon, PlayIcon } from '../components/icons';
+import AdBox from '../components/AdBox';
 import './ProfilePage.css';
 
 const LIST_THUMBS_PREVIEW = 3;
@@ -186,6 +187,12 @@ function ProfilePage() {
     <div className="profile-page">
       <Header active="profile" />
 
+      <div className="profile-layout">
+        <div className="feed-ad-col">
+          <AdBox className="feed-ad" />
+          <AdBox className="feed-ad" text="Another ad could be here." />
+        </div>
+
       <main className="profile-main">
         <div className="profile-content">
           <section className="profile-header">
@@ -303,7 +310,7 @@ function ProfilePage() {
         </div>
 
         <aside className="profile-sidebar">
-          <div className="ad-box">Your ad could be here.</div>
+          <AdBox />
 
           <div className="lists-section">
             <div className="section-head">
@@ -351,6 +358,12 @@ function ProfilePage() {
           </div>
         </aside>
       </main>
+
+        <div className="feed-ad-col">
+          <AdBox className="feed-ad" />
+          <AdBox className="feed-ad" text="Another ad could be here." />
+        </div>
+      </div>
 
       {showEdit && user && (
         <EditProfileModal user={user} onClose={() => setShowEdit(false)} onSaved={handleSaved} />
