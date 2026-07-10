@@ -216,7 +216,7 @@ function AdvancedSearch() {
                 className={`chip ${minRating === r ? 'active' : ''}`}
                 onClick={() => setMinRating(r)}
               >
-                <StarIcon size={13} fill="currentColor" />{r}+
+                <StarIcon size={13} fill="currentColor" />{r / 2}+
               </button>
             ))}
           </div>
