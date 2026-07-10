@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showsAPI } from '../services/api';
+import { XIcon, CheckIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './FavoritesModal.css';
 
@@ -11,24 +12,22 @@ export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) 
   const [query, setQuery] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loadedQuery, setLoadedQuery] = useState(null);
   const [error, setError] = useState('');
 
   const searching = searchQuery.length > 0;
+  const loading = searching && searchQuery !== loadedQuery;
   const existingIds = favorites.map((f) => f.showId);
 
+  // `results` is only ever rendered while `searching` is true, so there's nothing to reset when it's false.
   useEffect(() => {
-    if (!searching) {
-      setResults([]);
-      return;
-    }
+    if (!searching) return;
     let stale = false;
-    setLoading(true);
     showsAPI
       .search(searchQuery)
       .then((d) => { if (!stale) setResults((d.results || []).slice(0, 12)); })
       .catch(() => { if (!stale) setResults([]); })
-      .finally(() => { if (!stale) setLoading(false); });
+      .finally(() => { if (!stale) setLoadedQuery(searchQuery); });
     return () => { stale = true; };
   }, [searchQuery, searching]);
 
@@ -58,7 +57,7 @@ export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}><XIcon /></button>
         <h2 className="modal-title">Favorite Series</h2>
 
         <input
@@ -94,7 +93,7 @@ export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) 
                     ) : (
                       <div className="favorites-noimg">No image</div>
                     )}
-                    {already && <span className="favorites-add-check">✓</span>}
+                    {already && <span className="favorites-add-check"><CheckIcon size={14} /></span>}
                     <span className="favorites-item-name">{show.name}</span>
                   </button>
                 );
@@ -118,7 +117,7 @@ export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) 
                   title="Remove favorite"
                   onClick={() => onRemove(fav.showId)}
                 >
-                  ✕
+                  <XIcon size={14} />
                 </button>
                 <span className="favorites-item-name">{fav.showName}</span>
               </div>

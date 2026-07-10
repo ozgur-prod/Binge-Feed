@@ -19,7 +19,9 @@
 }
 
 .back-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
   color: #c850c0;
   text-decoration: none;
   font-size: 0.9rem;
@@ -236,52 +238,11 @@
   margin-bottom: 0.6rem;
 }
 
-.comment-avatar {
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.comment-avatar.placeholder {
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.comment-identity {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.comment-author {
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: #fff;
-}
-
-.comment-author.muted {
-  color: #777;
-  font-weight: 400;
-  font-style: italic;
-}
-
-.comment-author.premium {
-  color: #b8860b;
-}
-
-.premium-badge {
-  color: #b8860b;
-  margin-left: -0.15rem;
-}
-
 .comment-row-top-right {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  flex-shrink: 0;
 }
 
 .like-count {

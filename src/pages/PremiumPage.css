@@ -93,7 +93,7 @@
 .premium-feature:hover { border-color: #d63bdf55; }
 
 .premium-feature-icon {
-  font-size: 1.6rem;
+  color: #d63bdf;
   flex-shrink: 0;
 }
 
@@ -153,6 +153,9 @@
 .premium-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .premium-secure {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   font-size: 0.82rem;
   color: #555;
   margin: 0;
@@ -165,10 +168,23 @@
 }
 
 .premium-already {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: 1rem;
   color: #d63bdf;
   font-weight: 600;
   padding: 1rem 2rem;
   border: 1.5px solid #d63bdf55;
   border-radius: 12px;
+}
+
+.premium-free-month {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #b8860b;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0;
 }

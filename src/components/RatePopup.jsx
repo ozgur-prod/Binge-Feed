@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { reviewsAPI } from '../services/api';
-import { StarIcon, StarHalfIcon } from './icons';
+import { StarIcon, StarHalfIcon, XIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './RatePopup.css';
 
@@ -72,7 +72,7 @@ export default function RatePopup({ showId, season, episode, reviewId, initialRa
       onClick={() => { if (mouseDownOnOverlay.current) onClose(); }}
     >
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}><XIcon /></button>
         <h2 className="modal-title">
           {isEpisode
             ? (reviewId ? 'Update episode rating' : 'Rate this episode')

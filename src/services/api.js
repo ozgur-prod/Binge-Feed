@@ -129,3 +129,16 @@ export const progressAPI = {
   history: ({ skip = 0, limit = 60 } = {}) =>
     request(`/progress/history?${new URLSearchParams({ skip, limit })}`, { headers: authHeaders() }),
 };
+
+export const feedAPI = {
+  get: ({ before, limit = 20 } = {}) => {
+    const params = { limit };
+    if (before) params.before = before;
+    return request(`/feed?${new URLSearchParams(params)}`, { headers: authHeaders() });
+  },
+};
+
+export const discussionsAPI = {
+  get: ({ days = 7, limit = 20 } = {}) =>
+    request(`/discussions?${new URLSearchParams({ days, limit })}`, { headers: authHeaders() }),
+};

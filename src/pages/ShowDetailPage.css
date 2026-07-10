@@ -168,7 +168,7 @@
 /* Body: episodes + reviews */
 .detail-body {
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: 1fr 400px;
   gap: 2rem;
   align-items: start;
 }
@@ -281,7 +281,7 @@
   background: #111;
   border: 1.5px solid #222;
   border-radius: 10px;
-  padding: 1.2rem;
+  padding: 1.5rem;
 }
 
 .reviews-section-head {
@@ -298,16 +298,32 @@
 }
 
 .see-all-reviews {
-  background: none;
-  border: none;
-  color: #888;
-  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: transparent;
+  border: 1.5px solid #c850c055;
+  color: #c850c0;
+  font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
-  padding: 0;
-  transition: color 0.15s;
+  padding: 0.35rem 0.9rem;
+  border-radius: 50px;
+  transition: background 0.15s, border-color 0.15s;
 }
 
-.see-all-reviews:hover { color: #d63bdf; }
+.see-all-reviews svg {
+  transition: transform 0.15s;
+}
+
+.see-all-reviews:hover {
+  background: #c850c01a;
+  border-color: #c850c0;
+}
+
+.see-all-reviews:hover svg {
+  transform: translateX(2px);
+}
 
 .see-all-reviews-btn {
   margin-top: 1rem;
@@ -322,7 +338,7 @@
   transition: border-color 0.15s, color 0.15s;
 }
 
-.see-all-reviews-btn:hover { border-color: #d63bdf; color: #d63bdf; }
+.see-all-reviews-btn:hover { border-color: #c850c0; color: #c850c0; }
 
 .no-reviews {
   color: #666;
@@ -349,13 +365,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
   margin-bottom: 0.35rem;
 }
 
-.review-author {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #fff;
+.review-row-top .stars {
+  flex-shrink: 0;
 }
 
 .review-text {

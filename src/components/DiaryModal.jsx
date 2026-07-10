@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import DiaryEntries from './DiaryEntries';
+import { XIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './FavoritesModal.css';
 
@@ -9,7 +10,7 @@ export default function DiaryModal({ blocks, total, showCount, hasMore, loadingM
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}><XIcon /></button>
         <div className="diary-modal-head">
           <h2 className="modal-title">Diary</h2>
           {total > 0 && (

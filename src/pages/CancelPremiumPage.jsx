@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { HandIcon } from '../components/icons';
 
 const BASE_URL = 'http://localhost:8080/api';
 
@@ -52,7 +53,7 @@ export default function CancelPremiumPage() {
   if (cancelled) {
     return (
       <div style={pageStyle}>
-        <div style={{ fontSize: '3.5rem' }}>👋</div>
+        <HandIcon size={48} color="#d63bdf" />
         <h1 style={{ fontSize: '2rem', fontWeight: 800, color: '#fff' }}>
           Premium membership cancelled.
         </h1>

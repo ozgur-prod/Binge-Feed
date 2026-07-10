@@ -61,21 +61,6 @@
 
 .feed-card:hover { border-color: #d63bdf88; }
 
-.bookmark-btn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  padding: 0.2rem;
-  display: flex;
-}
-
-.bookmark-btn svg { width: 1.2rem; height: 1.2rem; }
-.bookmark-btn:hover { color: #fff; }
-
 .card-body {
   display: flex;
   gap: 1rem;
@@ -100,25 +85,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-}
-
-.card-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.user-icon {
-  color: #d63bdf;
-  display: flex;
-}
-
-.user-icon svg { width: 1.1rem; height: 1.1rem; }
-
-.username {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #e0d0e8;
 }
 
 .rating-row {
@@ -191,6 +157,78 @@
 .like-btn.active { color: #e05; }
 .like-btn.active svg { fill: #e05; }
 
+.mention {
+  color: #d63bdf;
+  font-weight: 600;
+}
+
+/* Inline reply (feed) */
+.feed-reply-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #1e1e1e;
+}
+
+.feed-reply-input {
+  flex: 1;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-family: inherit;
+  padding: 0.5rem 0.75rem;
+}
+
+.feed-reply-input:focus {
+  outline: none;
+  border-color: #d63bdf88;
+}
+
+.feed-reply-submit {
+  background: #d63bdf;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.feed-reply-submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.feed-reply-sent {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0.5rem 0 0;
+  text-align: right;
+}
+
+.load-more-btn {
+  align-self: center;
+  background: none;
+  border: 1px solid #d63bdf66;
+  border-radius: 20px;
+  color: #d63bdf;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.load-more-btn:hover { background: #d63bdf22; }
+.load-more-btn:disabled { opacity: 0.5; cursor: default; }
+
 /* Hot Discussions */
 .disc-list {
   display: flex;
@@ -249,6 +287,9 @@
 }
 
 .disc-heat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   font-size: 0.8rem;
   color: #ff8c42;
   font-weight: 600;
@@ -260,39 +301,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-}
-
-.disc-user {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.disc-avatar {
-  width: 1.6rem;
-  height: 1.6rem;
-  background: #d63bdf;
-  color: #fff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.disc-username {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #cbb8d4;
-}
-
-.disc-time {
-  font-size: 0.75rem;
-  color: #555;
-  margin-left: auto;
 }
 
 .disc-text {

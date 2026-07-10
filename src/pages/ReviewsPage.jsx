@@ -102,29 +102,29 @@ export default function ReviewsPage() {
   const [show, setShow] = useState(null);
   const [publicReviews, setPublicReviews] = useState([]);
   const [friendReviews, setFriendReviews] = useState([]);
-  const [loadingPublic, setLoadingPublic] = useState(true);
-  const [loadingFriends, setLoadingFriends] = useState(false);
-  const [friendsLoaded, setFriendsLoaded] = useState(false);
+  const [loadedPublicId, setLoadedPublicId] = useState(null);
+  const [loadedFriendsId, setLoadedFriendsId] = useState(null);
   const loggedIn = isLoggedIn();
+  const loadingPublic = id !== loadedPublicId;
+  const friendsLoaded = id === loadedFriendsId;
+  const loadingFriends = loggedIn && !friendsLoaded;
 
   useEffect(() => {
     showsAPI.getDetails(id).then(setShow).catch(() => {});
 
-    setLoadingPublic(true);
     reviewsAPI.list({ showId: id })
       .then((data) => setPublicReviews(data.reviews || []))
       .catch(() => {})
-      .finally(() => setLoadingPublic(false));
+      .finally(() => setLoadedPublicId(id));
   }, [id]);
 
   useEffect(() => {
-    if (tab !== 'friends' || !loggedIn || friendsLoaded) return;
-    setLoadingFriends(true);
+    if (!loggedIn || friendsLoaded) return;
     reviewsAPI.list({ showId: id, friends: true })
       .then((data) => setFriendReviews(data.reviews || []))
       .catch(() => {})
-      .finally(() => { setLoadingFriends(false); setFriendsLoaded(true); });
-  }, [tab, id, loggedIn, friendsLoaded]);
+      .finally(() => setLoadedFriendsId(id));
+  }, [id, loggedIn, friendsLoaded]);
 
   const baseReviews = tab === 'friends' ? friendReviews : publicReviews;
   const reviews = [...baseReviews].sort((a, b) =>

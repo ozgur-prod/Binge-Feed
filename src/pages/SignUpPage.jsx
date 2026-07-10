@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { authAPI, saveSession } from '../services/api';
-import { PlayIcon } from '../components/icons';
+import { PlayIcon, XIcon } from '../components/icons';
 import './AuthPages.css';
 import '../components/ForgotPasswordModal.css';
 
@@ -44,7 +44,7 @@ function VerifyModal({ email, onSuccess, onClose }) {
   return createPortal(
     <div className="modal-overlay">
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}><XIcon /></button>
         <h2 className="modal-title">Verify your email</h2>
         <p className="modal-subtitle">We sent a 6-digit code to <strong>{email}</strong></p>
         <form onSubmit={handleVerify} noValidate>
