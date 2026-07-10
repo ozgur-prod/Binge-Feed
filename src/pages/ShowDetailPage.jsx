@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import Header from '../components/Header';
+import AddToListModal from '../components/AddToListModal';
+import Toast from '../components/Toast';
 import Stars from '../components/Stars';
 import RatePopup from '../components/RatePopup.jsx';
 import { PlusIcon, StarIcon, CheckIcon } from '../components/icons';
-import { showsAPI, progressAPI, reviewsAPI } from '../services/api';
+import { showsAPI, usersAPI, favoritesAPI, progressAPI, reviewsAPI } from '../services/api';
 import './ShowDetailPage.css';
 
 function isLoggedIn() {
@@ -60,6 +62,7 @@ const PROVIDER_URLS = {
 export default function ShowDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [show, setShow] = useState(null);
   const [seasons, setSeasons] = useState([]);
@@ -68,6 +71,9 @@ export default function ShowDetailPage() {
   const [loadedSeason, setLoadedSeason] = useState(null);
   const loadingEpisodes = activeSeason !== loadedSeason;
   const [watchProviders, setWatchProviders] = useState([]);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [showAddToList, setShowAddToList] = useState(false);
+  const [favError, setFavError] = useState('');
   const [watchedEpisodes, setWatchedEpisodes] = useState(() => new Set());
   const [error, setError] = useState('');
 
@@ -76,6 +82,14 @@ export default function ShowDetailPage() {
   const [myRating, setMyRating] = useState(null);
   const [myReviewId, setMyReviewId] = useState(null);
   const me = useMemo(() => currentUser(), []);
+
+  // open a specific season tab when navigated with ?season=N (e.g. from the profile Diary).
+  useEffect(() => {
+    const wanted = Number(searchParams.get('season'));
+    if (wanted && seasons.some((s) => s.season_number === wanted)) {
+      setActiveSeason(wanted);
+    }
+  }, [searchParams, seasons]);
 
   useEffect(() => {
     showsAPI.getDetails(id)
@@ -99,7 +113,44 @@ export default function ShowDetailPage() {
         setMyReviewId(mine ? mine._id : null);
       })
       .catch(() => {});
+
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (token) {
+      usersAPI.getMe()
+        .then((data) => favoritesAPI.list(data.user.id))
+        .then((data) => setIsFavorited(data.favorites.some((f) => f.showId === Number(id))))
+        .catch(() => {});
+    }
   }, [id, me.id]);
+
+  function openAddToList() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    setShowAddToList(true);
+  }
+
+  async function toggleFavorite() {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    try {
+      if (isFavorited) {
+        await favoritesAPI.remove(show.id);
+        setIsFavorited(false);
+      } else {
+        await favoritesAPI.add({ showId: show.id });
+        setIsFavorited(true);
+      }
+      setFavError('');
+    } catch (err) {
+      setFavError(err.message);
+    }
+  }
 
   useEffect(() => {
     if (!activeSeason) return;
@@ -209,13 +260,13 @@ export default function ShowDetailPage() {
             )}
 
             <div className="detail-actions">
-              <button className="action-btn primary">
+              <button className="action-btn primary" onClick={openAddToList}>
                 <PlusIcon />
                 Add to List
               </button>
-              <button className="action-btn">
-                <StarIcon />
-                Favourite
+              <button className={`action-btn ${isFavorited ? 'active' : ''}`} onClick={toggleFavorite}>
+                <StarIcon fill={isFavorited ? 'currentColor' : 'none'} />
+                {isFavorited ? 'Favourited' : 'Favourite'}
               </button>
               {isLoggedIn() && (
                 <button className="action-btn" onClick={() => setShowRateModal(true)}>
@@ -293,6 +344,12 @@ export default function ShowDetailPage() {
           </div>
         </div>
       </div>
+
+      {showAddToList && show && (
+        <AddToListModal show={show} onClose={() => setShowAddToList(false)} />
+      )}
+
+      {favError && <Toast message={favError} onClose={() => setFavError('')} />}
 
       {showRateModal && (
         <RatePopup

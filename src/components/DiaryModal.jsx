@@ -1,0 +1,40 @@
+import { useState } from 'react';
+import DiaryEntries from './DiaryEntries';
+import './ForgotPasswordModal.css';
+import './FavoritesModal.css';
+
+export default function DiaryModal({ blocks, total, showCount, hasMore, loadingMore, onLoadMore, onEditEpisode, onDeleteEpisode, initialManage = false, onClose }) {
+  const [manage, setManage] = useState(initialManage);
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <div className="diary-modal-head">
+          <h2 className="modal-title">Diary</h2>
+          {total > 0 && (
+            <button className="pill-btn pill-btn-small" onClick={() => setManage((m) => !m)}>
+              {manage ? 'Done' : 'Edit'}
+            </button>
+          )}
+        </div>
+        <p className="diary-modal-total">
+          {total} episode{total === 1 ? '' : 's'} across {showCount} show{showCount === 1 ? '' : 's'}
+        </p>
+
+        <div className="favorites-modal-body">
+          <DiaryEntries
+            blocks={blocks}
+            onEditEpisode={manage ? onEditEpisode : undefined}
+            onDeleteEpisode={manage ? onDeleteEpisode : undefined}
+          />
+          {hasMore && (
+            <button className="diary-load-more" onClick={onLoadMore} disabled={loadingMore}>
+              {loadingMore ? 'Loading…' : 'Load more'}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
