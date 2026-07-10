@@ -44,6 +44,8 @@ function ReviewCard({ review, loggedIn, navigate }) {
   const [likeCount, setLikeCount] = useState(review.likeCount || 0);
   const [likedByMe, setLikedByMe] = useState(review.likedByMe || false);
   const [liking, setLiking] = useState(false);
+  const authorHandle = review.createdBy?.handle;
+  const openProfile = () => authorHandle && navigate(`/user/${authorHandle}`);
 
   async function toggleLike() {
     if (!loggedIn) { navigate('/login'); return; }
@@ -64,9 +66,18 @@ function ReviewCard({ review, loggedIn, navigate }) {
     <div className="rv-card">
       <div className="rv-card-top">
         <div className="rv-author-info">
-          <Avatar user={review.createdBy} />
+          {authorHandle ? (
+            <span className="rv-author-link" onClick={openProfile}><Avatar user={review.createdBy} /></span>
+          ) : (
+            <Avatar user={review.createdBy} />
+          )}
           <div>
-            <span className="rv-handle">{review.createdBy?.handle || 'unknown'}</span>
+            <span
+              className={`rv-handle${authorHandle ? ' rv-author-link' : ''}`}
+              onClick={authorHandle ? openProfile : undefined}
+            >
+              {review.createdBy?.handle || 'unknown'}
+            </span>
             {review.createdBy?.displayName && (
               <span className="rv-display-name">{review.createdBy.displayName}</span>
             )}

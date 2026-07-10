@@ -49,7 +49,7 @@ export const authAPI = {
 export const usersAPI = {
   getMe: () => request('/users/me', { headers: authHeaders() }),
   updateMe: (body) => request('/users/me', { method: 'PUT', headers: authHeaders(), body: JSON.stringify(body) }),
-  getUser: (id) => request(`/users/${id}`, { headers: authHeaders() }),
+  getUserByHandle: (handle) => request(`/users/handle/${encodeURIComponent(handle)}`, { headers: authHeaders() }),
   follow: (id) => request(`/users/${id}/follow`, { method: 'POST', headers: authHeaders() }),
   unfollow: (id) => request(`/users/${id}/follow`, { method: 'DELETE', headers: authHeaders() }),
   getFollowers: (id) => request(`/users/${id}/followers`, { headers: authHeaders() }),
@@ -128,6 +128,8 @@ export const progressAPI = {
   },
   history: ({ skip = 0, limit = 60 } = {}) =>
     request(`/progress/history?${new URLSearchParams({ skip, limit })}`, { headers: authHeaders() }),
+  userHistory: (userId, { skip = 0, limit = 60 } = {}) =>
+    request(`/progress/history/${userId}?${new URLSearchParams({ skip, limit })}`, { headers: authHeaders() }),
 };
 
 export const feedAPI = {

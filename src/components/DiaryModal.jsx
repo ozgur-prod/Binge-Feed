@@ -4,7 +4,7 @@ import { XIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './FavoritesModal.css';
 
-export default function DiaryModal({ blocks, total, showCount, hasMore, loadingMore, onLoadMore, onEditEpisode, onDeleteEpisode, initialManage = false, onClose }) {
+export default function DiaryModal({ blocks, total, showCount, hasMore, loadingMore, onLoadMore, onEditEpisode, onDeleteEpisode, initialManage = false, canManage = true, onClose }) {
   const [manage, setManage] = useState(initialManage);
 
   return (
@@ -13,7 +13,7 @@ export default function DiaryModal({ blocks, total, showCount, hasMore, loadingM
         <button className="modal-close" onClick={onClose}><XIcon /></button>
         <div className="diary-modal-head">
           <h2 className="modal-title">Diary</h2>
-          {total > 0 && (
+          {canManage && total > 0 && (
             <button className="pill-btn pill-btn-small" onClick={() => setManage((m) => !m)}>
               {manage ? 'Done' : 'Edit'}
             </button>

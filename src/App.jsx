@@ -6,7 +6,7 @@ import SignUpPage from './pages/SignUpPage';
 import FeedPage from './pages/FeedPage';
 import SearchPage from './pages/SearchPage';
 import ProfilePage from './pages/ProfilePage';
-import UserProfilePage from './pages/UserProfilePage';
+import ProfileRedirect from './components/ProfileRedirect';
 import ShowDetailPage from './pages/ShowDetailPage';
 import EpisodePage from './pages/EpisodePage';
 import ReviewsPage from './pages/ReviewsPage';
@@ -23,8 +23,8 @@ function App() {
       <Route path="/signup" element={<RedirectIfAuthed><SignUpPage /></RedirectIfAuthed>} />
       <Route path="/feed" element={<RequireAuth><FeedPage /></RequireAuth>} />
       <Route path="/search" element={<RequireAuth><SearchPage /></RequireAuth>} />
-      <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
-      <Route path="/user/:id" element={<RequireAuth><UserProfilePage /></RequireAuth>} />
+      <Route path="/profile" element={<RequireAuth><ProfileRedirect /></RequireAuth>} />
+      <Route path="/user/:handle" element={<RequireAuth><ProfilePage /></RequireAuth>} />
       <Route path="/show/:id" element={<RequireAuth><ShowDetailPage /></RequireAuth>} />
       <Route path="/show/:id/reviews" element={<RequireAuth><ReviewsPage /></RequireAuth>} />
       <Route path="/show/:id/season/:season/episode/:episode" element={<RequireAuth><EpisodePage /></RequireAuth>} />

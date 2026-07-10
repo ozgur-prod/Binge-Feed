@@ -8,7 +8,7 @@ import './ListsModal.css';
 
 const POSTER_W154 = 'https://image.tmdb.org/t/p/w154';
 
-export default function ListsModal({ lists, setLists, onClose }) {
+export default function ListsModal({ lists, setLists, readOnly = false, onClose }) {
   const navigate = useNavigate();
   const [activeListId, setActiveListId] = useState(null);
   const [newTitle, setNewTitle] = useState('');
@@ -121,14 +121,16 @@ export default function ListsModal({ lists, setLists, onClose }) {
           <>
             <button className="lists-back" onClick={openOverview}><ChevronLeftIcon size={16} /> Lists</button>
             <h2 className="modal-title">{activeList.title}</h2>
-            <input
-              className="favorites-search"
-              type="text"
-              placeholder="Search a show, then press Enter…"
-              value={query}
-              onChange={onQueryChange}
-              onKeyDown={runSearch}
-            />
+            {!readOnly && (
+              <input
+                className="favorites-search"
+                type="text"
+                placeholder="Search a show, then press Enter…"
+                value={query}
+                onChange={onQueryChange}
+                onKeyDown={runSearch}
+              />
+            )}
             {error && <p className="favorites-modal-status favorites-modal-error">{error}</p>}
             <div className="favorites-modal-body">
               {searching ? (
@@ -161,7 +163,9 @@ export default function ListsModal({ lists, setLists, onClose }) {
                   </div>
                 )
               ) : activeList.shows.length === 0 ? (
-                <p className="favorites-modal-status">No shows yet — search above to add some.</p>
+                <p className="favorites-modal-status">
+                  {readOnly ? 'No shows in this list yet.' : 'No shows yet — search above to add some.'}
+                </p>
               ) : (
                 <div className="favorites-modal-grid">
                   {activeList.shows.map((s) => (
@@ -172,13 +176,15 @@ export default function ListsModal({ lists, setLists, onClose }) {
                         title={s.showName}
                         onClick={() => openShow(s.showId)}
                       />
-                      <button
-                        className="favorites-modal-remove"
-                        title="Remove from list"
-                        onClick={() => removeShow(s.showId)}
-                      >
-                        <XIcon size={14} />
-                      </button>
+                      {!readOnly && (
+                        <button
+                          className="favorites-modal-remove"
+                          title="Remove from list"
+                          onClick={() => removeShow(s.showId)}
+                        >
+                          <XIcon size={14} />
+                        </button>
+                      )}
                       <span className="favorites-item-name">{s.showName}</span>
                     </div>
                   ))}
@@ -189,24 +195,28 @@ export default function ListsModal({ lists, setLists, onClose }) {
         ) : (
           <>
             <h2 className="modal-title">Lists</h2>
-            <div className="lists-create">
-              <input
-                className="favorites-search"
-                type="text"
-                placeholder="New list name…"
-                value={newTitle}
-                maxLength={60}
-                onChange={(e) => setNewTitle(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && createList()}
-              />
-              <button className="pill-btn pill-btn-small" onClick={createList} disabled={!newTitle.trim()}>
-                Create
-              </button>
-            </div>
+            {!readOnly && (
+              <div className="lists-create">
+                <input
+                  className="favorites-search"
+                  type="text"
+                  placeholder="New list name…"
+                  value={newTitle}
+                  maxLength={60}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && createList()}
+                />
+                <button className="pill-btn pill-btn-small" onClick={createList} disabled={!newTitle.trim()}>
+                  Create
+                </button>
+              </div>
+            )}
             {error && <p className="favorites-modal-status favorites-modal-error">{error}</p>}
             <div className="favorites-modal-body">
               {lists.length === 0 ? (
-                <p className="favorites-modal-status">No lists yet — create one above.</p>
+                <p className="favorites-modal-status">
+                  {readOnly ? 'No lists yet.' : 'No lists yet — create one above.'}
+                </p>
               ) : (
                 <ul className="lists-overview">
                   {lists.map((list) => (
@@ -221,7 +231,7 @@ export default function ListsModal({ lists, setLists, onClose }) {
                           {list.showCount} show(s)
                         </span>
                       </button>
-                      {confirmDeleteId === list.id ? (
+                      {!readOnly && (confirmDeleteId === list.id ? (
                         <span className="lists-confirm">
                           <span className="lists-confirm-text">Delete?</span>
                           <button className="lists-confirm-yes" title="Confirm delete" onClick={() => deleteList(list.id)}><CheckIcon size={14} /></button>
@@ -235,7 +245,7 @@ export default function ListsModal({ lists, setLists, onClose }) {
                         >
                           <XIcon size={14} />
                         </button>
-                      )}
+                      ))}
                     </li>
                   ))}
                 </ul>
