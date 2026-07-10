@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
-import { authAPI } from '../services/api';
+import { authAPI, saveSession } from '../services/api';
 import { PlayIcon, XIcon } from '../components/icons';
 import './AuthPages.css';
 import '../components/ForgotPasswordModal.css';
@@ -131,8 +131,7 @@ function SignUpPage() {
   }
 
   function handleVerified(data) {
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
+    saveSession(data, true);
     navigate('/feed');
   }
 
