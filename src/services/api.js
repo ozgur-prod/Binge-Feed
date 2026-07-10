@@ -108,3 +108,11 @@ export const progressAPI = {
   history: ({ skip = 0, limit = 60 } = {}) =>
     request(`/progress/history?${new URLSearchParams({ skip, limit })}`, { headers: authHeaders() }),
 };
+
+export const feedAPI = {
+  get: ({ before, limit = 20 } = {}) => {
+    const params = { limit };
+    if (before) params.before = before;
+    return request(`/feed?${new URLSearchParams(params)}`, { headers: authHeaders() });
+  },
+};

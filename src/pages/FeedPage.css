@@ -191,6 +191,77 @@
 .like-btn.active { color: #e05; }
 .like-btn.active svg { fill: #e05; }
 
+.mention {
+  color: #d63bdf;
+  font-weight: 600;
+}
+
+/* Inline reply (feed) */
+.feed-reply-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #1e1e1e;
+}
+
+.feed-reply-input {
+  flex: 1;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-family: inherit;
+  padding: 0.5rem 0.75rem;
+}
+
+.feed-reply-input:focus {
+  outline: none;
+  border-color: #d63bdf88;
+}
+
+.feed-reply-submit {
+  background: #d63bdf;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.feed-reply-submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.feed-reply-sent {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0.5rem 0 0;
+}
+
+.load-more-btn {
+  align-self: center;
+  background: none;
+  border: 1px solid #d63bdf66;
+  border-radius: 20px;
+  color: #d63bdf;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.load-more-btn:hover { background: #d63bdf22; }
+.load-more-btn:disabled { opacity: 0.5; cursor: default; }
+
 /* Hot Discussions */
 .disc-list {
   display: flex;
