@@ -22,7 +22,8 @@ export default function LogModal({ initial, onClose, onSaved }) {
   const [query, setQuery] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
-  const [searching, setSearching] = useState(false);
+  const [loadedSearchQuery, setLoadedSearchQuery] = useState(null);
+  const searching = !!searchQuery && searchQuery !== loadedSearchQuery;
   const [show, setShow] = useState(initial ? { id: initial.showId, name: initial.showName } : null);
   const [seasons, setSeasons] = useState([]);
   const [season, setSeason] = useState(initial ? initial.season : '');
@@ -33,26 +34,29 @@ export default function LogModal({ initial, onClose, onSaved }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
+  // `results` is only ever rendered while searchQuery is set, so there's nothing to reset when it's cleared
+  // (pickShow already clears results itself when it clears searchQuery).
   useEffect(() => {
-    if (!searchQuery) { setResults([]); return; }
+    if (!searchQuery) return;
     let stale = false;
-    setSearching(true);
     showsAPI.search(searchQuery)
       .then((d) => { if (!stale) setResults((d.results || []).slice(0, 8)); })
       .catch(() => { if (!stale) setResults([]); })
-      .finally(() => { if (!stale) setSearching(false); });
+      .finally(() => { if (!stale) setLoadedSearchQuery(searchQuery); });
     return () => { stale = true; };
   }, [searchQuery]);
 
+  // `seasons` is only ever rendered while `show` is set, so there's nothing to reset otherwise.
   useEffect(() => {
-    if (!show) { setSeasons([]); return; }
+    if (!show) return;
     showsAPI.getDetails(show.id)
       .then((d) => setSeasons((d.seasons || []).filter((s) => s.season_number > 0)))
       .catch(() => setSeasons([]));
   }, [show]);
 
+  // `episodes` is only ever rendered while `show` and `season` are set, so there's nothing to reset otherwise.
   useEffect(() => {
-    if (!show || season === '') { setEpisodes([]); return; }
+    if (!show || season === '') return;
     showsAPI.getSeason(show.id, season)
       .then((d) => setEpisodes(d.episodes || []))
       .catch(() => setEpisodes([]));

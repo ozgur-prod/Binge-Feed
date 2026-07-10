@@ -12,24 +12,22 @@ export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) 
   const [query, setQuery] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loadedQuery, setLoadedQuery] = useState(null);
   const [error, setError] = useState('');
 
   const searching = searchQuery.length > 0;
+  const loading = searching && searchQuery !== loadedQuery;
   const existingIds = favorites.map((f) => f.showId);
 
+  // `results` is only ever rendered while `searching` is true, so there's nothing to reset when it's false.
   useEffect(() => {
-    if (!searching) {
-      setResults([]);
-      return;
-    }
+    if (!searching) return;
     let stale = false;
-    setLoading(true);
     showsAPI
       .search(searchQuery)
       .then((d) => { if (!stale) setResults((d.results || []).slice(0, 12)); })
       .catch(() => { if (!stale) setResults([]); })
-      .finally(() => { if (!stale) setLoading(false); });
+      .finally(() => { if (!stale) setLoadedQuery(searchQuery); });
     return () => { stale = true; };
   }, [searchQuery, searching]);
 

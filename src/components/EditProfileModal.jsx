@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { usersAPI } from '../services/api';
 import { XIcon } from './icons';
 import './ForgotPasswordModal.css';
@@ -11,17 +12,15 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const mouseDownOnOverlay = useRef(false);
 
   function handleChange(e) {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit() {
     setError('');
-    // These checks just give instant feedback. The backend validates the same rules
-    // again, because requests can hit the API without going through this form.
     if (!form.displayName.trim()) return setError('Display name cannot be empty.');
     if (form.bio.length > 300) return setError('Bio must be at most 300 characters.');
     if (form.avatarUrl && !/^https?:\/\//.test(form.avatarUrl)) {
@@ -39,22 +38,26 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
     }
   }
 
-  return (
-    <div className="modal-overlay" onClick={onClose}>
+  return createPortal(
+    <div
+      className="modal-overlay"
+      onMouseDown={(e) => { mouseDownOnOverlay.current = e.target === e.currentTarget; }}
+      onClick={() => { if (mouseDownOnOverlay.current) onClose(); }}
+    >
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}><XIcon /></button>
         <h2 className="modal-title">Edit Profile</h2>
         <p className="modal-subtitle">Update how your profile looks to others.</p>
 
-        <form onSubmit={handleSubmit}>
+        <div>
           <div className="modal-field">
             <label htmlFor="displayName">Display name:</label>
             <input
               id="displayName"
               name="displayName"
+              type="text"
               value={form.displayName}
               onChange={handleChange}
-              required
               maxLength={50}
             />
           </div>
@@ -64,7 +67,7 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
             <input
               id="avatarUrl"
               name="avatarUrl"
-              type="url"
+              type="text"
               value={form.avatarUrl}
               onChange={handleChange}
               placeholder="https://…"
@@ -86,11 +89,12 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
 
           {error && <p className="modal-error">{error}</p>}
 
-          <button className="modal-btn" type="submit" disabled={loading}>
+          <button className="modal-btn" type="button" onClick={handleSubmit} disabled={loading}>
             {loading ? 'Saving…' : 'Save changes'}
           </button>
-        </form>
+        </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

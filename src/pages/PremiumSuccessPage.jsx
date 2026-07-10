@@ -7,12 +7,15 @@ const BASE_URL = 'http://localhost:8080/api';
 export default function PremiumSuccessPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [status, setStatus] = useState('loading');
+  const [sessionId] = useState(() => searchParams.get('session_id'));
+  const [status, setStatus] = useState(() => {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return sessionId && token ? 'loading' : 'error';
+  });
 
   useEffect(() => {
-    const sessionId = searchParams.get('session_id');
+    if (status !== 'loading') return;
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    if (!sessionId || !token) { setStatus('error'); return; }
 
     fetch(`${BASE_URL}/payments/confirm/${sessionId}`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -29,7 +32,7 @@ export default function PremiumSuccessPage() {
         }
       })
       .catch(() => setStatus('error'));
-  }, []);
+  }, [status, sessionId]);
 
   return (
     <div style={{ minHeight: '100vh', background: '#0d0d0d', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Poppins, sans-serif', gap: '1.5rem', padding: '2rem' }}>

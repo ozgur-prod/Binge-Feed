@@ -1,30 +1,29 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { reviewsAPI } from '../services/api';
-import { StarIcon, XIcon } from './icons';
+import { StarIcon, StarHalfIcon, XIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './RatePopup.css';
 
-export default function RatePopup({ showId, season, episode, reviewId, onClose, onRated, onDeleted }) {
+export default function RatePopup({ showId, season, episode, reviewId, initialRating, initialText, onClose, onRated, onDeleted }) {
   const isEpisode = season != null && episode != null;
 
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(initialRating || 0);
   const [hoverRating, setHoverRating] = useState(0);
-  const [text, setText] = useState('');
+  const [text, setText] = useState(initialText || '');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit() {
     if (!rating) return setError('Pick a star rating first.');
-    if (!isEpisode && !text.trim()) return setError('Write a short review.');
     setError('');
     setLoading(true);
     try {
       const { review } = await reviewsAPI.create(
         isEpisode
           ? { showId, season, episode, rating }
-          : { showId, rating, text: text.trim() }
+          : { showId, rating, ...(text.trim() ? { text: text.trim() } : {}) }
       );
       onRated(review);
       onClose();
@@ -51,32 +50,54 @@ export default function RatePopup({ showId, season, episode, reviewId, onClose, 
   }
 
   const displayValue = hoverRating || rating;
+  const mouseDownOnOverlay = useRef(false);
 
-  return (
-    <div className="modal-overlay" onClick={onClose}>
+  function getHalf(e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    return (e.clientX - rect.left) < rect.width / 2 ? 'left' : 'right';
+  }
+
+  function starIcon(n) {
+    const full = n * 2;
+    const half = n * 2 - 1;
+    if (displayValue >= full) return <StarIcon size={32} fill="currentColor" />;
+    if (displayValue === half) return <StarHalfIcon size={32} />;
+    return <StarIcon size={32} fill="none" />;
+  }
+
+  return createPortal(
+    <div
+      className="modal-overlay"
+      onMouseDown={(e) => { mouseDownOnOverlay.current = e.target === e.currentTarget; }}
+      onClick={() => { if (mouseDownOnOverlay.current) onClose(); }}
+    >
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}><XIcon /></button>
-        <h2 className="modal-title">{isEpisode ? 'Rate this episode' : 'Rate this show'}</h2>
+        <h2 className="modal-title">
+          {isEpisode
+            ? (reviewId ? 'Update episode rating' : 'Rate this episode')
+            : (reviewId ? 'Update rating & review' : 'Rate & Review')}
+        </h2>
 
-        <form onSubmit={handleSubmit}>
+        <div>
           <div className="star-picker" onMouseLeave={() => setHoverRating(0)}>
             {[1, 2, 3, 4, 5].map((n) => (
               <button
                 key={n}
                 type="button"
                 className="star-picker-btn"
-                onMouseEnter={() => setHoverRating(n * 2)}
-                onClick={() => setRating(n * 2)}
+                onMouseMove={(e) => setHoverRating(getHalf(e) === 'left' ? n * 2 - 1 : n * 2)}
+                onClick={(e) => setRating(getHalf(e) === 'left' ? n * 2 - 1 : n * 2)}
                 aria-label={`Rate ${n} star${n === 1 ? '' : 's'}`}
               >
-                <StarIcon size={32} fill={displayValue >= n * 2 ? 'currentColor' : 'none'} />
+                {starIcon(n)}
               </button>
             ))}
           </div>
 
           {!isEpisode && (
             <div className="modal-field">
-              <label htmlFor="review-text">Review:</label>
+              <label htmlFor="review-text">Review <span style={{ color: '#666', fontWeight: 400 }}>(optional)</span>:</label>
               <textarea
                 id="review-text"
                 rows={4}
@@ -92,10 +113,11 @@ export default function RatePopup({ showId, season, episode, reviewId, onClose, 
 
           <button
             className="modal-btn"
-            type="submit"
-            disabled={loading || deleting || !rating || (!isEpisode && !text.trim())}
+            type="button"
+            onClick={handleSubmit}
+            disabled={loading || deleting || !rating}
           >
-            {loading ? 'Saving…' : 'Submit Rating'}
+            {loading ? 'Saving…' : reviewId ? 'Update' : 'Submit'}
           </button>
 
           {reviewId && (
@@ -108,8 +130,9 @@ export default function RatePopup({ showId, season, episode, reviewId, onClose, 
               {deleting ? 'Deleting…' : 'Delete Rating'}
             </button>
           )}
-        </form>
+        </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

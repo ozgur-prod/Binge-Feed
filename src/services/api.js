@@ -77,20 +77,22 @@ export const commentsAPI = {
 };
 
 export const reviewsAPI = {
-  // season/episode omitted = show review (text required); both set = episode review (rating-only).
   create: ({ showId, season, episode, rating, text }) =>
     request('/reviews', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({ showId, season, episode, rating, text }),
     }),
-  list: ({ showId, season, episode }) => {
+  list: ({ showId, season, episode, friends } = {}) => {
     const params = { showId };
     if (season != null) params.season = season;
     if (episode != null) params.episode = episode;
+    if (friends) params.friends = 'true';
     return request(`/reviews?${new URLSearchParams(params)}`, { headers: authHeaders() });
   },
   remove: (id) => request(`/reviews/${id}`, { method: 'DELETE', headers: authHeaders() }),
+  like: (id) => request(`/reviews/${id}/like`, { method: 'POST', headers: authHeaders() }),
+  unlike: (id) => request(`/reviews/${id}/like`, { method: 'DELETE', headers: authHeaders() }),
 };
 
 export const progressAPI = {

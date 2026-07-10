@@ -1,12 +1,17 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { PlayIcon, UserIcon, HomeIcon, SearchIcon, CircleHelpIcon, LogOutIcon } from './icons';
 import './Header.css';
 
 function LogoutModal({ onConfirm, onCancel }) {
+  const mouseDownOnOverlay = useRef(false);
   return createPortal(
-    <div className="logout-overlay" onClick={onCancel}>
+    <div
+      className="logout-overlay"
+      onMouseDown={(e) => { mouseDownOnOverlay.current = e.target === e.currentTarget; }}
+      onClick={() => { if (mouseDownOnOverlay.current) onCancel(); }}
+    >
       <div className="logout-dialog" onClick={(e) => e.stopPropagation()}>
         <h2 className="logout-title">Log out?</h2>
         <p className="logout-subtitle">Are you sure you want to log out of BingeFeed?</p>
