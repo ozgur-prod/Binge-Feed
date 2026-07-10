@@ -6,6 +6,14 @@ async function request(path, options = {}) {
     headers: { 'Content-Type': 'application/json', ...headers },
     ...rest,
   });
+  // an expired or stale token on a protected call: drop the session and send them to login
+  if (res.status === 401 && !path.startsWith('/auth/')) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
+    if (window.location.pathname !== '/login') window.location.href = '/login';
+  }
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'Something went wrong.');
   return data;
@@ -15,6 +23,17 @@ async function request(path, options = {}) {
 function authHeaders() {
   const token = localStorage.getItem('token') || sessionStorage.getItem('token');
   return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+// clear both storages before saving, so a stale token in the other one can't take precedence
+export function saveSession({ token, user }, remember) {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  sessionStorage.removeItem('token');
+  sessionStorage.removeItem('user');
+  const storage = remember ? localStorage : sessionStorage;
+  storage.setItem('token', token);
+  storage.setItem('user', JSON.stringify(user));
 }
 
 export const authAPI = {
@@ -33,28 +52,28 @@ export const usersAPI = {
   getUser: (id) => request(`/users/${id}`, { headers: authHeaders() }),
   follow: (id) => request(`/users/${id}/follow`, { method: 'POST', headers: authHeaders() }),
   unfollow: (id) => request(`/users/${id}/follow`, { method: 'DELETE', headers: authHeaders() }),
-  getFollowers: (id) => request(`/users/${id}/followers`),
-  getFollowing: (id) => request(`/users/${id}/following`),
+  getFollowers: (id) => request(`/users/${id}/followers`, { headers: authHeaders() }),
+  getFollowing: (id) => request(`/users/${id}/following`, { headers: authHeaders() }),
 };
 
 export const showsAPI = {
-  getPopular: () => request('/shows/popular'),
-  getTrending: () => request('/shows/trending'),
-  search: (query) => request(`/shows/search?q=${encodeURIComponent(query)}`),
-  getDetails: (id) => request(`/shows/${id}`),
-  getSeason: (id, season) => request(`/shows/${id}/season/${season}`),
-  getWatchProviders: (id) => request(`/shows/${id}/watch-providers`),
-  discover: (filters) => request(`/shows/discover?${new URLSearchParams(filters)}`),
+  getPopular: () => request('/shows/popular', { headers: authHeaders() }),
+  getTrending: () => request('/shows/trending', { headers: authHeaders() }),
+  search: (query) => request(`/shows/search?q=${encodeURIComponent(query)}`, { headers: authHeaders() }),
+  getDetails: (id) => request(`/shows/${id}`, { headers: authHeaders() }),
+  getSeason: (id, season) => request(`/shows/${id}/season/${season}`, { headers: authHeaders() }),
+  getWatchProviders: (id) => request(`/shows/${id}/watch-providers`, { headers: authHeaders() }),
+  discover: (filters) => request(`/shows/discover?${new URLSearchParams(filters)}`, { headers: authHeaders() }),
 };
 
 export const favoritesAPI = {
-  list: (userId) => request(`/users/${userId}/favorites`),
+  list: (userId) => request(`/users/${userId}/favorites`, { headers: authHeaders() }),
   add: (body) => request('/users/me/favorites', { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }),
   remove: (showId) => request(`/users/me/favorites/${showId}`, { method: 'DELETE', headers: authHeaders() }),
 };
 
 export const listsAPI = {
-  list: (userId) => request(`/users/${userId}/lists`),
+  list: (userId) => request(`/users/${userId}/lists`, { headers: authHeaders() }),
   create: (body) => request('/users/me/lists', { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) }),
   rename: (listId, body) => request(`/users/me/lists/${listId}`, { method: 'PATCH', headers: authHeaders(), body: JSON.stringify(body) }),
   remove: (listId) => request(`/users/me/lists/${listId}`, { method: 'DELETE', headers: authHeaders() }),
