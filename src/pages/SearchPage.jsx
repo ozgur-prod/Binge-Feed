@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
-import { showsAPI } from '../services/api';
+import { useEffect, useMemo, useState, useRef } from 'react';
+import { showsAPI, usersAPI } from '../services/api';
 import Header from '../components/Header';
 import AdBox from '../components/AdBox';
 import { StarIcon } from '../components/icons';
@@ -263,8 +263,30 @@ function AdvancedSearch() {
   );
 }
 
+function UserCard({ user }) {
+  const navigate = useNavigate();
+  return (
+    <div className="user-card clickable" onClick={() => navigate(`/user/${user.handle}`)}>
+      <div className="user-card-avatar">
+        {user.avatarUrl
+          ? <img src={user.avatarUrl} alt={user.handle} />
+          : <span className="user-card-initial">{user.handle[0].toUpperCase()}</span>
+        }
+      </div>
+      <div className="user-card-info">
+        <p className="user-card-handle">@{user.handle}</p>
+        {user.displayName && <p className="user-card-name">{user.displayName}</p>}
+      </div>
+    </div>
+  );
+}
+
 function SearchPage() {
   const [activeTab, setActiveTab] = useState('search');
+  const [searchMode, setSearchMode] = useState('series');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -274,7 +296,6 @@ function SearchPage() {
   const [popular, setPopular] = useState([]);
   const [popularLoading, setPopularLoading] = useState(true);
 
-  // default grid content before a search is run - same query Advanced Search uses at rest
   useEffect(() => {
     showsAPI.discover({ sortBy: 'popularity' })
       .then((data) => setPopular(data.results || []))
@@ -282,17 +303,39 @@ function SearchPage() {
       .finally(() => setPopularLoading(false));
   }, []);
 
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  function switchMode(mode) {
+    setSearchMode(mode);
+    setDropdownOpen(false);
+    setQuery('');
+    setResults([]);
+    setSearched(false);
+    setError(null);
+  }
+
   async function handleSearch(e) {
     e.preventDefault();
     if (!query.trim()) return;
-
     setLoading(true);
     setError(null);
     setSearched(true);
-
     try {
-      const data = await showsAPI.search(query.trim());
-      setResults(data.results);
+      if (searchMode === 'users') {
+        const data = await usersAPI.search(query.trim());
+        setResults(data.users);
+      } else {
+        const data = await showsAPI.search(query.trim());
+        setResults(data.results);
+      }
     } catch (err) {
       setError(err.message);
       setResults([]);
@@ -319,13 +362,30 @@ function SearchPage() {
 
         {activeTab === 'search' && (
           <>
-            <h1>Find <span className="title-accent">series</span></h1>
+            <h1>
+              Find{' '}
+              <span className="mode-dropdown" ref={dropdownRef}>
+                <button
+                  className="mode-dropdown-btn title-accent"
+                  onClick={() => setDropdownOpen((o) => !o)}
+                >
+                  {searchMode === 'series' ? 'series' : 'users'}
+                  <span className="mode-dropdown-arrow">▾</span>
+                </button>
+                {dropdownOpen && (
+                  <div className="mode-dropdown-menu">
+                    <button onClick={() => switchMode('series')} className={searchMode === 'series' ? 'active' : ''}>series</button>
+                    <button onClick={() => switchMode('users')} className={searchMode === 'users' ? 'active' : ''}>users</button>
+                  </div>
+                )}
+              </span>
+            </h1>
 
             <form className="search-form" onSubmit={handleSearch}>
               <input
                 className="search-input"
                 type="text"
-                placeholder="Search for a TV show..."
+                placeholder={searchMode === 'users' ? 'Search for a user...' : 'Search for a TV show...'}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
@@ -334,21 +394,35 @@ function SearchPage() {
               </button>
             </form>
 
-            {!searched && <p className="search-hint">Popular <span className="hint-accent">right now</span></p>}
-
             {error && <p className="search-error">{error}</p>}
 
-            {!loading && searched && results.length === 0 && !error && (
-              <p className="search-empty">No results found for "{query}".</p>
+            {searchMode === 'series' && (
+              <>
+                {!searched && <p className="search-hint">Popular <span className="hint-accent">right now</span></p>}
+                {!loading && searched && results.length === 0 && !error && (
+                  <p className="search-empty">No results found for "{query}".</p>
+                )}
+                {!searched && popularLoading && <p className="search-hint">Loading…</p>}
+                <div className="results-grid">
+                  {(searched ? results : popular).map((show) => (
+                    <ShowCard key={show.id} show={show} />
+                  ))}
+                </div>
+              </>
             )}
 
-            {!searched && popularLoading && <p className="search-hint">Loading…</p>}
-
-            <div className="results-grid">
-              {(searched ? results : popular).map((show) => (
-                <ShowCard key={show.id} show={show} />
-              ))}
-            </div>
+            {searchMode === 'users' && (
+              <>
+                {!loading && searched && results.length === 0 && !error && (
+                  <p className="search-empty">No users found for "{query}".</p>
+                )}
+                <div className="user-results">
+                  {results.map((user) => (
+                    <UserCard key={user.id} user={user} />
+                  ))}
+                </div>
+              </>
+            )}
           </>
         )}
 

@@ -54,6 +54,7 @@ export const usersAPI = {
   unfollow: (id) => request(`/users/${id}/follow`, { method: 'DELETE', headers: authHeaders() }),
   getFollowers: (id) => request(`/users/${id}/followers`, { headers: authHeaders() }),
   getFollowing: (id) => request(`/users/${id}/following`, { headers: authHeaders() }),
+  search: (q) => request(`/users/search?q=${encodeURIComponent(q)}`, { headers: authHeaders() }),
 };
 
 export const showsAPI = {

@@ -368,3 +368,139 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Mode dropdown (series / users) */
+.mode-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.mode-dropdown-btn {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: #d63bdf;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.mode-dropdown-btn:hover {
+  color: #f05cf5;
+}
+
+.mode-dropdown-arrow {
+  font-size: 0.8em;
+  color: #d63bdf;
+}
+
+.mode-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1b0c22;
+  border: 1.5px solid #d63bdf;
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 100;
+  min-width: 110px;
+}
+
+.mode-dropdown-menu button {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #cbb8d4;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.mode-dropdown-menu button:hover {
+  background: #3a1440;
+  color: #fff;
+}
+
+.mode-dropdown-menu button.active {
+  color: #d63bdf;
+  font-weight: 600;
+}
+
+/* User search results */
+.user-results {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #1b0c22;
+  border: 1.5px solid #2e1a3a;
+  border-radius: 12px;
+  padding: 0.9rem 1.2rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.user-card:hover {
+  border-color: #d63bdf;
+  background: #23102e;
+  opacity: 1;
+}
+
+.user-card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #3a1440;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-card-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-card-initial {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #d63bdf;
+}
+
+.user-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.user-card-handle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.user-card-name {
+  font-size: 0.85rem;
+  color: #9b80a8;
+  margin: 0;
+}
