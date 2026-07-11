@@ -9,6 +9,7 @@ import ProfilePage from './pages/ProfilePage';
 import UserProfilePage from './pages/UserProfilePage';
 import ShowDetailPage from './pages/ShowDetailPage';
 import EpisodePage from './pages/EpisodePage';
+import LiveCommentsPage from './pages/LiveCommentsPage';
 import ReviewsPage from './pages/ReviewsPage';
 import PremiumPage from './pages/PremiumPage';
 import PremiumSuccessPage from './pages/PremiumSuccessPage';
@@ -28,6 +29,7 @@ function App() {
       <Route path="/show/:id" element={<RequireAuth><ShowDetailPage /></RequireAuth>} />
       <Route path="/show/:id/reviews" element={<RequireAuth><ReviewsPage /></RequireAuth>} />
       <Route path="/show/:id/season/:season/episode/:episode" element={<RequireAuth><EpisodePage /></RequireAuth>} />
+      <Route path="/show/:id/season/:season/episode/:episode/live" element={<RequireAuth><LiveCommentsPage /></RequireAuth>} />
       <Route path="/premium" element={<RequireAuth><PremiumPage /></RequireAuth>} />
       <Route path="/premium/success" element={<RequireAuth><PremiumSuccessPage /></RequireAuth>} />
       <Route path="/premium/cancel" element={<RequireAuth><CancelPremiumPage /></RequireAuth>} />
