@@ -307,6 +307,15 @@ function ProfilePage() {
               Cancel Premium
             </button>
           )}
+
+          {user && (
+            <button
+              className="delete-account-btn"
+              onClick={() => navigate('/account/delete')}
+            >
+              Delete Account
+            </button>
+          )}
         </div>
 
         <aside className="profile-sidebar">

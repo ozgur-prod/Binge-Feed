@@ -49,6 +49,8 @@ export const authAPI = {
 export const usersAPI = {
   getMe: () => request('/users/me', { headers: authHeaders() }),
   updateMe: (body) => request('/users/me', { method: 'PUT', headers: authHeaders(), body: JSON.stringify(body) }),
+  deleteAccount: (password) =>
+    request('/users/me', { method: 'DELETE', headers: authHeaders(), body: JSON.stringify({ password }) }),
   getUser: (id) => request(`/users/${id}`, { headers: authHeaders() }),
   follow: (id) => request(`/users/${id}/follow`, { method: 'POST', headers: authHeaders() }),
   unfollow: (id) => request(`/users/${id}/follow`, { method: 'DELETE', headers: authHeaders() }),

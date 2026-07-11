@@ -14,6 +14,7 @@ import ReviewsPage from './pages/ReviewsPage';
 import PremiumPage from './pages/PremiumPage';
 import PremiumSuccessPage from './pages/PremiumSuccessPage';
 import CancelPremiumPage from './pages/CancelPremiumPage';
+import DeleteAccountPage from './pages/DeleteAccountPage';
 import WeeklyFixPage from './pages/WeeklyFixPage';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
       <Route path="/premium" element={<RequireAuth><PremiumPage /></RequireAuth>} />
       <Route path="/premium/success" element={<RequireAuth><PremiumSuccessPage /></RequireAuth>} />
       <Route path="/premium/cancel" element={<RequireAuth><CancelPremiumPage /></RequireAuth>} />
+      <Route path="/account/delete" element={<RequireAuth><DeleteAccountPage /></RequireAuth>} />
       <Route path="/weekly-fix" element={<RequireAuth><WeeklyFixPage /></RequireAuth>} />
     </Routes>
   );
