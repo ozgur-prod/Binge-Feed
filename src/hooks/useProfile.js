@@ -209,7 +209,8 @@ export function useProfile(handle) {
   }
 
   function saveProfile(updatedUser) {
-    setUser(updatedUser);
+    // merge so isSelf and the follow counts survive (updateMe returns neither)
+    setUser((prev) => ({ ...prev, ...updatedUser }));
     const storage = localStorage.getItem('user') ? localStorage : sessionStorage;
     storage.setItem('user', JSON.stringify(updatedUser));
   }
