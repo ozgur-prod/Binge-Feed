@@ -22,44 +22,38 @@ function currentUser() {
 const POSTER_BASE = 'https://image.tmdb.org/t/p/w342';
 const BACKDROP_BASE = 'https://image.tmdb.org/t/p/w1280';
 
-const PROVIDER_URLS = {
-  2:    'https://tv.apple.com',
-  3:    'https://play.google.com/store/movies',
-  7:    'https://www.vudu.com',
-  8:    'https://www.netflix.com',
-  9:    'https://www.amazon.de/gp/video/storefront',
-  10:   'https://www.amazon.de/gp/video/storefront',
-  11:   'https://mubi.com',
-  15:   'https://www.hulu.com',
-  20:   'https://www.joyn.de',
-  29:   'https://www.skygo.sky.de',
-  30:   'https://www.wowtv.de',
-  39:   'https://www.nowtv.com',
-  40:   'https://www.chili.com',
-  67:   'https://www.sky.de',
-  119:  'https://www.amazon.de/gp/video/storefront',
-  130:  'https://store.sky.com',
-  170:  'https://www.sky.de',
-  178:  'https://www.magenta.de/tv',
-  188:  'https://www.youtube.com/premium',
-  223:  'https://www.ardmediathek.de',
-  246:  'https://www.zdf.de',
-  283:  'https://www.crunchyroll.com',
-  337:  'https://www.disneyplus.com',
-  339:  'https://www.movistarplus.es',
-  350:  'https://tv.apple.com',
-  384:  'https://www.max.com',
-  386:  'https://www.peacocktv.com',
-  387:  'https://www.peacocktv.com',
-  531:  'https://www.paramountplus.com',
-  680:  'https://www.joyn.de',
-  695:  'https://www.magenta.de/tv',
-  1773: 'https://www.wowtv.de',
-  1825: 'https://www.amazon.de/gp/video/storefront',
-  1899: 'https://www.max.com',
-  1993: 'https://www.videoload.de',
-  2660: 'https://www.amazon.de/gp/video/storefront',
+
+
+const PROVIDER_SITES = {
+  'netflix':          'https://www.netflix.com',
+  'prime video':      'https://www.amazon.de/gp/video/storefront',
+  'disney':           'https://www.disneyplus.com',
+  'apple tv':         'https://tv.apple.com',
+  'max':              'https://www.max.com',
+  'paramount':        'https://www.paramountplus.com',
+  'wow':              'https://www.wowtv.de',
+  'sky':              'https://www.sky.de',
+  'sky go':           'https://www.skygo.sky.de',
+  'joyn':             'https://www.joyn.de',
+  'magentatv':        'https://www.magenta.de/tv',
+  'rtl':              'https://plus.rtl.de',
+  'crunchyroll':      'https://www.crunchyroll.com',
+  'mubi':             'https://mubi.com',
+  'ard mediathek':    'https://www.ardmediathek.de',
+  'zdf mediathek':    'https://www.zdf.de',
+  'youtube premium':  'https://www.youtube.com/premium',
 };
+
+function providerUrl(name) {
+  const base = name.toLowerCase()
+    .replace(/^(amazon|hbo)\s+/, '')
+    .replace(/\s+(basic|standard|premium|with ads?|in prime|amazon channel|apple tv channel|roku channel|season pass)\b.*/g, '')
+    .replace(/\bplus\b/g, '')
+    .replace(/\+/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return PROVIDER_SITES[base] || null;
+}
 
 export default function ShowDetailPage() {
   const { id } = useParams();
@@ -102,7 +96,7 @@ export default function ShowDetailPage() {
       .catch(() => setError('Failed to load show details.'));
 
     showsAPI.getWatchProviders(id)
-      .then((data) => setWatchProviders(data.flatrate || data.buy || data.ads || []))
+      .then((data) => setWatchProviders(data.providers || []))
       .catch(() => {});
 
     reviewsAPI.list({ showId: id })
@@ -238,24 +232,24 @@ export default function ShowDetailPage() {
               <div className="watch-providers">
                 <span className="watch-label">Watch now on:</span>
                 <div className="provider-logos">
-                  {watchProviders.map((p) => {
-                    const url = PROVIDER_URLS[p.provider_id];
-                    const logo = (
-                      <img
-                        className="provider-logo"
-                        src={`https://image.tmdb.org/t/p/original${p.logo_path}`}
-                        alt={p.provider_name}
-                        title={p.provider_name}
-                      />
-                    );
-                    return url ? (
-                      <a key={p.provider_id} href={url} target="_blank" rel="noopener noreferrer">
-                        {logo}
-                      </a>
-                    ) : (
-                      <span key={p.provider_id}>{logo}</span>
-                    );
-                  })}
+                  {(() => {
+                    const seenUrls = new Set();
+                    return watchProviders.map((p) => {
+                      const url = providerUrl(p.provider_name);
+                      if (!url || seenUrls.has(url)) return null;
+                      seenUrls.add(url);
+                      return (
+                        <a key={p.provider_id} href={url} target="_blank" rel="noopener noreferrer">
+                          <img
+                            className="provider-logo"
+                            src={`https://image.tmdb.org/t/p/original${p.logo_path}`}
+                            alt={p.provider_name}
+                            title={p.provider_name}
+                          />
+                        </a>
+                      );
+                    });
+                  })()}
                 </div>
               </div>
             )}

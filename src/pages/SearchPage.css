@@ -7,19 +7,16 @@
 /* 3-column ad layout */
 .search-layout {
   display: flex;
-  align-items: flex-start;
-  gap: 1.5rem;
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 0.5rem;
+  align-items: stretch;
+  min-height: calc(100vh - 65px);
+  width: 100%;
 }
 
 /* Main */
 .search-main {
   flex: 1;
   min-width: 0;
-  max-width: 1200px;
-  padding: 1.5rem 0;
+  padding: 1.5rem 2rem;
 }
 
 .search-main h1 {
@@ -84,7 +81,7 @@
   font-size: 1rem;
   padding: 0.8rem 1.2rem;
   border-radius: 10px;
-  border: 1.5px solid #d63bdf;
+  border: 1.5px solid rgba(214, 59, 223, 0.4);
   background: #1b0c22;
   color: #fff;
   outline: none;
@@ -134,11 +131,8 @@
 
 .results-grid {
   display: grid;
-  /* Fixed column counts that divide 20 (the page size) so the last row stays full */
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 1.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .show-card {
@@ -257,11 +251,11 @@
   font-size: 0.78rem;
   padding: 0.3rem 0.75rem;
   border-radius: 8px;
-  border: 1.5px solid #d63bdf;
+  border: 1.5px solid rgba(214, 59, 223, 0.3);
   background: transparent;
-  color: #fff;
+  color: #cbb8d4;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .chip:hover {
@@ -287,7 +281,7 @@
   font-size: 0.85rem;
   padding: 0.45rem 0.7rem;
   border-radius: 8px;
-  border: 1.5px solid #d63bdf;
+  border: 1.5px solid rgba(214, 59, 223, 0.4);
   background: #1b0c22;
   color: #fff;
   outline: none;
@@ -319,7 +313,7 @@
   font-size: 0.85rem;
   padding: 0.35rem 0.5rem;
   border-radius: 8px;
-  border: 1.5px solid #d63bdf;
+  border: 1.5px solid rgba(214, 59, 223, 0.4);
   background: #1b0c22;
   color: #fff;
   cursor: pointer;
@@ -357,82 +351,35 @@
   }
 }
 
-@media (max-width: 900px) {
-  .results-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
 
-@media (max-width: 600px) {
-  .results-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Mode dropdown (series / users) */
-.mode-dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.mode-dropdown-btn {
+/* Mode switcher inline words in heading */
+.mode-word {
   background: none;
   border: none;
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
-  color: #d63bdf;
   cursor: pointer;
   padding: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
+  line-height: inherit;
+  transition: color 0.15s;
 }
 
-.mode-dropdown-btn:hover {
-  color: #f05cf5;
-}
-
-.mode-dropdown-arrow {
-  font-size: 0.8em;
+.mode-word.active {
   color: #d63bdf;
 }
 
-.mode-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1b0c22;
-  border: 1.5px solid #d63bdf;
-  border-radius: 10px;
-  overflow: hidden;
-  z-index: 100;
-  min-width: 110px;
+.mode-word.inactive {
+  color: #555;
 }
 
-.mode-dropdown-menu button {
-  display: block;
-  width: 100%;
-  background: none;
-  border: none;
-  font-family: inherit;
-  font-size: 1rem;
-  color: #cbb8d4;
-  padding: 0.6rem 1.2rem;
-  cursor: pointer;
-  text-align: center;
-  transition: background 0.15s, color 0.15s;
+.mode-word.inactive:hover {
+  color: #999;
 }
 
-.mode-dropdown-menu button:hover {
-  background: #3a1440;
-  color: #fff;
-}
-
-.mode-dropdown-menu button.active {
-  color: #d63bdf;
-  font-weight: 600;
+.mode-word-sep {
+  color: #444;
+  margin: 0 0.2rem;
 }
 
 /* User search results */
