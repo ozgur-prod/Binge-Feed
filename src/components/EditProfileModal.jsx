@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { usersAPI } from '../services/api';
 import { XIcon } from './icons';
+import { PRESET_AVATARS } from '../constants/avatars';
 import './ForgotPasswordModal.css';
 
 export default function EditProfileModal({ user, onClose, onSaved }) {
@@ -80,6 +81,30 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
               placeholder="https://…"
             />
           </div>
+
+          {user.tier === 'premium' && (
+            <div className="modal-field">
+              <label>Pick an avatar:</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.4rem' }}>
+                {PRESET_AVATARS.map((url) => (
+                  <img
+                    key={url}
+                    src={url}
+                    alt="avatar option"
+                    onClick={() => setForm((f) => ({ ...f, avatarUrl: url }))}
+                    style={{
+                      width: 52,
+                      height: 52,
+                      borderRadius: '50%',
+                      cursor: 'pointer',
+                      border: form.avatarUrl === url ? '2.5px solid #d63bdf' : '2.5px solid transparent',
+                      background: '#1b0c22',
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="modal-field">
             <label htmlFor="bio">Bio:</label>
