@@ -340,7 +340,7 @@ export default function EpisodePage() {
                     className={`watched-btn ${watched ? 'active' : ''}`}
                     onClick={toggleWatched}
                   >
-                    <CheckIcon/>
+                    {watched && <CheckIcon />}
                     {watched ? 'Watched' : 'Mark as Watched'}
                   </button>
                 )}
