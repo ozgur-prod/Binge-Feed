@@ -37,7 +37,7 @@ function ProfilePage() {
       <div className="profile-layout">
         <div className="feed-ad-col">
           <AdBox className="feed-ad" />
-          <AdBox className="feed-ad" text="Another ad could be here." />
+          <AdBox className="feed-ad" text="Another ad could be here" />
         </div>
 
         <main className="profile-main">
@@ -80,6 +80,12 @@ function ProfilePage() {
                     Cancel Premium
                   </button>
                 )}
+
+                {p.editable && (
+                  <button className="delete-account-btn" onClick={() => navigate('/account/delete')}>
+                    Delete Account
+                  </button>
+                )}
               </>
             ) : null}
           </div>
@@ -94,7 +100,7 @@ function ProfilePage() {
 
         <div className="feed-ad-col">
           <AdBox className="feed-ad" />
-          <AdBox className="feed-ad" text="Another ad could be here." />
+          <AdBox className="feed-ad" text="Another ad could be here" />
         </div>
       </div>
 

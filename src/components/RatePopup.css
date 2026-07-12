@@ -39,3 +39,47 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.delete-rating-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.delete-rating-confirm-text {
+  font-size: 0.85rem;
+  color: #cbb8d4;
+}
+
+.delete-rating-yes,
+.delete-rating-no {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-rating-yes {
+  background: #a3324a;
+  color: #fff;
+}
+
+.delete-rating-yes:hover:not(:disabled) {
+  background: #c23a58;
+}
+
+.delete-rating-no {
+  background: #2e1a3a;
+  color: #cbb8d4;
+}
+
+.delete-rating-no:hover {
+  background: #4a3a52;
+  color: #fff;
+}

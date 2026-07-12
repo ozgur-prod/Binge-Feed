@@ -2,7 +2,7 @@ import {
   Heart, Trash2, User, MessageSquare, Bookmark, Share2, Repeat,
   Plus, Star, PenLine, List, Calendar, ChevronLeft, ChevronRight, ChevronDown, Play, Check, Crown,
   X, Flame, Bell, BarChart3, Palette, MessageCircle, Rocket, Gift, Lock,
-  PartyPopper, TriangleAlert, Hand, Home, Search, CircleHelp, LogOut,
+  PartyPopper, TriangleAlert, Hand, Home, Search, CircleHelp, LogOut, Radio,
 } from 'lucide-react';
 
 // Icons we use to keep everything looking the same
@@ -40,6 +40,7 @@ export const HomeIcon = (props) => <Home {...defaults} {...props} />;
 export const SearchIcon = (props) => <Search {...defaults} {...props} />;
 export const CircleHelpIcon = (props) => <CircleHelp {...defaults} {...props} />;
 export const LogOutIcon = (props) => <LogOut {...defaults} {...props} />;
+export const RadioIcon = (props) => <Radio {...defaults} {...props} />;
 
 export const PlayIcon = (props) => <Play size={18} fill="currentColor" stroke="none" {...props} />;
 export const CrownIcon = (props) => <Crown size={18} fill="currentColor" strokeWidth={1.5} {...props} />;

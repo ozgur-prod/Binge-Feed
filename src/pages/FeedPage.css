@@ -7,24 +7,23 @@
 /* 3-column ad layout */
 .feed-layout {
   display: flex;
-  align-items: flex-start;
-  gap: 1.5rem;
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 0.5rem;
+  align-items: stretch;
+  min-height: calc(100vh - 65px);
+  width: 100%;
 }
 
 .feed-ad-col {
   display: flex;
   flex-direction: column;
-  width: 260px;
-  min-width: 260px;
+  width: 160px;
+  min-width: 160px;
   flex-shrink: 0;
 }
 
 .feed-ad {
-  background: #6e6e6e;
-  color: #333;
+  background: rgba(160, 50, 200, 0.07);
+  border: 1px solid rgba(180, 60, 220, 0.18);
+  color: rgba(255, 255, 255, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,25 +31,17 @@
   font-weight: 500;
   width: 100%;
   min-height: 500px;
-  border: 1.5px solid #888;
 }
 
-.feed-ad:first-child {
-  border-radius: 4px 4px 0 0;
-  border-bottom: none;
-}
-
-.feed-ad:last-child {
-  border-radius: 0 0 4px 4px;
-  border-top: 1.5px solid #aaa;
+.feed-ad-col .feed-ad:last-child {
+  flex: 1;
 }
 
 /* Main */
 .feed-main {
   flex: 1;
   min-width: 0;
-  max-width: 960px;
-  padding: 1.5rem 0;
+  padding: 1.5rem 2rem;
 }
 
 /* Tabs */
@@ -101,7 +92,7 @@
   transition: border-color 0.2s;
 }
 
-.feed-card:hover { border-color: #d63bdf88; }
+.feed-card:hover { border-color: rgba(214, 59, 223, 0.4); }
 
 .card-body {
   display: flex;
@@ -181,6 +172,7 @@
 .action-btn {
   background: none;
   border: none;
+  outline: none;
   color: #888;
   cursor: pointer;
   display: flex;
@@ -286,7 +278,7 @@
   transition: border-color 0.2s;
 }
 
-.disc-card:hover { border-color: #d63bdf66; }
+.disc-card:hover { border-color: rgba(214, 59, 223, 0.35); }
 
 .disc-header {
   display: flex;

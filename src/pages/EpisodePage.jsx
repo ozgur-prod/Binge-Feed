@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import AdBox from '../components/AdBox';
 import Stars from '../components/Stars';
 import RatePopup from '../components/RatePopup.jsx';
 import CommentAuthor from '../components/CommentAuthor';
-import { HeartIcon, TrashIcon, ChevronDownIcon, ChevronLeftIcon, CheckIcon, StarIcon } from '../components/icons';
+import { HeartIcon, TrashIcon, ChevronDownIcon, ChevronLeftIcon, CheckIcon, StarIcon, RadioIcon, XIcon } from '../components/icons';
 import { showsAPI, commentsAPI, reviewsAPI, progressAPI } from '../services/api';
 import './EpisodePage.css';
 
@@ -59,6 +59,7 @@ function CommentRow({
   const isDeleted = comment.createdBy === null;
   const isMine = !isDeleted && me.id === comment.createdBy?._id;
   const isReplying = replyingTo === comment.id;
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   return (
     <div className={`comment-row ${isDeleted ? 'deleted' : ''}`}>
@@ -108,9 +109,25 @@ function CommentRow({
 
         <div className="comment-row-actions">
           {isMine && (
-            <button className="icon-btn danger" onClick={() => onDelete(comment.id, isTopLevel)} aria-label="Delete comment">
-              <TrashIcon />
-            </button>
+            confirmingDelete ? (
+              <span className="delete-comment-confirm">
+                <span className="delete-comment-confirm-text">Delete?</span>
+                <button
+                  className="delete-comment-yes"
+                  onClick={() => { setConfirmingDelete(false); onDelete(comment.id, isTopLevel); }}
+                  aria-label="Confirm delete"
+                >
+                  <CheckIcon size={14} />
+                </button>
+                <button className="delete-comment-no" onClick={() => setConfirmingDelete(false)} aria-label="Cancel delete">
+                  <XIcon size={14} />
+                </button>
+              </span>
+            ) : (
+              <button className="icon-btn danger" onClick={() => setConfirmingDelete(true)} aria-label="Delete comment">
+                <TrashIcon />
+              </button>
+            )
           )}
           {isLoggedIn() && (
             <button className="reply-btn" onClick={() => onReply(comment.id)}>Reply</button>
@@ -145,9 +162,11 @@ function CommentRow({
 
 export default function EpisodePage() {
   const { id, season, episode: episodeNumber } = useParams();
+  const navigate = useNavigate();
   const me = useMemo(() => currentUser(), []);
 
   const [showName, setShowName] = useState('');
+  const [backdropPath, setBackdropPath] = useState(null);
   const [episode, setEpisode] = useState(null);
   const [comments, setComments] = useState([]);
   const [loadedKey, setLoadedKey] = useState(null);
@@ -186,6 +205,7 @@ export default function EpisodePage() {
     ])
       .then(([show, seasonData, commentsData, reviewsData, progressData]) => {
         setShowName(show.name);
+        setBackdropPath(show.backdrop_path || null);
         const ep = (seasonData.episodes || []).find((e) => e.episode_number === Number(episodeNumber));
         setEpisode(ep || null);
         setComments(commentsData.comments || []);
@@ -267,7 +287,6 @@ export default function EpisodePage() {
   }
 
   async function handleDelete(commentId, isTopLevel) {
-    if (!window.confirm('Delete this comment?')) return;
     try {
       await commentsAPI.remove(commentId);
       if (isTopLevel) {
@@ -297,6 +316,9 @@ export default function EpisodePage() {
   return (
     <div className="episode-page">
       <Header />
+      {backdropPath && (
+        <div className="backdrop" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/w1280${backdropPath})` }} />
+      )}
 
       <div className="episode-content">
         <Link className="back-link" to={`/show/${id}`}><ChevronLeftIcon size={16} /> Back to {showName}</Link>
@@ -340,7 +362,15 @@ export default function EpisodePage() {
 
         {isLoggedIn() && (
         <div className="comments-section">
-          <h2>Discussion</h2>
+          <div className="comments-section-head">
+            <h2>Discussion</h2>
+            <button
+              className="live-comments-btn"
+              onClick={() => navigate(`/show/${id}/season/${season}/episode/${episodeNumber}/live`)}
+            >
+              <RadioIcon size={14} /> Live Comments
+            </button>
+          </div>
 
           <form className="comment-form" onSubmit={handlePostTopLevel}>
             <textarea

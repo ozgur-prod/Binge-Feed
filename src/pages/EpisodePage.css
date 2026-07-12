@@ -5,7 +5,19 @@
   font-family: 'Poppins', sans-serif;
 }
 
+.episode-page .backdrop {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center top;
+  opacity: 0.12;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .episode-content {
+  position: relative;
+  z-index: 1;
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem;
@@ -156,9 +168,37 @@
   margin-top: 2rem;
 }
 
+.comments-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
 .comments-section h2 {
   font-size: 1.2rem;
-  margin-bottom: 1rem;
+  margin: 0;
+}
+
+.live-comments-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: 1.5px solid #c850c055;
+  color: #c850c0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.35rem 0.9rem;
+  border-radius: 50px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.live-comments-btn:hover {
+  background: #c850c01a;
+  border-color: #c850c0;
 }
 
 .comment-form {
@@ -313,14 +353,14 @@
   align-items: center;
   gap: 0.35rem;
   background: transparent;
-  border: 1.5px solid #c850c0;
-  color: #c850c0;
+  border: 1.5px solid rgba(200, 80, 192, 0.35);
+  color: rgba(200, 80, 192, 0.7);
   border-radius: 999px;
   padding: 0.3rem 0.9rem;
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s, color 0.15s;
 }
 
 .replies-toggle-btn:hover {
@@ -341,6 +381,49 @@
   align-items: center;
   gap: 0.75rem;
   white-space: nowrap;
+}
+
+.delete-comment-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.delete-comment-confirm-text {
+  font-size: 0.78rem;
+  color: #cbb8d4;
+  white-space: nowrap;
+}
+
+.delete-comment-yes,
+.delete-comment-no {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-comment-yes {
+  background: #a3324a;
+  color: #fff;
+}
+
+.delete-comment-yes:hover {
+  background: #c23a58;
+}
+
+.delete-comment-no {
+  background: #2e1a3a;
+  color: #cbb8d4;
+}
+
+.delete-comment-no:hover {
+  background: #4a3a52;
+  color: #fff;
 }
 
 .reply-btn {
