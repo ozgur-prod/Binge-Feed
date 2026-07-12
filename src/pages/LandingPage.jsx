@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { PlayIcon, PenLineIcon, ListIcon, UserIcon } from '../components/icons';
+import PosterBackground from '../components/PosterBackground';
 import './LandingPage.css';
 
 const features = [
@@ -25,6 +26,8 @@ function LandingPage() {
 
   return (
     <div className="landing">
+      <PosterBackground />
+
       <header className="nav">
         <div className="logo">
           Binge<span>Feed</span>

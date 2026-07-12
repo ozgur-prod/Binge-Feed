@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI, saveSession } from '../services/api';
 import ForgotPasswordModal from '../components/ForgotPasswordModal';
+import PosterBackground from '../components/PosterBackground';
 import { PlayIcon } from '../components/icons';
 import './AuthPages.css';
 
@@ -38,6 +39,7 @@ function LoginPage() {
 
   return (
     <div className="auth-page">
+      <PosterBackground />
       <header className="nav">
         <Link to="/" className="logo">Binge<span>Feed</span>
           <PlayIcon className="play" />

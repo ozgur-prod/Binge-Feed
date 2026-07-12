@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { authAPI, saveSession } from '../services/api';
+import PosterBackground from '../components/PosterBackground';
 import { PlayIcon, XIcon } from '../components/icons';
 import './AuthPages.css';
 import '../components/ForgotPasswordModal.css';
@@ -150,6 +151,7 @@ function SignUpPage() {
 
   return (
     <div className="auth-page">
+      <PosterBackground />
       <header className="nav">
         <Link to="/" className="logo">Binge<span>Feed</span>
           <PlayIcon className="play" />
