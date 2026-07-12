@@ -37,7 +37,6 @@ export function saveSession({ token, user }, remember) {
 }
 
 export const authAPI = {
-  signup: (body) => request('/auth/signup', { method: 'POST', body: JSON.stringify(body) }),
   signupRequest: (body) => request('/auth/signup-request', { method: 'POST', body: JSON.stringify(body) }),
   verifySignup: (body) => request('/auth/verify-signup', { method: 'POST', body: JSON.stringify(body) }),
   login: (body) => request('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
