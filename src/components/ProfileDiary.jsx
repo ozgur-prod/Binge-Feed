@@ -22,7 +22,13 @@ export default function ProfileDiary({ blocks, total, showCount, hasMore, editab
       </div>
       <div className="diary">
         {blocks.length === 0 ? (
-          <p className="diary-empty">No episodes logged yet.</p>
+          editable ? (
+            <button className="diary-cta" onClick={onLog}>
+              + Log your first episode
+            </button>
+          ) : (
+            <p className="diary-empty">No episodes logged yet.</p>
+          )
         ) : (
           <>
             <DiaryEntries blocks={blocks.slice(0, DIARY_PREVIEW)} />

@@ -231,6 +231,24 @@
   padding: 0.5rem 0;
 }
 
+.diary-cta {
+  width: 100%;
+  padding: 1.6rem;
+  border: 1.5px dashed #4a3a52;
+  border-radius: 8px;
+  background: transparent;
+  color: #9b80a8;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.diary-cta:hover {
+  border-color: #d63bdf;
+  color: #d63bdf;
+}
+
 .diary-show {
   display: flex;
   gap: 0.9rem;
