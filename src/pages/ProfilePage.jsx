@@ -49,6 +49,7 @@ function ProfilePage() {
             ) : p.user ? (
               <>
                 <ProfileHeader
+                  key={p.user.id}
                   user={p.user}
                   editable={p.editable}
                   busy={p.busy}
