@@ -3,7 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import Header from '../components/Header';
 import AdBox from '../components/AdBox';
 import AddToListModal from '../components/AddToListModal';
-import Toast from '../components/Toast';
+import { useToast } from '../hooks/useToast';
 import Stars from '../components/Stars';
 import RatePopup from '../components/RatePopup.jsx';
 import CommentAuthor from '../components/CommentAuthor';
@@ -69,7 +69,7 @@ export default function ShowDetailPage() {
   const [watchProviders, setWatchProviders] = useState([]);
   const [isFavorited, setIsFavorited] = useState(false);
   const [showAddToList, setShowAddToList] = useState(false);
-  const [favError, setFavError] = useState('');
+  const toast = useToast();
   const [watchedEpisodes, setWatchedEpisodes] = useState(() => new Set());
   const [error, setError] = useState('');
 
@@ -141,9 +141,8 @@ export default function ShowDetailPage() {
         await favoritesAPI.add({ showId: show.id });
         setIsFavorited(true);
       }
-      setFavError('');
     } catch (err) {
-      setFavError(err.message);
+      toast(err.message);
     }
   }
 
@@ -355,8 +354,6 @@ export default function ShowDetailPage() {
       {showAddToList && show && (
         <AddToListModal show={show} onClose={() => setShowAddToList(false)} />
       )}
-
-      {favError && <Toast message={favError} onClose={() => setFavError('')} />}
 
       {showRateModal && (
         <RatePopup

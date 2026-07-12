@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showsAPI, listsAPI } from '../services/api';
+import { useToast } from '../hooks/useToast';
 import { XIcon, CheckIcon, ChevronLeftIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './FavoritesModal.css';
@@ -18,7 +19,7 @@ export default function ListsModal({ lists, setLists, readOnly = false, onClose 
   const [results, setResults] = useState([]);
   const [loadedQuery, setLoadedQuery] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
-  const [error, setError] = useState('');
+  const toast = useToast();
 
   const activeList = lists.find((l) => l.id === activeListId) || null;
   const searching = searchQuery.length > 0;
@@ -47,9 +48,8 @@ export default function ListsModal({ lists, setLists, readOnly = false, onClose 
       const { list } = await listsAPI.create({ title });
       setLists((prev) => [list, ...prev]);
       setNewTitle('');
-      setError('');
     } catch (err) {
-      setError(err.message);
+      toast(err.message);
     }
   }
 
@@ -60,7 +60,7 @@ export default function ListsModal({ lists, setLists, readOnly = false, onClose 
       setConfirmDeleteId(null);
       if (activeListId === listId) openOverview();
     } catch (err) {
-      setError(err.message);
+      toast(err.message);
     }
   }
 
@@ -68,9 +68,8 @@ export default function ListsModal({ lists, setLists, readOnly = false, onClose 
     try {
       const { list } = await listsAPI.addShow(activeListId, { showId: show.id });
       replaceList(list);
-      setError('');
     } catch (err) {
-      setError(err.message);
+      toast(err.message);
     }
   }
 
@@ -79,7 +78,7 @@ export default function ListsModal({ lists, setLists, readOnly = false, onClose 
       const { list } = await listsAPI.removeShow(activeListId, showId);
       replaceList(list);
     } catch (err) {
-      setError(err.message);
+      toast(err.message);
     }
   }
 
@@ -87,7 +86,6 @@ export default function ListsModal({ lists, setLists, readOnly = false, onClose 
     setActiveListId(listId);
     setQuery('');
     setSearchQuery('');
-    setError('');
   }
 
   function openOverview() {
@@ -95,7 +93,6 @@ export default function ListsModal({ lists, setLists, readOnly = false, onClose 
     setQuery('');
     setSearchQuery('');
     setConfirmDeleteId(null);
-    setError('');
   }
 
   function onQueryChange(e) {
@@ -135,7 +132,6 @@ export default function ListsModal({ lists, setLists, readOnly = false, onClose 
                 onKeyDown={runSearch}
               />
             )}
-            {error && <p className="favorites-modal-status favorites-modal-error">{error}</p>}
             <div className="favorites-modal-body">
               {searching ? (
                 loading ? (
@@ -215,7 +211,6 @@ export default function ListsModal({ lists, setLists, readOnly = false, onClose 
                 </button>
               </div>
             )}
-            {error && <p className="favorites-modal-status favorites-modal-error">{error}</p>}
             <div className="favorites-modal-body">
               {lists.length === 0 ? (
                 <p className="favorites-modal-status">

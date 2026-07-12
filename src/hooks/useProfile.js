@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usersAPI, favoritesAPI, listsAPI, progressAPI } from '../services/api';
+import { useToast } from './useToast';
 
 function relativeDay(date) {
   const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -61,6 +62,7 @@ function buildDiary(entries) {
 // with no handle it loads your own profile, with a handle it loads that user's (read-only unless it is you)
 export function useProfile(handle) {
   const navigate = useNavigate();
+  const toast = useToast();
   const [user, setUser] = useState(null);
   const [loadedKey, setLoadedKey] = useState(null);
   const [favorites, setFavorites] = useState([]);
@@ -145,8 +147,8 @@ export function useProfile(handle) {
         await usersAPI.follow(user.id);
         setUser((u) => ({ ...u, isFollowing: true, followersCount: u.followersCount + 1 }));
       }
-    } catch (err) {
-      setError(err.message);
+    } catch {
+      toast(user.isFollowing ? 'Failed to unfollow' : 'Failed to follow');
     } finally {
       setBusy(false);
     }
@@ -185,8 +187,8 @@ export function useProfile(handle) {
     try {
       await progressAPI.unmark({ showId: entry.showId, season: entry.season, episode: entry.episode });
       reloadDiary();
-    } catch (err) {
-      console.error(err);
+    } catch {
+      toast('Failed to delete entry');
     }
   }
 

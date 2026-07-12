@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showsAPI } from '../services/api';
+import { useToast } from '../hooks/useToast';
 import { XIcon, CheckIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './FavoritesModal.css';
@@ -14,7 +15,7 @@ export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) 
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loadedQuery, setLoadedQuery] = useState(null);
-  const [error, setError] = useState('');
+  const toast = useToast();
 
   const searching = searchQuery.length > 0;
   const loading = searching && searchQuery !== loadedQuery;
@@ -46,7 +47,7 @@ export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) 
     try {
       await onAdd(show);
     } catch (err) {
-      setError(err.message);
+      toast(err.message);
     }
   }
 
@@ -72,7 +73,6 @@ export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) 
           onChange={onQueryChange}
           onKeyDown={runSearch}
         />
-        {error && <p className="favorites-modal-status favorites-modal-error">{error}</p>}
 
         <div className="favorites-modal-body">
         {searching ? (
