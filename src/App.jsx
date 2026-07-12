@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { RequireAuth, RedirectIfAuthed } from './components/RouteGuards';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
@@ -36,6 +36,7 @@ function App() {
       <Route path="/premium/cancel" element={<RequireAuth><CancelPremiumPage /></RequireAuth>} />
       <Route path="/account/delete" element={<RequireAuth><DeleteAccountPage /></RequireAuth>} />
       <Route path="/weekly-fix" element={<RequireAuth><WeeklyFixPage /></RequireAuth>} />
+      <Route path="*" element={<Navigate to="/feed" replace />} />
     </Routes>
   );
 }
