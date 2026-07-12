@@ -1,0 +1,264 @@
+.log-modal {
+  max-width: 460px;
+}
+
+.log-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.log-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #9b80a8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.log-field .favorites-search {
+  margin-bottom: 0;
+}
+
+.log-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.log-row .log-field {
+  flex: 1;
+}
+
+.log-select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 0.55rem 0.6rem;
+  border-radius: 8px;
+  border: 1.5px solid #3a2942;
+  background: #1b0c22;
+  color: #fff;
+  outline: none;
+}
+
+.log-select:focus {
+  border-color: #d63bdf;
+}
+
+.log-date::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: brightness(0) saturate(100%) invert(43%) sepia(93%) saturate(2585%) hue-rotate(275deg) brightness(97%) contrast(96%);
+  opacity: 0.9;
+}
+
+.log-date::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.log-chosen {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  border: 1.5px solid #3a2942;
+  background: #1b0c22;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.log-change {
+  background: none;
+  border: none;
+  color: #d63bdf;
+  font-family: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.log-results {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid #3a2942;
+  border-radius: 8px;
+}
+
+.log-result {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #241030;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.log-result:hover {
+  background: #241030;
+}
+
+.log-result img,
+.log-result-noimg {
+  width: 34px;
+  height: 51px;
+  object-fit: cover;
+  border-radius: 3px;
+  background: #2e1a3a;
+  flex-shrink: 0;
+}
+
+.log-submit {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 8px;
+  background: #d63bdf;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.log-submit:hover:not(:disabled) {
+  background: #e34bec;
+}
+
+.log-submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.log-body,
+.log-results,
+.log-episodes {
+  scrollbar-width: thin;
+  scrollbar-color: #4a3a52 transparent;
+}
+
+.log-body::-webkit-scrollbar,
+.log-results::-webkit-scrollbar,
+.log-episodes::-webkit-scrollbar {
+  width: 8px;
+}
+
+.log-body::-webkit-scrollbar-track,
+.log-results::-webkit-scrollbar-track,
+.log-episodes::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.log-body::-webkit-scrollbar-thumb,
+.log-results::-webkit-scrollbar-thumb,
+.log-episodes::-webkit-scrollbar-thumb {
+  background: #4a3a52;
+  border-radius: 4px;
+}
+
+.log-body::-webkit-scrollbar-thumb:hover,
+.log-results::-webkit-scrollbar-thumb:hover,
+.log-episodes::-webkit-scrollbar-thumb:hover {
+  background: #d63bdf;
+}
+
+.log-body {
+  max-height: min(58vh, 440px);
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.log-eps-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.log-selectall {
+  background: none;
+  border: none;
+  color: #d63bdf;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.log-selectall:hover {
+  text-decoration: underline;
+}
+
+.log-episodes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.log-ep {
+  background: #1b0c22;
+  border: 1px solid #3a2942;
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  color: #cbb8d4;
+  font-family: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.log-ep:hover {
+  border-color: #d63bdf;
+}
+
+.log-ep.selected {
+  background: #d63bdf;
+  border-color: #d63bdf;
+  color: #fff;
+}
+
+.log-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.log-pool-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #241030;
+  border: 1px solid #3a2942;
+  border-radius: 4px;
+  padding: 0.15rem 0.3rem 0.15rem 0.5rem;
+  color: #cbb8d4;
+  font-size: 0.72rem;
+}
+
+.log-pool-x {
+  background: none;
+  border: none;
+  color: #9b80a8;
+  cursor: pointer;
+  font-size: 0.7rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.log-pool-x:hover {
+  color: #f05cf5;
+}

@@ -1,0 +1,424 @@
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { showsAPI, usersAPI } from '../services/api';
+import Header from '../components/Header';
+import AdBox from '../components/AdBox';
+import { StarIcon } from '../components/icons';
+import './SearchPage.css';
+
+// Poster card with year/rating shown for popular, search, and advanced results
+function ShowCard({ show }) {
+  const navigate = useNavigate();
+  const posterUrl = show.poster_path
+    ? `https://image.tmdb.org/t/p/w300${show.poster_path}`
+    : null;
+
+  return (
+    <article className="show-card clickable" onClick={() => navigate(`/show/${show.id}`)}>
+      <div className="show-poster">
+        {posterUrl ? (
+          <img src={posterUrl} alt={show.name} />
+        ) : (
+          <div className="show-poster-placeholder">No Image</div>
+        )}
+      </div>
+      <div className="show-info">
+        <h2>{show.name}</h2>
+        <div className="show-meta">
+          {show.first_air_date && (
+            <span className="show-year">{show.first_air_date.slice(0, 4)}</span>
+          )}
+          {show.vote_average > 0 && (
+            <span className="show-rating">
+              <StarIcon size={13} fill="currentColor" /> {((show.vote_average / 10) * 5).toFixed(1)}
+            </span>
+          )}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+// TMDB genre ids for TV. There is no Thriller genre for TV, Mystery is the closest.
+const GENRES = [
+  { id: 18, label: 'Drama' },
+  { id: 35, label: 'Comedy' },
+  { id: 10765, label: 'Sci-Fi & Fantasy' },
+  { id: 9648, label: 'Mystery' },
+  { id: 80, label: 'Crime' },
+  { id: 10759, label: 'Action & Adventure' },
+  { id: 16, label: 'Animation' },
+  { id: 99, label: 'Documentary' },
+  { id: 10751, label: 'Family' },
+  { id: 10764, label: 'Reality' },
+  { id: 10768, label: 'War & Politics' },
+].sort((a, b) => a.label.localeCompare(b.label));
+
+// Platform keys, the backend maps these to DE provider ids.
+const PLATFORMS = [
+  { key: 'netflix',     label: 'Netflix' },
+  { key: 'prime',       label: 'Prime Video' },
+  { key: 'disney',      label: 'Disney+' },
+  { key: 'appletv',     label: 'Apple TV+' },
+  { key: 'max',         label: 'Max / HBO Max' },
+  { key: 'paramount',   label: 'Paramount+' },
+  { key: 'wow',         label: 'WOW' },
+  { key: 'skygo',       label: 'Sky Go' },
+  { key: 'crunchyroll', label: 'Crunchyroll' },
+  { key: 'mubi',        label: 'MUBI' },
+  { key: 'rtl',         label: 'RTL+' },
+].sort((a, b) => a.label.localeCompare(b.label));
+
+const MIN_RATINGS = [6, 7, 8, 9];
+
+const SORTS = [
+  { value: 'popularity', label: 'Most Popular' },
+  { value: 'rating', label: 'Highest Rated' },
+  { value: 'newest', label: 'Newest' },
+];
+
+const YEARS = [];
+for (let y = new Date().getFullYear(); y >= 1980; y--) YEARS.push(y);
+
+function AdvancedSearch() {
+  const [title, setTitle] = useState('');
+  const [genres, setGenres] = useState([]);
+  const [platforms, setPlatforms] = useState([]);
+  const [yearFrom, setYearFrom] = useState('');
+  const [yearTo, setYearTo] = useState('');
+  const [minRating, setMinRating] = useState(null);
+  const [sortBy, setSortBy] = useState('popularity');
+  const [results, setResults] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [error, setError] = useState(null);
+
+  const titleMode = title.trim().length > 0;
+  const hasFilters = genres.length || platforms.length || yearFrom || yearTo || minRating;
+
+  function toggle(list, setList, id) {
+    setList(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
+  }
+
+  const filters = useMemo(() => {
+    const f = { sortBy };
+    if (title.trim()) f.q = title.trim();
+    if (genres.length) f.genres = genres.join('|');
+    if (platforms.length && !titleMode) f.platforms = platforms.join(',');
+    if (yearFrom) f.yearFrom = yearFrom;
+    if (yearTo) f.yearTo = yearTo;
+    if (minRating) f.minRating = minRating;
+    return f;
+  }, [title, genres, platforms, yearFrom, yearTo, minRating, sortBy, titleMode]);
+
+  const filtersKey = useMemo(() => JSON.stringify(filters), [filters]);
+  const [loadedFiltersKey, setLoadedFiltersKey] = useState(null);
+  const loading = filtersKey !== loadedFiltersKey;
+
+  useEffect(() => {
+    let stale = false;
+    // Debounce so typing a title fires one request, not one per keystroke.
+    const timer = setTimeout(() => {
+      showsAPI
+        .discover(filters)
+        .then((data) => {
+          if (stale) return;
+          setResults(data.results);
+          setTotal(data.total_results);
+          setError(null);
+        })
+        .catch((err) => {
+          if (!stale) setError(err.message);
+        })
+        .finally(() => {
+          if (!stale) setLoadedFiltersKey(filtersKey);
+        });
+    }, 350);
+    // Ignore responses of outdated requests, quick filter clicks can answer out of order.
+    return () => {
+      stale = true;
+      clearTimeout(timer);
+    };
+  }, [filters, filtersKey]);
+
+  return (
+    <div className="advanced-layout">
+      <aside className="filter-sidebar">
+        <h1 className="browse-title">Browse by <span className="title-accent">everything.</span></h1>
+        <p className="browse-subtitle">Narrow by genre, platform, year, or rating.</p>
+
+        <div className="filter-group">
+          <h3>Title</h3>
+          <input
+            className="title-filter"
+            type="text"
+            placeholder="Search within filters…"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+
+        <div className="filter-group">
+          <h3>Genre</h3>
+          <div className="chip-row">
+            {GENRES.map((g) => (
+              <button
+                key={g.id}
+                className={`chip ${genres.includes(g.id) ? 'active' : ''}`}
+                onClick={() => toggle(genres, setGenres, g.id)}
+              >
+                {g.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="filter-group">
+          <h3>Platform</h3>
+          <div className="chip-row">
+            {PLATFORMS.map((p) => (
+              <button
+                key={p.key}
+                className={`chip ${platforms.includes(p.key) && !titleMode ? 'active' : ''}`}
+                disabled={titleMode}
+                onClick={() => toggle(platforms, setPlatforms, p.key)}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+          {titleMode && <p className="filter-hint">Not available for title search.</p>}
+        </div>
+
+        <div className="filter-group">
+          <h3>Year</h3>
+          <div className="year-row">
+            <select value={yearFrom} onChange={(e) => setYearFrom(e.target.value)}>
+              <option value="">Any</option>
+              {YEARS.map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+            <span className="year-to">to</span>
+            <select value={yearTo} onChange={(e) => setYearTo(e.target.value)}>
+              <option value="">Any</option>
+              {YEARS.map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="filter-group">
+          <h3>Minimum Rating</h3>
+          <div className="chip-row">
+            <button
+              className={`chip ${minRating === null ? 'active' : ''}`}
+              onClick={() => setMinRating(null)}
+            >
+              Any
+            </button>
+            {MIN_RATINGS.map((r) => (
+              <button
+                key={r}
+                className={`chip ${minRating === r ? 'active' : ''}`}
+                onClick={() => setMinRating(r)}
+              >
+                <StarIcon size={13} fill="currentColor" />{r / 2}+
+              </button>
+            ))}
+          </div>
+        </div>
+      </aside>
+
+      <section className="advanced-results">
+        <div className="results-head">
+          {/* at rest the count reads like a catalog total, so only show it once a filter narrows things */}
+          <p className={!loading && !titleMode && !hasFilters ? 'search-hint' : 'results-count'}>
+            {loading ? (
+              'Loading…'
+            ) : titleMode ? (
+              `Top matches for "${title.trim()}"`
+            ) : hasFilters ? (
+              `${total.toLocaleString()} shows`
+            ) : (
+              <>Popular <span className="hint-accent">right now</span></>
+            )}
+          </p>
+          <label className="sort-label">
+            Sort by:
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              {SORTS.map((s) => (
+                <option key={s.value} value={s.value}>{s.label}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        {!loading && error && <p className="search-error">{error}</p>}
+        {!loading && !error && results.length === 0 && (
+          <p className="search-empty">No shows match these filters.</p>
+        )}
+
+        <div className="results-grid">
+          {results.map((show) => (
+            <ShowCard key={show.id} show={show} />
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function UserCard({ user }) {
+  const navigate = useNavigate();
+  return (
+    <div className="user-card clickable" onClick={() => navigate(`/user/${user.handle}`)}>
+      <div className="user-card-avatar">
+        {user.avatarUrl
+          ? <img src={user.avatarUrl} alt={user.handle} />
+          : <span className="user-card-initial">{user.handle[0].toUpperCase()}</span>
+        }
+      </div>
+      <div className="user-card-info">
+        <p className="user-card-handle">@{user.handle}</p>
+        {user.displayName && <p className="user-card-name">{user.displayName}</p>}
+      </div>
+    </div>
+  );
+}
+
+function SearchPage() {
+  const [activeTab, setActiveTab] = useState('search');
+  const [searchMode, setSearchMode] = useState('series');
+
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [searched, setSearched] = useState(false);
+
+  const [popular, setPopular] = useState([]);
+  const [popularLoading, setPopularLoading] = useState(true);
+
+  useEffect(() => {
+    showsAPI.discover({ sortBy: 'popularity' })
+      .then((data) => setPopular(data.results || []))
+      .catch((err) => setError(err.message))
+      .finally(() => setPopularLoading(false));
+  }, []);
+
+  function switchMode(mode) {
+    setSearchMode(mode);
+    setQuery('');
+    setResults([]);
+    setSearched(false);
+    setError(null);
+  }
+
+  async function handleSearch(e) {
+    e.preventDefault();
+    if (!query.trim()) return;
+    setLoading(true);
+    setError(null);
+    setSearched(true);
+    try {
+      if (searchMode === 'users') {
+        const data = await usersAPI.search(query.trim());
+        setResults(data.users);
+      } else {
+        const data = await showsAPI.search(query.trim());
+        setResults(data.results);
+      }
+    } catch (err) {
+      setError(err.message);
+      setResults([]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="search-page">
+      <Header active="search" />
+
+      <div className="search-layout">
+        <div className="feed-ad-col">
+          <AdBox className="feed-ad" />
+          <AdBox className="feed-ad" text="Another ad could be here" />
+        </div>
+
+      <main className="search-main">
+        <div className="tab-bar">
+          <button className={`tab ${activeTab === 'search' ? 'active' : ''}`} onClick={() => setActiveTab('search')}>Search</button>
+          <button className={`tab ${activeTab === 'advanced' ? 'active' : ''}`} onClick={() => setActiveTab('advanced')}>Advanced Search</button>
+        </div>
+
+        {activeTab === 'search' && (
+          <>
+            <h1>
+              Find{' '}
+              <button className={`mode-word ${searchMode === 'series' ? 'active' : 'inactive'}`} onClick={() => switchMode('series')}>series</button>
+              <span className="mode-word-sep">/</span>
+              <button className={`mode-word ${searchMode === 'users' ? 'active' : 'inactive'}`} onClick={() => switchMode('users')}>users</button>
+            </h1>
+
+            <form className="search-form" onSubmit={handleSearch}>
+              <input
+                className="search-input"
+                type="text"
+                placeholder={searchMode === 'users' ? 'Search for a user...' : 'Search for a TV show...'}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <button className="search-btn" type="submit" disabled={loading}>
+                {loading ? 'Searching…' : 'Search'}
+              </button>
+            </form>
+
+            {error && <p className="search-error">{error}</p>}
+
+            {searchMode === 'series' && (
+              <>
+                {!searched && <p className="search-hint">Popular <span className="hint-accent">right now</span></p>}
+                {!loading && searched && results.length === 0 && !error && (
+                  <p className="search-empty">No results found for "{query}".</p>
+                )}
+                {!searched && popularLoading && <p className="search-hint">Loading…</p>}
+                <div className="results-grid">
+                  {(searched ? results : popular).map((show) => (
+                    <ShowCard key={show.id} show={show} />
+                  ))}
+                </div>
+              </>
+            )}
+
+            {searchMode === 'users' && (
+              <>
+                {!loading && searched && results.length === 0 && !error && (
+                  <p className="search-empty">No users found for "{query}".</p>
+                )}
+                <div className="user-results">
+                  {results.map((user) => (
+                    <UserCard key={user.id} user={user} />
+                  ))}
+                </div>
+              </>
+            )}
+          </>
+        )}
+
+        {activeTab === 'advanced' && <AdvancedSearch />}
+
+        <AdBox className="search-ad" />
+      </main>
+
+        <div className="feed-ad-col">
+          <AdBox className="feed-ad" />
+          <AdBox className="feed-ad" text="Another ad could be here" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default SearchPage;

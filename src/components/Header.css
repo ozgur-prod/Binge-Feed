@@ -1,0 +1,157 @@
+.feed-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #1e1e1e;
+  position: sticky;
+  top: 0;
+  background: #0d0d0d;
+  z-index: 10;
+}
+
+.feed-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.feed-logo span { color: #d63bdf; }
+
+.feed-logo .play {
+  width: 1.6rem;
+  height: 1.6rem;
+  color: #d63bdf;
+  border: 2px solid #d63bdf;
+  border-radius: 6px;
+  padding: 3px;
+}
+
+.feed-nav-icons {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: 1rem;
+}
+
+.nav-icon {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: color 0.15s, background 0.15s;
+  display: flex;
+  align-items: center;
+}
+
+.nav-icon svg { width: 1.4rem; height: 1.4rem; }
+.nav-icon:hover { color: #fff; background: #1e1e1e; }
+.nav-icon.active { color: #fff; }
+
+.nav-icon-logout:hover { color: #e05252; background: #2a1515; }
+
+/* Logout confirmation dialog */
+.logout-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.logout-dialog {
+  background: #161616;
+  border: 1px solid #2e2e2e;
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  max-width: 360px;
+  width: 90%;
+  text-align: center;
+}
+
+.logout-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.5rem;
+}
+
+.logout-subtitle {
+  font-size: 0.9rem;
+  color: #888;
+  margin: 0 0 1.8rem;
+}
+
+.logout-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.logout-cancel {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: #1e1e1e;
+  color: #ccc;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.logout-cancel:hover { background: #2a2a2a; color: #fff; }
+
+.logout-confirm {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background: #c0392b;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.logout-confirm:hover { background: #e74c3c; }
+
+.feed-logo .logo-premium {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #b8860b !important;
+}
+
+.feed-logo--premium .play {
+  color: #b8860b;
+  border-color: #b8860b;
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.get-premium-btn {
+  background: #b8860b;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.get-premium-btn:hover { opacity: 0.85; }
