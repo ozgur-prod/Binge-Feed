@@ -80,12 +80,6 @@ function ProfilePage() {
                     Cancel Premium
                   </button>
                 )}
-
-                {p.editable && (
-                  <button className="delete-account-btn" onClick={() => navigate('/account/delete')}>
-                    Delete Account
-                  </button>
-                )}
               </>
             ) : null}
           </div>

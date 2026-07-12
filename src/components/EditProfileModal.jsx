@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
 import { usersAPI } from '../services/api';
 import { XIcon } from './icons';
 import './ForgotPasswordModal.css';
@@ -13,6 +14,12 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const mouseDownOnOverlay = useRef(false);
+  const navigate = useNavigate();
+
+  function goDelete() {
+    onClose();
+    navigate('/account/delete');
+  }
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -86,6 +93,10 @@ export default function EditProfileModal({ user, onClose, onSaved }) {
               placeholder="Tell people what you binge…"
             />
           </div>
+
+          <button className="modal-delete-btn" type="button" onClick={goDelete}>
+            Delete Account
+          </button>
 
           {error && <p className="modal-error">{error}</p>}
 
