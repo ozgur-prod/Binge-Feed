@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showsAPI, listsAPI } from '../services/api';
 import { XIcon, CheckIcon, ChevronLeftIcon } from './icons';
@@ -9,6 +9,7 @@ import './ListsModal.css';
 const POSTER_W154 = 'https://image.tmdb.org/t/p/w154';
 
 export default function ListsModal({ lists, setLists, readOnly = false, onClose }) {
+  const mouseDownOnOverlay = useRef(false);
   const navigate = useNavigate();
   const [activeListId, setActiveListId] = useState(null);
   const [newTitle, setNewTitle] = useState('');
@@ -113,8 +114,11 @@ export default function ListsModal({ lists, setLists, readOnly = false, onClose 
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay"
+      onMouseDown={(e) => { mouseDownOnOverlay.current = e.target === e.currentTarget; }}
+      onClick={() => { if (mouseDownOnOverlay.current) onClose(); }}
+    >
+      <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}><XIcon /></button>
 
         {activeList ? (

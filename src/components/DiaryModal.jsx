@@ -1,15 +1,19 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import DiaryEntries from './DiaryEntries';
 import { XIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './FavoritesModal.css';
 
 export default function DiaryModal({ blocks, total, showCount, hasMore, loadingMore, onLoadMore, onEditEpisode, onDeleteEpisode, initialManage = false, canManage = true, onClose }) {
+  const mouseDownOnOverlay = useRef(false);
   const [manage, setManage] = useState(initialManage);
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay"
+      onMouseDown={(e) => { mouseDownOnOverlay.current = e.target === e.currentTarget; }}
+      onClick={() => { if (mouseDownOnOverlay.current) onClose(); }}
+    >
+      <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}><XIcon /></button>
         <div className="diary-modal-head">
           <h2 className="modal-title">Diary</h2>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usersAPI, listsAPI } from '../services/api';
 import { XIcon, CheckIcon, PlusIcon } from './icons';
 import './ForgotPasswordModal.css';
@@ -7,6 +7,7 @@ import './ListsModal.css';
 
 // Shows all the user's lists so this show can be added to or removed from any of them (or a new list).
 export default function AddToListModal({ show, onClose }) {
+  const mouseDownOnOverlay = useRef(false);
   const [lists, setLists] = useState(null);
   const [newTitle, setNewTitle] = useState('');
   const [busy, setBusy] = useState(false);
@@ -74,7 +75,10 @@ export default function AddToListModal({ show, onClose }) {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay"
+      onMouseDown={(e) => { mouseDownOnOverlay.current = e.target === e.currentTarget; }}
+      onClick={() => { if (mouseDownOnOverlay.current) onClose(); }}
+    >
       <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}><XIcon /></button>
         <h2 className="modal-title">Add to List</h2>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showsAPI } from '../services/api';
 import { XIcon, CheckIcon } from './icons';
@@ -8,6 +8,7 @@ import './FavoritesModal.css';
 const POSTER_W154 = 'https://image.tmdb.org/t/p/w154';
 
 export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) {
+  const mouseDownOnOverlay = useRef(false);
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,8 +56,11 @@ export default function FavoritesModal({ favorites, onAdd, onRemove, onClose }) 
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay"
+      onMouseDown={(e) => { mouseDownOnOverlay.current = e.target === e.currentTarget; }}
+      onClick={() => { if (mouseDownOnOverlay.current) onClose(); }}
+    >
+      <div className="modal favorites-modal" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}><XIcon /></button>
         <h2 className="modal-title">Favorite Series</h2>
 

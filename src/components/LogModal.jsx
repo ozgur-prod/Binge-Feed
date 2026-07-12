@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { showsAPI, progressAPI } from '../services/api';
 import { XIcon } from './icons';
 import './ForgotPasswordModal.css';
@@ -18,6 +18,7 @@ const keyOf = (p) => `${p.showId}-${p.season}-${p.episode}`;
 
 // Log watched episodes (one or many via a pool), or edit an existing diary entry (when `initial` is passed).
 export default function LogModal({ initial, onClose, onSaved }) {
+  const mouseDownOnOverlay = useRef(false);
   const editing = !!initial;
   const [query, setQuery] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -132,8 +133,11 @@ export default function LogModal({ initial, onClose, onSaved }) {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal favorites-modal log-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay"
+      onMouseDown={(e) => { mouseDownOnOverlay.current = e.target === e.currentTarget; }}
+      onClick={() => { if (mouseDownOnOverlay.current) onClose(); }}
+    >
+      <div className="modal favorites-modal log-modal" onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}><XIcon /></button>
         <h2 className="modal-title">{editing ? 'Edit entry' : 'Log episodes'}</h2>
 
