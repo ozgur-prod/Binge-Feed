@@ -181,6 +181,14 @@
   color: #fff;
 }
 
+.rv-author-link {
+  cursor: pointer;
+}
+
+.rv-handle.rv-author-link:hover {
+  text-decoration: underline;
+}
+
 .rv-display-name {
   display: block;
   font-size: 0.78rem;

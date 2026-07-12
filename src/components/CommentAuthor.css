@@ -5,6 +5,14 @@
   min-width: 0;
 }
 
+.author-row-link {
+  cursor: pointer;
+}
+
+.author-row-link:hover .author-handle {
+  text-decoration: underline;
+}
+
 .author-avatar {
   width: 34px;
   height: 34px;

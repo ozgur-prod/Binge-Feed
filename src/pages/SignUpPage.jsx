@@ -13,6 +13,16 @@ function validatePassword(password) {
   return null;
 }
 
+// username rule: 3-30 characters, only letters, numbers, periods and underscores,
+// not all numbers, no period at the start or end, no two periods in a row
+const HANDLE_REGEX = /^(?![0-9]+$)(?!.*\.\.)[a-zA-Z0-9_][a-zA-Z0-9._]{1,28}[a-zA-Z0-9_]$/;
+function validateHandle(handle) {
+  if (!HANDLE_REGEX.test(handle.trim())) {
+    return "Username must be 3–30 characters using only letters, numbers, periods and underscores. It can't be all numbers, start or end with a period, or contain consecutive periods.";
+  }
+  return null;
+}
+
 function VerifyModal({ email, onSuccess, onClose }) {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
@@ -110,6 +120,9 @@ function SignUpPage() {
 
     if (!form.displayName || !form.handle || !form.email || !form.password || !form.confirm) return;
 
+    const handleErr = validateHandle(form.handle);
+    if (handleErr) return setError(handleErr);
+
     const pwErr = validatePassword(form.password);
     if (pwErr) return setError(pwErr);
     if (form.password !== form.confirm) return setError('Passwords do not match.');
@@ -157,6 +170,9 @@ function SignUpPage() {
             <label htmlFor="handle">Username:</label>
             <input id="handle" name="handle" type="text" value={form.handle} onChange={handleChange} />
             {submitted && !form.handle && <p className="field-error">This field is required.</p>}
+            {form.handle && validateHandle(form.handle) && (
+              <p className="field-error">{validateHandle(form.handle)}</p>
+            )}
           </div>
 
           <div className="field">

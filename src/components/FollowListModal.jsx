@@ -16,9 +16,9 @@ export default function FollowListModal({ userId, type, onClose }) {
       .catch(() => setUsers([]));
   }, [userId, type]);
 
-  function openUser(id) {
+  function openUser(handle) {
     onClose();
-    navigate(`/user/${id}`);
+    navigate(`/user/${handle}`);
   }
 
   return (
@@ -34,7 +34,7 @@ export default function FollowListModal({ userId, type, onClose }) {
         ) : (
           <ul className="follow-list">
             {users.map((u) => (
-              <li key={u.id} className="follow-list-item" onClick={() => openUser(u.id)}>
+              <li key={u.id} className="follow-list-item" onClick={() => openUser(u.handle)}>
                 {u.avatarUrl ? (
                   <img className="follow-list-avatar" src={u.avatarUrl} alt={u.handle} />
                 ) : (
