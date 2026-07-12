@@ -34,7 +34,7 @@
 
 .profile-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
   margin-bottom: 2.5rem;
 }
@@ -91,12 +91,39 @@
 .profile-display-name {
   color: #ccc;
   font-size: 0.95rem;
+  overflow-wrap: anywhere;
 }
 
 .profile-bio {
   color: #888;
   font-size: 0.85rem;
   margin-top: 0.2rem;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.profile-bio--expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+.profile-bio-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 0.15rem;
+  color: #d63bdf;
+  font-family: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.profile-bio-toggle:hover {
+  text-decoration: underline;
 }
 
 /* Pill buttons (Edit Profile / Edit / Log / Create) */
