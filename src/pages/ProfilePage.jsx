@@ -190,7 +190,7 @@ function ProfilePage() {
       <div className="profile-layout">
         <div className="feed-ad-col">
           <AdBox className="feed-ad" />
-          <AdBox className="feed-ad" text="Another ad could be here." />
+          <AdBox className="feed-ad" text="Another ad could be here" />
         </div>
 
       <main className="profile-main">
@@ -370,7 +370,7 @@ function ProfilePage() {
 
         <div className="feed-ad-col">
           <AdBox className="feed-ad" />
-          <AdBox className="feed-ad" text="Another ad could be here." />
+          <AdBox className="feed-ad" text="Another ad could be here" />
         </div>
       </div>
 

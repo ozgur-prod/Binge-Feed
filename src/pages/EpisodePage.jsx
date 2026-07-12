@@ -166,6 +166,7 @@ export default function EpisodePage() {
   const me = useMemo(() => currentUser(), []);
 
   const [showName, setShowName] = useState('');
+  const [backdropPath, setBackdropPath] = useState(null);
   const [episode, setEpisode] = useState(null);
   const [comments, setComments] = useState([]);
   const [loadedKey, setLoadedKey] = useState(null);
@@ -204,6 +205,7 @@ export default function EpisodePage() {
     ])
       .then(([show, seasonData, commentsData, reviewsData, progressData]) => {
         setShowName(show.name);
+        setBackdropPath(show.backdrop_path || null);
         const ep = (seasonData.episodes || []).find((e) => e.episode_number === Number(episodeNumber));
         setEpisode(ep || null);
         setComments(commentsData.comments || []);
@@ -314,6 +316,9 @@ export default function EpisodePage() {
   return (
     <div className="episode-page">
       <Header />
+      {backdropPath && (
+        <div className="backdrop" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/w1280${backdropPath})` }} />
+      )}
 
       <div className="episode-content">
         <Link className="back-link" to={`/show/${id}`}><ChevronLeftIcon size={16} /> Back to {showName}</Link>

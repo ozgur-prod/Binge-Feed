@@ -348,7 +348,7 @@ function FeedPage() {
       <div className="feed-layout">
         <div className="feed-ad-col">
           <AdBox className="feed-ad" />
-          <AdBox className="feed-ad" text="Another ad could be here." />
+          <AdBox className="feed-ad" text="Another ad could be here" />
         </div>
 
       <main className="feed-main">
@@ -405,7 +405,7 @@ function FeedPage() {
 
         <div className="feed-ad-col">
           <AdBox className="feed-ad" />
-          <AdBox className="feed-ad" text="Another ad could be here." />
+          <AdBox className="feed-ad" text="Another ad could be here" />
         </div>
       </div>
     </div>

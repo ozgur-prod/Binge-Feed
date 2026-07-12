@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { showsAPI, usersAPI } from '../services/api';
 import Header from '../components/Header';
 import AdBox from '../components/AdBox';
@@ -56,11 +56,17 @@ const GENRES = [
 
 // Platform keys, the backend maps these to DE provider ids.
 const PLATFORMS = [
-  { key: 'netflix', label: 'Netflix' },
-  { key: 'hbo', label: 'HBO' },
-  { key: 'appletv+', label: 'Apple TV+' },
-  { key: 'prime', label: 'Prime' },
-  { key: 'disney+', label: 'Disney+' },
+  { key: 'netflix',     label: 'Netflix' },
+  { key: 'prime',       label: 'Prime Video' },
+  { key: 'disney',      label: 'Disney+' },
+  { key: 'appletv',     label: 'Apple TV+' },
+  { key: 'max',         label: 'Max' },
+  { key: 'paramount',   label: 'Paramount+' },
+  { key: 'wow',         label: 'WOW' },
+  { key: 'sky',         label: 'Sky' },
+  { key: 'crunchyroll', label: 'Crunchyroll' },
+  { key: 'mubi',        label: 'MUBI' },
+  { key: 'rtl',         label: 'RTL+' },
 ].sort((a, b) => a.label.localeCompare(b.label));
 
 const MIN_RATINGS = [6, 7, 8, 9];
@@ -284,8 +290,6 @@ function UserCard({ user }) {
 function SearchPage() {
   const [activeTab, setActiveTab] = useState('search');
   const [searchMode, setSearchMode] = useState('series');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
 
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -303,19 +307,8 @@ function SearchPage() {
       .finally(() => setPopularLoading(false));
   }, []);
 
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   function switchMode(mode) {
     setSearchMode(mode);
-    setDropdownOpen(false);
     setQuery('');
     setResults([]);
     setSearched(false);
@@ -351,7 +344,7 @@ function SearchPage() {
       <div className="search-layout">
         <div className="feed-ad-col">
           <AdBox className="feed-ad" />
-          <AdBox className="feed-ad" text="Another ad could be here." />
+          <AdBox className="feed-ad" text="Another ad could be here" />
         </div>
 
       <main className="search-main">
@@ -364,21 +357,9 @@ function SearchPage() {
           <>
             <h1>
               Find{' '}
-              <span className="mode-dropdown" ref={dropdownRef}>
-                <button
-                  className="mode-dropdown-btn title-accent"
-                  onClick={() => setDropdownOpen((o) => !o)}
-                >
-                  {searchMode === 'series' ? 'series' : 'users'}
-                  <span className="mode-dropdown-arrow">▾</span>
-                </button>
-                {dropdownOpen && (
-                  <div className="mode-dropdown-menu">
-                    <button onClick={() => switchMode('series')} className={searchMode === 'series' ? 'active' : ''}>series</button>
-                    <button onClick={() => switchMode('users')} className={searchMode === 'users' ? 'active' : ''}>users</button>
-                  </div>
-                )}
-              </span>
+              <button className={`mode-word ${searchMode === 'series' ? 'active' : 'inactive'}`} onClick={() => switchMode('series')}>series</button>
+              <span className="mode-word-sep">/</span>
+              <button className={`mode-word ${searchMode === 'users' ? 'active' : 'inactive'}`} onClick={() => switchMode('users')}>users</button>
             </h1>
 
             <form className="search-form" onSubmit={handleSearch}>
@@ -433,7 +414,7 @@ function SearchPage() {
 
         <div className="feed-ad-col">
           <AdBox className="feed-ad" />
-          <AdBox className="feed-ad" text="Another ad could be here." />
+          <AdBox className="feed-ad" text="Another ad could be here" />
         </div>
       </div>
     </div>

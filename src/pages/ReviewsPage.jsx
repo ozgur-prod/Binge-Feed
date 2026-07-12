@@ -137,6 +137,9 @@ export default function ReviewsPage() {
   return (
     <div className="reviews-page">
       <Header />
+      {show?.backdrop_path && (
+        <div className="backdrop" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/w1280${show.backdrop_path})` }} />
+      )}
 
       <main className="rv-main">
         <Link className="back-link" to={`/show/${id}`}>
