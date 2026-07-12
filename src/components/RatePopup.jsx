@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { reviewsAPI } from '../services/api';
-import { StarIcon, StarHalfIcon, XIcon } from './icons';
+import { StarIcon, StarHalfIcon, XIcon, CheckIcon } from './icons';
 import './ForgotPasswordModal.css';
 import './RatePopup.css';
 
@@ -14,6 +14,7 @@ export default function RatePopup({ showId, season, episode, reviewId, initialRa
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   async function handleSubmit() {
     if (!rating) return setError('Pick a star rating first.');
@@ -35,7 +36,7 @@ export default function RatePopup({ showId, season, episode, reviewId, initialRa
   }
 
   async function handleDelete() {
-    if (!window.confirm('Delete your rating?')) return;
+    setConfirmingDelete(false);
     setError('');
     setDeleting(true);
     try {
@@ -121,14 +122,26 @@ export default function RatePopup({ showId, season, episode, reviewId, initialRa
           </button>
 
           {reviewId && (
-            <button
-              type="button"
-              className="delete-rating-btn"
-              onClick={handleDelete}
-              disabled={loading || deleting}
-            >
-              {deleting ? 'Deleting…' : 'Delete Rating'}
-            </button>
+            confirmingDelete ? (
+              <div className="delete-rating-confirm">
+                <span className="delete-rating-confirm-text">Delete rating?</span>
+                <button type="button" className="delete-rating-yes" onClick={handleDelete} disabled={deleting}>
+                  <CheckIcon size={14} />
+                </button>
+                <button type="button" className="delete-rating-no" onClick={() => setConfirmingDelete(false)}>
+                  <XIcon size={14} />
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="delete-rating-btn"
+                onClick={() => setConfirmingDelete(true)}
+                disabled={loading || deleting}
+              >
+                {deleting ? 'Deleting…' : 'Delete Rating'}
+              </button>
+            )
           )}
         </div>
       </div>

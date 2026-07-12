@@ -49,6 +49,8 @@ export const authAPI = {
 export const usersAPI = {
   getMe: () => request('/users/me', { headers: authHeaders() }),
   updateMe: (body) => request('/users/me', { method: 'PUT', headers: authHeaders(), body: JSON.stringify(body) }),
+  deleteAccount: (password) =>
+    request('/users/me', { method: 'DELETE', headers: authHeaders(), body: JSON.stringify({ password }) }),
   getUser: (id) => request(`/users/${id}`, { headers: authHeaders() }),
   follow: (id) => request(`/users/${id}/follow`, { method: 'POST', headers: authHeaders() }),
   unfollow: (id) => request(`/users/${id}/follow`, { method: 'DELETE', headers: authHeaders() }),
@@ -142,4 +144,18 @@ export const feedAPI = {
 export const discussionsAPI = {
   get: ({ days = 7, limit = 20 } = {}) =>
     request(`/discussions?${new URLSearchParams({ days, limit })}`, { headers: authHeaders() }),
+};
+
+export const liveCommentsAPI = {
+  list: ({ showId, season, episode }) =>
+    request(`/live-comments?${new URLSearchParams({ showId, season, episode })}`, { headers: authHeaders() }),
+  create: ({ showId, season, episode, text, timestamp }) =>
+    request('/live-comments', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ showId, season, episode, text, timestamp }),
+    }),
+  remove: (id) => request(`/live-comments/${id}`, { method: 'DELETE', headers: authHeaders() }),
+  like: (id) => request(`/live-comments/${id}/like`, { method: 'POST', headers: authHeaders() }),
+  unlike: (id) => request(`/live-comments/${id}/like`, { method: 'DELETE', headers: authHeaders() }),
 };

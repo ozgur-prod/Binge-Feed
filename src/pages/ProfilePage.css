@@ -613,6 +613,22 @@
   border-color: #ff6b6b;
 }
 
+.delete-account-btn {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #555;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.delete-account-btn:hover {
+  color: #ff6b6b;
+}
+
 .profile-follow-counts {
   font-size: 0.85rem;
   color: #cbb8d4;
